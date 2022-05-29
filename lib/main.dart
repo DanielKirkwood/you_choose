@@ -1,7 +1,13 @@
+import 'dart:io' show Platform;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
+
+const bool _isProduction = bool.fromEnvironment('dart.vm.product');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,7 +15,24 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  if (!_isProduction) {
+    await _connectToEmulator();
+  }
+
   runApp(const MyApp());
+}
+
+Future _connectToEmulator() async {
+  final host = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+
+  const firestorePort = 8080;
+
+  // Just to make sure we're running locally
+  if (kDebugMode) {
+    print("Using the firebase emulator");
+  }
+
+  FirebaseFirestore.instance.useFirestoreEmulator(host, firestorePort);
 }
 
 class MyApp extends StatelessWidget {
