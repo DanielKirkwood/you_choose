@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "711696487306",
+    "project_id": "restaurant-picker-flutter",
+    "storage_bucket": "restaurant-picker-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711696487306:android:ae42b8f04a96c04db7ee73",
+        "android_client_info": {
+          "package_name": "com.youChoose.you_choose"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711696487306-ulh3airoe058ue6d0avc2ouec1re06dj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4tESElkU04HJdl1tmomvxFUosacq9CEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711696487306-ulh3airoe058ue6d0avc2ouec1re06dj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "711696487306-2qs0egsh1d4fac6d3agu6k3efj57efm1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.youChoose.youChoose"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
