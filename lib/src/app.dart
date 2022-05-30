@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:you_choose/src/screens/add_restaurant.dart';
 import 'package:you_choose/src/screens/home_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -8,9 +9,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'You Choose',
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
-      home: const HomeScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/add-restaurant': (context) => const AddRestaurantScreen()
+      },
     );
   }
 }
