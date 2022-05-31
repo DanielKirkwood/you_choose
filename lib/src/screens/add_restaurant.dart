@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:you_choose/src/models/restaurant.dart';
 import 'package:you_choose/src/widgets/SliderFormField.dart';
 
 class AddRestaurantForm extends StatefulWidget {
@@ -19,6 +21,25 @@ class _AddRestaurantFormState extends State<AddRestaurantForm> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
+      final restaurant = Restaurant(
+        name: _name,
+        price: _price,
+        description: _description,
+        tags: _tags,
+      );
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      final docRef = db
+          .collection('/restaurants')
+          .withConverter(
+              fromFirestore: Restaurant.fromFirestore,
+              toFirestore: (Restaurant restaurant, options) =>
+                  restaurant.toFirestore())
+          .doc();
+
+      docRef.set(restaurant).then((value) {
+        Navigator.of(context).pop();
+      });
     }
   }
 
@@ -29,9 +50,10 @@ class _AddRestaurantFormState extends State<AddRestaurantForm> {
       child: Form(
         key: _formKey,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             TextFormField(
+              keyboardType: TextInputType.name,
               decoration: const InputDecoration(
                   labelText: 'Name',
                   hintText: 'What is the name of the restaurant',
@@ -47,12 +69,13 @@ class _AddRestaurantFormState extends State<AddRestaurantForm> {
               },
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'Please provide a name';
                 }
                 return null;
               },
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Text('Price:'),
                 SliderFormField(onSaved: (value) {
@@ -64,6 +87,60 @@ class _AddRestaurantFormState extends State<AddRestaurantForm> {
                   return null;
                 }),
               ],
+            ),
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              decoration: const InputDecoration(
+                  labelText: 'Description',
+                  hintText: 'How would you describe the restaurant?',
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(color: Colors.grey, width: 0.0)),
+                  border: OutlineInputBorder()),
+              onFieldSubmitted: (String value) {
+                setState(() => _description = value);
+              },
+              onChanged: (String value) {
+                setState(() => _description = value);
+              },
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please provide a description';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                  labelText: 'Tags',
+                  hintText:
+                      'Enter tags as a comma seperated list: fancy, special occasion, steak',
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(color: Colors.grey, width: 0.0)),
+                  border: OutlineInputBorder()),
+              onFieldSubmitted: (String value) {
+                List<String> parts = value.split(',');
+                for (var element in parts) {
+                  element.trim();
+                }
+                parts.removeWhere((item) => [""].contains(item));
+                setState(() => _tags = parts);
+              },
+              onChanged: (String value) {
+                List<String> parts = value.split(',');
+                for (var element in parts) {
+                  element.trim();
+                }
+                setState(() => _tags = parts);
+              },
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please provide at least one tag';
+                }
+                return null;
+              },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
