@@ -9,6 +9,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String searchText = '';
+
+  CollectionReference restaurantCollection =
+      FirebaseFirestore.instance.collection('/restaurants');
+  List<DocumentSnapshot> documents = [];
+
+  late TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     final String name = document['name'];
     final int price = document['price'];
@@ -80,18 +100,57 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Home"),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance.collection('/restaurants').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Text('Loading...');
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              return _buildListItem(context, snapshot.data!.docs[index]);
-            },
-          );
-        },
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 10.0, bottom: 20.0, left: 25.0, right: 25.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                  hintText: "Search...",
+                  prefixIcon: Icon(Icons.search),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderSide: BorderSide(color: Colors.grey, width: 0.0)),
+                  border: OutlineInputBorder()),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: restaurantCollection.snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.blueAccent,
+                    ),
+                  );
+                }
+                documents = snapshot.data!.docs;
+
+                if (searchText.isNotEmpty) {
+                  documents = documents.where((element) {
+                    return element['name']
+                        .toString()
+                        .toLowerCase()
+                        .contains(searchText.toLowerCase());
+                  }).toList();
+                }
+                return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: documents.length,
+                  itemBuilder: (context, index) {
+                    return _buildListItem(context, documents[index]);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(

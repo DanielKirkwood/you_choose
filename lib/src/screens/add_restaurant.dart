@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/restaurant.dart';
-import 'package:you_choose/src/widgets/SliderFormField.dart';
+import 'package:you_choose/src/widgets/slider_form_field.dart';
 
 class AddRestaurantForm extends StatefulWidget {
   const AddRestaurantForm({Key? key}) : super(key: key);
