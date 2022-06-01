@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/restaurant.dart';
 
@@ -48,8 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     searchResultsList();
   }
 
-  searchResultsList() async {
-    print('allResults ${_allResults}');
+  Future<void> searchResultsList() async {
     List<DocumentSnapshot<Object?>> showResults = [];
 
     if (_searchController.text.isNotEmpty) {
@@ -64,11 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
       showResults = List.from(_allResults);
     }
 
-    print('showResults ${showResults}');
     setState(() => _resultsList = showResults);
   }
 
-  getRestaurantsStreamSnapshots() async {
+  Future<void> getRestaurantsStreamSnapshots() async {
     QuerySnapshot localData;
     QuerySnapshot serverData;
 
@@ -104,8 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     searchResultsList();
+  }
 
-    return "complete";
+  Future<void> _onPullRefresh() async {
+    await Future.delayed(const Duration(seconds: 2));
+    await getRestaurantsStreamSnapshots();
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -202,22 +202,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            // child: StreamBuilder<QuerySnapshot>(
-            //   stream: restaurantCollection.snapshots(),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return const Center(
-            //         child: CircularProgressIndicator(
-            //           color: Colors.blueAccent,
-            //         ),
-            //       );
-            //     }
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _resultsList.length,
-              itemBuilder: (context, index) {
-                return _buildListItem(context, _resultsList[index]);
-              },
+            child: RefreshIndicator(
+              onRefresh: _onPullRefresh,
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: _resultsList.length,
+                itemBuilder: (context, index) {
+                  return _buildListItem(context, _resultsList[index]);
+                },
+              ),
             ),
           ),
         ],
