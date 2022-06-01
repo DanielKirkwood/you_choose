@@ -23,11 +23,8 @@ class _AddRestaurantFormState extends State<AddRestaurantForm> {
       _formKey.currentState!.save();
 
       final restaurant = Restaurant(
-        name: _name,
-        price: _price,
-        description: _description,
-        tags: _tags,
-      );
+          name: _name, price: _price, description: _description, tags: _tags);
+
       FirebaseFirestore db = FirebaseFirestore.instance;
       final docRef = db
           .collection('/restaurants')

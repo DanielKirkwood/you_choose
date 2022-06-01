@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:you_choose/src/models/restaurant.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,13 +11,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String searchText = '';
-
-  CollectionReference restaurantCollection =
-      FirebaseFirestore.instance.collection('/restaurants');
-  List<DocumentSnapshot> documents = [];
-
   late TextEditingController _searchController;
+
+  // String _searchText = '';
+
+  CollectionReference restaurantCollection = FirebaseFirestore.instance
+      .collection('/restaurants')
+      .withConverter<Restaurant>(
+        fromFirestore: (snapshot, _) => Restaurant.fromFirestore(snapshot, _),
+        toFirestore: (Restaurant restaurant, _) => restaurant.toFirestore(),
+      );
+
+  late Future resultsLoaded;
+  List<DocumentSnapshot> _allResults = [];
+  List<DocumentSnapshot> _resultsList = [];
 
   @override
   void initState() {
@@ -27,6 +36,76 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    resultsLoaded = getRestaurantsStreamSnapshots();
+  }
+
+  void _onSearchChanged() {
+    searchResultsList();
+  }
+
+  searchResultsList() async {
+    print('allResults ${_allResults}');
+    List<DocumentSnapshot<Object?>> showResults = [];
+
+    if (_searchController.text.isNotEmpty) {
+      for (DocumentSnapshot restaurantSnapshot in _allResults) {
+        String name = restaurantSnapshot.get('name').toString().toLowerCase();
+
+        if (name.contains(_searchController.text.toLowerCase())) {
+          showResults.add(restaurantSnapshot);
+        }
+      }
+    } else {
+      showResults = List.from(_allResults);
+    }
+
+    print('showResults ${showResults}');
+    setState(() => _resultsList = showResults);
+  }
+
+  getRestaurantsStreamSnapshots() async {
+    QuerySnapshot localData;
+    QuerySnapshot serverData;
+
+    const cache = Source.cache;
+    const server = Source.server;
+
+    // check local cache first
+    localData = await restaurantCollection
+        .orderBy('lastModified', descending: true)
+        .get(const GetOptions(source: cache));
+
+    if (localData.docs.isEmpty) {
+      // no data in local cache, get all documents from server
+      serverData = await restaurantCollection
+          .orderBy('lastModified', descending: true)
+          .get(const GetOptions(source: server));
+
+      setState(() => _allResults = serverData.docs);
+    } else {
+      // data in local cache, get documents on server which were modified after
+      // the last modified document in the local cache
+      DocumentSnapshot mostRecent = localData.docs[0];
+      Timestamp lastModifiedCache = mostRecent['lastModified'];
+
+      QuerySnapshot serverData = await restaurantCollection
+          .orderBy('lastModified', descending: true)
+          .where('lastModified', isGreaterThan: lastModifiedCache)
+          .get(const GetOptions(source: server));
+
+      List<DocumentSnapshot> combinedList = List.from(serverData.docs)
+        ..addAll(localData.docs);
+      setState(() => _allResults = combinedList);
+    }
+
+    searchResultsList();
+
+    return "complete";
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -109,6 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(
                 top: 10.0, bottom: 20.0, left: 25.0, right: 25.0),
             child: TextField(
+              onChanged: (value) {
+                _onSearchChanged();
+              },
               controller: _searchController,
               decoration: const InputDecoration(
                   hintText: "Search...",
@@ -120,33 +202,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: restaurantCollection.snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.blueAccent,
-                    ),
-                  );
-                }
-                documents = snapshot.data!.docs;
-
-                if (searchText.isNotEmpty) {
-                  documents = documents.where((element) {
-                    return element['name']
-                        .toString()
-                        .toLowerCase()
-                        .contains(searchText.toLowerCase());
-                  }).toList();
-                }
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: documents.length,
-                  itemBuilder: (context, index) {
-                    return _buildListItem(context, documents[index]);
-                  },
-                );
+            // child: StreamBuilder<QuerySnapshot>(
+            //   stream: restaurantCollection.snapshots(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return const Center(
+            //         child: CircularProgressIndicator(
+            //           color: Colors.blueAccent,
+            //         ),
+            //       );
+            //     }
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: _resultsList.length,
+              itemBuilder: (context, index) {
+                return _buildListItem(context, _resultsList[index]);
               },
             ),
           ),
