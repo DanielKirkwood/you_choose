@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:you_choose/src/helpers/custom_search_class.dart';
 import 'package:you_choose/src/models/restaurant.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,8 +12,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _searchController;
-
-  // String _searchText = '';
+  String _sortValue = 'name';
+  String _ascValue = "ASC";
 
   CollectionReference restaurantCollection = FirebaseFirestore.instance
       .collection('/restaurants')
@@ -22,8 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   late Future resultsLoaded;
-  List<DocumentSnapshot> _allResults = [];
-  List<DocumentSnapshot> _resultsList = [];
+  List<Restaurant> _allResults = [];
+  List<Restaurant> _resultsList = [];
 
   @override
   void initState() {
@@ -48,55 +49,70 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> searchResultsList() async {
-    List<DocumentSnapshot<Object?>> showResults = [];
+    List<Restaurant> showResults = [];
 
     if (_searchController.text.isNotEmpty) {
-      for (DocumentSnapshot restaurantSnapshot in _allResults) {
-        String name = restaurantSnapshot.get('name').toString().toLowerCase();
+      for (Restaurant restaurant in _allResults) {
+        String name = restaurant.name.toString().toLowerCase();
 
         if (name.contains(_searchController.text.toLowerCase())) {
-          showResults.add(restaurantSnapshot);
+          showResults.add(restaurant);
         }
       }
     } else {
-      showResults = List.from(_allResults);
+      showResults = _allResults;
     }
 
     setState(() => _resultsList = showResults);
   }
 
   Future<void> getRestaurantsStreamSnapshots() async {
-    QuerySnapshot localData;
-    QuerySnapshot serverData;
+    List<Restaurant> localData = [];
+    List<Restaurant> serverData = [];
 
     const cache = Source.cache;
     const server = Source.server;
 
     // check local cache first
-    localData = await restaurantCollection
+    QuerySnapshot localQuery = await restaurantCollection
         .orderBy('lastModified', descending: true)
         .get(const GetOptions(source: cache));
 
-    if (localData.docs.isEmpty) {
+    if (localQuery.docs.isEmpty) {
       // no data in local cache, get all documents from server
-      serverData = await restaurantCollection
+      QuerySnapshot serverQuery = await restaurantCollection
           .orderBy('lastModified', descending: true)
           .get(const GetOptions(source: server));
 
-      setState(() => _allResults = serverData.docs);
+      for (var element in serverQuery.docs) {
+        Restaurant r = element.data() as Restaurant;
+        serverData.add(r);
+      }
+
+      setState(() => _allResults = serverData);
     } else {
       // data in local cache, get documents on server which were modified after
       // the last modified document in the local cache
-      DocumentSnapshot mostRecent = localData.docs[0];
-      Timestamp lastModifiedCache = mostRecent['lastModified'];
 
-      QuerySnapshot serverData = await restaurantCollection
+      for (var element in localQuery.docs) {
+        Restaurant r = element.data() as Restaurant;
+        localData.add(r);
+      }
+
+      Restaurant mostRecent = localData[0];
+      Timestamp lastModifiedCache = mostRecent.lastModified as Timestamp;
+
+      QuerySnapshot serverQuery = await restaurantCollection
           .orderBy('lastModified', descending: true)
           .where('lastModified', isGreaterThan: lastModifiedCache)
           .get(const GetOptions(source: server));
 
-      List<DocumentSnapshot> combinedList = List.from(serverData.docs)
-        ..addAll(localData.docs);
+      for (var element in serverQuery.docs) {
+        Restaurant r = element.data() as Restaurant;
+        serverData.add(r);
+      }
+
+      List<Restaurant> combinedList = List.from(serverData)..addAll(localData);
       setState(() => _allResults = combinedList);
     }
 
@@ -108,11 +124,11 @@ class _HomeScreenState extends State<HomeScreen> {
     await getRestaurantsStreamSnapshots();
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    final String name = document['name'];
-    final int price = document['price'];
-    final List<String> tags = List<String>.from(document['tags']);
-    final String description = document['description'];
+  Widget _buildListItem(BuildContext context, Restaurant document) {
+    final String? name = document.name;
+    final int? price = document.price;
+    final List<String>? tags = document.tags;
+    final String? description = document.description;
 
     return Container(
         height: 200,
@@ -127,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                name,
+                name!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -138,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 2),
               Wrap(
                 children: List.generate(
-                    price,
+                    price!,
                     (index) => const Icon(
                           Icons.currency_pound,
                           color: Colors.blueAccent,
@@ -147,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                description,
+                description!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style:
@@ -157,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Wrap(
                   spacing: 8.0,
                   runSpacing: 4.0,
-                  children: List.generate(tags.length, (index) {
+                  children: List.generate(tags!.length, (index) {
                     return Chip(
                       label: Text(tags[index]),
                       backgroundColor: Colors.lightBlueAccent,
@@ -173,46 +189,145 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
+  Future<void> showFilterDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext build) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: const Center(
+                  child: Text(
+                "Filter",
+                style: TextStyle(color: Color(0xff1B3954)),
+              )),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.only(top: 12, right: 10),
+                      child: Row(
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(right: 16.0),
+                            child: Icon(
+                              Icons.sort,
+                              color: Color(0xff808080),
+                            ),
+                          ),
+                          Expanded(
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                hint: const Text("Sort by"),
+                                items: <String>[
+                                  "name",
+                                  "price",
+                                  "description",
+                                ].map((String value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value,
+                                        style: const TextStyle(
+                                            color: Color(0xff727272),
+                                            fontSize: 16)),
+                                  );
+                                }).toList(),
+                                value: _sortValue,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    _sortValue = newValue!;
+                                    _allResults.sort(
+                                        (Restaurant a, Restaurant b) =>
+                                            a.name!.compareTo(b.name!));
+                                  });
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 8, right: 10),
+                      child: Row(
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(right: 16.0),
+                            child: Icon(
+                              Icons.sort_by_alpha,
+                              color: Color(0xff808080),
+                            ),
+                          ),
+                          Expanded(
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                isExpanded: true,
+                                items: <String>[
+                                  "ASC",
+                                  "DESC",
+                                ].map((String value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value,
+                                        style: const TextStyle(
+                                            color: Color(0xff727272),
+                                            fontSize: 16)),
+                                  );
+                                }).toList(),
+                                value: _ascValue,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    _ascValue = newValue!;
+                                  });
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home"),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-                top: 10.0, bottom: 20.0, left: 25.0, right: 25.0),
-            child: TextField(
-              onChanged: (value) {
-                _onSearchChanged();
-              },
-              controller: _searchController,
-              decoration: const InputDecoration(
-                  hintText: "Search...",
-                  prefixIcon: Icon(Icons.search),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      borderSide: BorderSide(color: Colors.grey, width: 0.0)),
-                  border: OutlineInputBorder()),
-            ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _onPullRefresh,
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: _resultsList.length,
-                itemBuilder: (context, index) {
-                  return _buildListItem(context, _resultsList[index]);
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            forceElevated: true,
+            elevation: 4,
+            floating: true,
+            snap: true,
+            title: const Text('Home'),
+            actions: <Widget>[
+              IconButton(
+                onPressed: () {
+                  showSearch(
+                      context: context,
+                      delegate: CustomSearchClass(_allResults));
                 },
+                icon: const Icon(Icons.search),
               ),
-            ),
+              IconButton(
+                onPressed: () {
+                  showFilterDialog(context);
+                },
+                icon: const Icon(Icons.filter_list),
+              ),
+            ],
           ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) =>
+                    _buildListItem(context, _allResults[index]),
+                childCount: _allResults.length),
+          )
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -235,7 +350,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
