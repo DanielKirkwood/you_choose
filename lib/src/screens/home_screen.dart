@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/helpers/custom_search_class.dart';
 import 'package:you_choose/src/models/restaurant.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -300,33 +299,68 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            forceElevated: true,
-            elevation: 4,
-            floating: true,
-            snap: true,
-            title: const Text('Home'),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                  showSearch(
-                      context: context,
-                      delegate: CustomSearchClass(_allResults));
-                },
-                icon: const Icon(Icons.search),
-              ),
-              IconButton(
-                onPressed: () {
-                  showFilterDialog(context);
-                },
-                icon: const Icon(Icons.filter_list),
-              ),
-            ],
-          ),
+              forceElevated: true,
+              elevation: 4,
+              floating: true,
+              snap: true,
+              title: const Text('Home'),
+              actions: <Widget>[
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.account_circle_rounded),
+                  color: Colors.white,
+                ),
+              ],
+              bottom: AppBar(
+                  title: Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                height: 40,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                          onChanged: (value) {
+                            _onSearchChanged();
+                          },
+                          autocorrect: true,
+                          controller: _searchController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            hintText: 'Search...',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(7.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(7.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2),
+                            ),
+                          )),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showFilterDialog(context);
+                      },
+                      icon: const Icon(Icons.filter_list),
+                      color: Colors.white,
+                    )
+                  ],
+                ),
+              ))),
           SliverList(
             delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) =>
-                    _buildListItem(context, _allResults[index]),
-                childCount: _allResults.length),
+                    _buildListItem(context, _resultsList[index]),
+                childCount: _resultsList.length),
           )
         ],
       ),
@@ -336,19 +370,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.pushNamed(context, '/add-restaurant');
         },
         child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            IconButton(onPressed: null, icon: Icon(Icons.home)),
-            IconButton(
-                onPressed: null, icon: Icon(Icons.account_circle_rounded)),
-          ],
-        ),
       ),
     );
   }
