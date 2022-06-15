@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/restaurant.dart';
 
@@ -356,6 +357,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ))),
+          CupertinoSliverRefreshControl(
+            onRefresh: _onPullRefresh,
+          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) =>
