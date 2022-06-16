@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/restaurant.dart';
+import 'package:you_choose/src/widgets/restaurant_list.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -124,71 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await getRestaurantsStreamSnapshots();
   }
 
-  Widget _buildListItem(BuildContext context, Restaurant document) {
-    final String? name = document.name;
-    final int? price = document.price;
-    final List<String>? tags = document.tags;
-    final String? description = document.description;
-
-    return Container(
-        height: 200,
-        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: Colors.white,
-        ),
-        child: Container(
-          padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                name!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    color: Color(0xFF332d2b),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20),
-              ),
-              const SizedBox(height: 2),
-              Wrap(
-                children: List.generate(
-                    price!,
-                    (index) => const Icon(
-                          Icons.currency_pound,
-                          color: Colors.blueAccent,
-                          size: 15,
-                        )),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                description!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                  spacing: 8.0,
-                  runSpacing: 4.0,
-                  children: List.generate(tags!.length, (index) {
-                    return Chip(
-                      label: Text(tags[index]),
-                      backgroundColor: Colors.lightBlueAccent,
-                      elevation: 2.0,
-                      labelStyle: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    );
-                  }))
-            ],
-          ),
-        ));
-  }
-
   Future<void> showFilterDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -236,10 +172,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onChanged: (newValue) {
                                   setState(() {
                                     _sortValue = newValue!;
-                                    _allResults.sort(
-                                        (Restaurant a, Restaurant b) =>
-                                            a.name!.compareTo(b.name!));
                                   });
+                                  List<Restaurant> sortedList = _resultsList
+                                      .toList()
+                                    ..sort((a, b) => a
+                                        .toFirestore()[_sortValue]!
+                                        .compareTo(
+                                            b.toFirestore()[_sortValue]!));
+                                  print(sortedList);
+                                  setState(() => _resultsList = sortedList);
                                 },
                               ),
                             ),
@@ -360,15 +301,10 @@ class _HomeScreenState extends State<HomeScreen> {
           CupertinoSliverRefreshControl(
             onRefresh: _onPullRefresh,
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) =>
-                    _buildListItem(context, _resultsList[index]),
-                childCount: _resultsList.length),
-          )
+          RestaurantList(restaurantsList: _resultsList)
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/add-restaurant');
