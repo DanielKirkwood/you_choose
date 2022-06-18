@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/restaurant.dart';
-import 'package:you_choose/src/widgets/SliderFormField.dart';
+import 'package:you_choose/src/widgets/slider_form_field.dart';
 
 class AddRestaurantForm extends StatefulWidget {
   const AddRestaurantForm({Key? key}) : super(key: key);
@@ -23,11 +23,8 @@ class _AddRestaurantFormState extends State<AddRestaurantForm> {
       _formKey.currentState!.save();
 
       final restaurant = Restaurant(
-        name: _name,
-        price: _price,
-        description: _description,
-        tags: _tags,
-      );
+          name: _name, price: _price, description: _description, tags: _tags);
+
       FirebaseFirestore db = FirebaseFirestore.instance;
       final docRef = db
           .collection('/restaurants')
