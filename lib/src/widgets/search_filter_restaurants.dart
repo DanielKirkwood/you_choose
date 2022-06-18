@@ -113,7 +113,6 @@ class _SearchFilterRestaurantsState extends State<SearchFilterRestaurants> {
                                             .toFirestore()[_sortValue]!
                                             .compareTo(
                                                 b.toFirestore()[_sortValue]!));
-                                  print(sortedList);
                                   widget.updateResults(sortedList);
                                 },
                               ),
