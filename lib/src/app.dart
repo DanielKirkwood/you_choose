@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/screens/add_restaurant.dart';
-import 'package:you_choose/src/screens/home_screen.dart';
+import 'package:you_choose/src/services/auth.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/': (context) => AuthService().handleAuthState(),
         '/add-restaurant': (context) => const AddRestaurantScreen()
       },
     );
