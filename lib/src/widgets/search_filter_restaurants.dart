@@ -171,45 +171,46 @@ class _SearchFilterRestaurantsState extends State<SearchFilterRestaurants> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+        automaticallyImplyLeading: false,
         title: Container(
-      width: double.infinity,
-      alignment: Alignment.center,
-      height: 40,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-                onChanged: (value) {
-                  _onSearchChanged();
+          width: double.infinity,
+          alignment: Alignment.center,
+          height: 40,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                    onChanged: (value) {
+                      _onSearchChanged();
+                    },
+                    autocorrect: true,
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Search...',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                        borderSide: BorderSide(color: Colors.blue, width: 2),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(7.0)),
+                        borderSide: BorderSide(color: Colors.blue, width: 2),
+                      ),
+                    )),
+              ),
+              IconButton(
+                onPressed: () {
+                  showFilterDialog(context);
                 },
-                autocorrect: true,
-                controller: _searchController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Search...',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(7.0)),
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                  ),
-                )),
+                icon: const Icon(Icons.filter_list),
+                color: Colors.white,
+              )
+            ],
           ),
-          IconButton(
-            onPressed: () {
-              showFilterDialog(context);
-            },
-            icon: const Icon(Icons.filter_list),
-            color: Colors.white,
-          )
-        ],
-      ),
-    ));
+        ));
   }
 }
