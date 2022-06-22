@@ -14,10 +14,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = "";
   String _password = "";
+  bool _isLoading = false;
 
   final AuthService _authService = AuthService();
 
   void _submit() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(seconds: 1));
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -29,6 +33,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         createSnackBar(message: errorMsg, error: true, context: context);
       }
     }
+
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -139,12 +145,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           backgroundColor: const Color(0xff4c505b),
                           child: IconButton(
                             color: Colors.white,
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _submit();
-                              }
-                            },
-                            icon: const Icon(Icons.arrow_forward),
+                            onPressed: _isLoading ? null : _submit,
+                            icon: _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Icon(Icons.arrow_forward),
                           ),
                         ),
                       ]),
