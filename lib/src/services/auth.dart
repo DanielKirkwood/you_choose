@@ -12,10 +12,12 @@ class AuthService {
   handleAuthState() {
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (BuildContext context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
           if (snapshot.hasData) {
+            print('logged in');
             return const HomeScreen();
           } else {
+            print('logged out');
             return const LoginScreen();
           }
         });
