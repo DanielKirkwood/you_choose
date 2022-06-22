@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/screens/home_screen.dart';
+import 'package:you_choose/src/screens/login_screen.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,7 +14,7 @@ class AuthService {
           if (snapshot.hasData) {
             return const HomeScreen();
           } else {
-            return const Text('Logged out');
+            return const LoginScreen();
           }
         });
   }
@@ -74,5 +75,9 @@ class AuthService {
       print(e);
       return null;
     }
+  }
+
+  bool isValidEmail(String email) {
+    return RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(email);
   }
 }
