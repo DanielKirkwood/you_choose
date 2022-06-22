@@ -18,6 +18,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final AuthService _authService = AuthService();
 
+  void _goToHome() {
+    Navigator.pushNamed(context, '/');
+  }
+
   void _submit() async {
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(seconds: 1));
@@ -31,6 +35,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (status != AuthResultStatus.successful) {
         String errorMsg = AuthService.generateExceptionMessage(status);
         createSnackBar(message: errorMsg, error: true, context: context);
+      }
+
+      if (status == AuthResultStatus.successful) {
+        _goToHome();
       }
     }
 
@@ -151,26 +159,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     color: Colors.white,
                                   )
                                 : const Icon(Icons.arrow_forward),
-                          ),
-                        ),
-                      ]),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/login');
-                          },
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
                           ),
                         ),
                       ]),
