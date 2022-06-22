@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:you_choose/src/models/auth_result_status.dart';
 import 'package:you_choose/src/services/auth.dart';
+import 'package:you_choose/src/widgets/create_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -19,7 +21,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      await _authService.signInWithEmailAndPassword(_email, _password);
+      AuthResultStatus status = await _authService.signInWithEmailAndPassword(
+          email: _email, password: _password);
+
+      if (status != AuthResultStatus.successful) {
+        String errorMsg = AuthService.generateExceptionMessage(status);
+        createSnackBar(message: errorMsg, error: true, context: context);
+      }
     }
   }
 

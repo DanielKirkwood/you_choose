@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/restaurant.dart';
+import 'package:you_choose/src/services/auth.dart';
 import 'package:you_choose/src/widgets/restaurant_list.dart';
 import 'package:you_choose/src/widgets/search_filter_restaurants.dart';
 
@@ -13,6 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AuthService _authService = AuthService();
+
   CollectionReference restaurantCollection = FirebaseFirestore.instance
       .collection('/restaurants')
       .withConverter<Restaurant>(
@@ -107,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: const Text('Home'),
             actions: <Widget>[
               IconButton(
-                onPressed: () {},
+                onPressed: () => _authService.signOut(),
                 icon: const Icon(Icons.account_circle_rounded),
                 color: Colors.white,
               ),
