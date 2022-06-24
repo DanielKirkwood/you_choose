@@ -36,7 +36,7 @@ class SpeedDialButton extends StatelessWidget {
           labelBackgroundColor: Colors.pinkAccent,
           labelStyle: const TextStyle(color: Colors.white),
           label: 'Add restaurant',
-          onTap: () => debugPrint('Add restaurant tapped'),
+          onTap: () => Navigator.pushNamed(context, '/add-restaurant'),
         ),
       ],
     );
