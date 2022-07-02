@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/app.dart';
 
@@ -17,10 +16,8 @@ Future _connectToEmulator() async {
   const firestorePort = 8080;
   const authPort = 9099;
 
-  // Just to make sure we're running locally
-  if (kDebugMode) {
-    print("Using the firebase emulator");
-  }
+
+  debugPrint("Using the firebase emulator");
 
   FirebaseFirestore.instance.useFirestoreEmulator(host, firestorePort);
   await FirebaseAuth.instance.useAuthEmulator(host, authPort);

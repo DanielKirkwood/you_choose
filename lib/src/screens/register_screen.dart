@@ -19,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final AuthService _authService = AuthService();
 
   void _goToHome() {
-    Navigator.pushNamed(context, '/');
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   void _submit() async {
@@ -118,6 +118,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please provide a password';
+                      }
+                      if (value.length < 8) {
+                        return 'Password must have at least 8 characters';
                       }
                       return null;
                     },

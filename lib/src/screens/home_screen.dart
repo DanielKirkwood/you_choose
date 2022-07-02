@@ -5,6 +5,7 @@ import 'package:you_choose/src/models/restaurant.dart';
 import 'package:you_choose/src/services/auth.dart';
 import 'package:you_choose/src/widgets/restaurant_list.dart';
 import 'package:you_choose/src/widgets/search_filter_restaurants.dart';
+import 'package:you_choose/src/widgets/speed_dial.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -127,12 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add-restaurant');
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const SpeedDialButton()
     );
   }
 }

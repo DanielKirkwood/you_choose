@@ -37,7 +37,7 @@ class AuthService {
         _status = AuthResultStatus.undefined;
       }
     } catch (e) {
-      print('Exception @login: $e');
+      debugPrint('Exception @login: $e');
       _status = handleException(e);
     }
     return _status;
@@ -47,11 +47,11 @@ class AuthService {
   void signOut() async {
     if (_auth.currentUser != null) {
       String? uid = _auth.currentUser?.uid;
-      print('signing out $uid');
+      debugPrint('signing out $uid');
       await _auth.signOut();
       return;
     }
-    print('no user to sign out');
+    debugPrint('no user to sign out');
     return;
   }
 
@@ -66,7 +66,7 @@ class AuthService {
         _status = AuthResultStatus.successful;
       }
     } catch (e) {
-      print('Exception @createAccount: $e');
+      debugPrint('Exception @createAccount: $e');
       _status = handleException(e);
     }
 
@@ -78,7 +78,7 @@ class AuthService {
   }
 
   static handleException(e) {
-    print(e.code);
+    debugPrint(e.code);
     AuthResultStatus status;
     switch (e.code) {
       case "invalid-email":
