@@ -1,0 +1,30 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "you_choose (debug mode)",
+      "request": "launch",
+      "type": "dart",
+      "preLaunchTask": "start firebase emulators",
+      "postDebugTask": "stop firebase emulators",
+      "flutterMode": "debug"
+    },
+    {
+      "name": "you_choose (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "preLaunchTask": "start firebase emulators",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "you_choose (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "preLaunchTask": "start firebase emulators",
+      "flutterMode": "release"
+    }
+  ]
+}
