@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/screens/add_restaurant.dart';
+import 'package:you_choose/src/screens/add_group_screen.dart';
 import 'package:you_choose/src/screens/login_screen.dart';
 import 'package:you_choose/src/screens/register_screen.dart';
 import 'package:you_choose/src/services/auth.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => AuthService().handleAuthState(),
         '/add-restaurant': (context) => const AddRestaurantScreen(),
+        '/add-group': (context) => const CreateGroupScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
       },

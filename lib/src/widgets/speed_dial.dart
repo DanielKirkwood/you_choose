@@ -7,6 +7,7 @@ class SpeedDialButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
+      renderOverlay: false,
       overlayColor: Colors.grey,
       overlayOpacity: 0.4,
       icon: Icons.add,
@@ -29,7 +30,7 @@ class SpeedDialButton extends StatelessWidget {
           labelBackgroundColor: Colors.orangeAccent,
           labelStyle: const TextStyle(color: Colors.white),
           label: 'Add group',
-          onTap: () => debugPrint('Add group tapped'),
+          onTap: () => Navigator.pushNamed(context, '/add-group'),
         ),
         SpeedDialChild(
           child: null,

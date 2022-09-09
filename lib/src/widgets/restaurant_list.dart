@@ -13,10 +13,10 @@ class RestaurantList extends StatefulWidget {
 
 class _RestaurantListState extends State<RestaurantList> {
   Widget _buildListItem(BuildContext context, Restaurant document) {
-    final String? name = document.name;
-    final int? price = document.price;
-    final List<String>? tags = document.tags;
-    final String? description = document.description;
+    final String name = document.name;
+    final int price = document.price;
+    final List<String> tags = document.tags;
+    final String description = document.description;
 
     return Container(
         height: 200,
@@ -31,7 +31,7 @@ class _RestaurantListState extends State<RestaurantList> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                name!,
+                name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -42,7 +42,7 @@ class _RestaurantListState extends State<RestaurantList> {
               const SizedBox(height: 2),
               Wrap(
                 children: List.generate(
-                    price!,
+                    price,
                     (index) => const Icon(
                           Icons.currency_pound,
                           color: Colors.blueAccent,
@@ -51,7 +51,7 @@ class _RestaurantListState extends State<RestaurantList> {
               ),
               const SizedBox(height: 10),
               Text(
-                description!,
+                description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style:
@@ -61,7 +61,7 @@ class _RestaurantListState extends State<RestaurantList> {
               Wrap(
                   spacing: 8.0,
                   runSpacing: 4.0,
-                  children: List.generate(tags!.length, (index) {
+                  children: List.generate(tags.length, (index) {
                     return Chip(
                       label: Text(tags[index]),
                       backgroundColor: Colors.lightBlueAccent,

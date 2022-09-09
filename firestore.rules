@@ -5,5 +5,13 @@ service cloud.firestore {
       allow read, write: if
           request.time < timestamp.date(2023, 6, 17);
     }
+    match /groups/{name} {
+          allow read, write: if
+              request.time < timestamp.date(2023, 6, 17);
+        }
+    match /users/{name} {
+              allow read, write: if
+                  request.time < timestamp.date(2023, 6, 17);
+            }
   }
 }

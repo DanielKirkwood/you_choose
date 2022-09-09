@@ -12,6 +12,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  String _username = "";
   String _email = "";
   String _password = "";
   bool _isLoading = false;
@@ -30,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _formKey.currentState!.save();
 
       AuthResultStatus status = await _authService
-          .createUserWithEmailAndPassword(email: _email, password: _password);
+          .createUser(email: _email, username: _username, password: _password);
 
       if (status != AuthResultStatus.successful) {
         String errorMsg = AuthService.generateExceptionMessage(status);
@@ -101,6 +102,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderSide: const BorderSide(color: Colors.white),
                       ),
                       hintText: 'Email',
+                      hintStyle: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    onFieldSubmitted: (String value) {
+                      setState(() => _username = value);
+                    },
+                    onChanged: (String value) {
+                      setState(() => _username = value);
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please provide a username';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.white),
+                      ),
+                      hintText: 'Username',
                       hintStyle: const TextStyle(color: Colors.white),
                     ),
                   ),
