@@ -1,11 +1,17 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/models/auth_result_status.dart';
+import 'package:you_choose/src/models/user.dart';
+
 import 'package:you_choose/src/screens/home_screen.dart';
 import 'package:you_choose/src/screens/login_screen.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   AuthResultStatus _status = AuthResultStatus.undefined;
 
   // handle logged in user state
@@ -43,6 +49,27 @@ class AuthService {
     return _status;
   }
 
+
+  Future<AppUser?> getCurrentUser()  async {
+    if (_auth.currentUser != null) {
+      String uid = _auth.currentUser!.uid;
+      final ref = _db
+          .collection('users')
+          .where('uid', isEqualTo: uid)
+          .limit(1)
+          .withConverter(
+          fromFirestore: AppUser.fromFirestore,
+          toFirestore: (AppUser user, _) => user.toFirestore());
+
+      final test = await ref.get();
+
+      AppUser user = test.docs.first.data();
+
+      return user;
+    }
+    return null;
+  }
+
   // sign user out
   void signOut() async {
     if (_auth.currentUser != null) {
@@ -56,14 +83,36 @@ class AuthService {
   }
 
   // create user with email and password
-  Future<AuthResultStatus> createUserWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<AuthResultStatus> createUser(
+      {required String email,
+      required String username,
+      required String password}) async {
     try {
+      DocumentSnapshot<Map<String, dynamic>> doc =
+          await _db.collection('users').doc(username).get();
+
+      if (doc.exists) {
+        debugPrint('a user with username: $username already exists');
+        _status = handleException('username-already-exists');
+
+        return _status;
+      }
+
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User? user = credential.user;
       if (user != null) {
         _status = AuthResultStatus.successful;
+
+        _db.collection('users').doc(username).set({
+          'uid': user.uid,
+          'name': user.displayName,
+          'username': username,
+          'email': user.email
+        }).onError((error, stackTrace) {
+          debugPrint('Exception @createAccount: $error');
+          _status = handleException(error);
+        });
       }
     } catch (e) {
       debugPrint('Exception @createAccount: $e');
@@ -102,6 +151,9 @@ class AuthService {
       case "email-already-in-use":
         status = AuthResultStatus.emailAlreadyExists;
         break;
+      case "username-already-exists":
+        status = AuthResultStatus.usernameAlreadyExists;
+        break;
       default:
         status = AuthResultStatus.undefined;
     }
@@ -132,6 +184,9 @@ class AuthService {
       case AuthResultStatus.emailAlreadyExists:
         errorMessage =
             "The email has already been registered. Please login or reset your password.";
+        break;
+      case AuthResultStatus.usernameAlreadyExists:
+        errorMessage = "The username has been taken. Please try another.";
         break;
       default:
         errorMessage = "An undefined Error happened.";

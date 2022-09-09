@@ -172,19 +172,6 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
         title: const Text("Add restaurant"),
       ),
       body: const AddRestaurantForm(),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            IconButton(onPressed: null, icon: Icon(Icons.home)),
-            IconButton(
-                onPressed: null, icon: Icon(Icons.account_circle_rounded)),
-          ],
-        ),
-      ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
