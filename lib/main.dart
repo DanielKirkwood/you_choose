@@ -1,37 +1,61 @@
-import 'dart:io' show Platform;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app.dart';
+import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
+import 'package:you_choose/src/bloc/bloc_observer.dart';
+import 'package:you_choose/src/bloc/database/database_bloc.dart';
+import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
+import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
+import 'package:you_choose/src/services/database/database_repository_impl.dart';
+import 'package:you_choose/src/util/logger/logger.dart';
 
 import 'firebase_options.dart';
 
-const bool _isProduction = bool.fromEnvironment('dart.vm.product');
-
-Future _connectToEmulator() async {
-  final host = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-
-  const firestorePort = 8080;
-  const authPort = 9099;
-
-
-  debugPrint("Using the firebase emulator");
-
-  FirebaseFirestore.instance.useFirestoreEmulator(host, firestorePort);
-  await FirebaseAuth.instance.useAuthEmulator(host, authPort);
-}
-
 Future<void> main() async {
+  var logger = getLogger('main');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  if (!_isProduction) {
-    await _connectToEmulator();
+  Bloc.observer = MyBlocObserver();
+
+  const bool isProduction = bool.fromEnvironment('dart.vm.product');
+
+  const firestorePort = 8080;
+  const authPort = 9099;
+
+  if (!isProduction) {
+    logger.d('Connecting to firebase emulators');
+
+    // [Firestore | localhost:8080]
+    FirebaseFirestore.instance.settings = const Settings(
+      host: 'localhost:$firestorePort',
+      sslEnabled: false,
+      persistenceEnabled: false,
+    );
+
+    // [Authentication | localhost:9099]
+    await FirebaseAuth.instance.useAuthEmulator('localhost', authPort);
   }
 
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (context) {
+        return AuthenticationBloc(AuthenticationRepositoryImpl())
+          ..add(AuthenticationStarted());
+      }),
+      BlocProvider(create: (context) {
+        return FormBloc(
+            AuthenticationRepositoryImpl(), DatabaseRepositoryImpl());
+      }),
+      BlocProvider(create: (context) {
+        return DatabaseBloc(DatabaseRepositoryImpl());
+      })
+    ],
+    child: const MyApp(),
+  ));
 }

@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/models/group.dart';
-import 'package:you_choose/src/models/user.dart';
-
-import 'package:you_choose/src/services/auth.dart';
+import 'package:you_choose/src/services/authentication/authentication_service.dart';
 
 class CreateGroupForm extends StatefulWidget {
   const CreateGroupForm({Key? key}) : super(key: key);
@@ -18,30 +15,13 @@ class _CreateGroupFormState extends State<CreateGroupForm> {
   List<String> _members = [];
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final AuthService _authService = AuthService();
+  final AuthenticationService _authService = AuthenticationService();
 
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-
-      AppUser? currentUser = await _authService.getCurrentUser();
-
-      if (currentUser != null) {
-        _members.add(currentUser.username);
-      }
-
-      Group newGroup = Group(name: _groupName, members: _members);
-
-      final groupRef = _db.collection('/groups').withConverter(
-          fromFirestore: Group.fromFirestore,
-          toFirestore: (Group group, _) => group.toFirestore());
-
-      groupRef.add(newGroup).then((value) {
-        Navigator.of(context).pop();
-
-      });
-
+      return;
     }
 
     _formKey.currentState!.reset();
