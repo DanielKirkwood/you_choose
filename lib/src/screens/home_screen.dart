@@ -1,134 +1,90 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/models/restaurant.dart';
-import 'package:you_choose/src/services/auth.dart';
-import 'package:you_choose/src/widgets/restaurant_list.dart';
-import 'package:you_choose/src/widgets/search_filter_restaurants.dart';
-import 'package:you_choose/src/widgets/speed_dial.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
+import 'package:you_choose/src/bloc/database/database_bloc.dart';
+import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
+import 'package:you_choose/src/util/constants/constants.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final AuthService _authService = AuthService();
-
-  CollectionReference restaurantCollection = FirebaseFirestore.instance
-      .collection('/restaurants')
-      .withConverter<Restaurant>(
-        fromFirestore: (snapshot, _) => Restaurant.fromFirestore(snapshot, _),
-        toFirestore: (Restaurant restaurant, _) => restaurant.toFirestore(),
-      );
-
-  late Future resultsLoaded;
-  List<Restaurant> _allResults = [];
-  List<Restaurant> _resultsList = [];
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    resultsLoaded = getRestaurantsStreamSnapshots();
-  }
-
-  void updateResults(List<Restaurant> newList) {
-    setState(() {
-      _resultsList = newList;
-    });
-  }
-
-  Future<void> getRestaurantsStreamSnapshots() async {
-    List<Restaurant> localData = [];
-    List<Restaurant> serverData = [];
-
-    const cache = Source.cache;
-    const server = Source.server;
-
-    // check local cache first
-    QuerySnapshot localQuery = await restaurantCollection
-        .orderBy('lastModified', descending: true)
-        .get(const GetOptions(source: cache));
-
-    if (localQuery.docs.isEmpty) {
-      // no data in local cache, get all documents from server
-      QuerySnapshot serverQuery = await restaurantCollection
-          .orderBy('lastModified', descending: true)
-          .get(const GetOptions(source: server));
-
-      for (var element in serverQuery.docs) {
-        Restaurant r = element.data() as Restaurant;
-        serverData.add(r);
-      }
-
-      updateResults(serverData);
-      setState(() => _allResults = serverData);
-    } else {
-      // data in local cache, get documents on server which were modified after
-      // the last modified document in the local cache
-
-      for (var element in localQuery.docs) {
-        Restaurant r = element.data() as Restaurant;
-        localData.add(r);
-      }
-
-      Restaurant mostRecent = localData[0];
-      Timestamp lastModifiedCache = mostRecent.lastModified as Timestamp;
-
-      QuerySnapshot serverQuery = await restaurantCollection
-          .orderBy('lastModified', descending: true)
-          .where('lastModified', isGreaterThan: lastModifiedCache)
-          .get(const GetOptions(source: server));
-
-      for (var element in serverQuery.docs) {
-        Restaurant r = element.data() as Restaurant;
-        serverData.add(r);
-      }
-
-      List<Restaurant> combinedList = List.from(serverData)..addAll(localData);
-      updateResults(combinedList);
-      setState(() => _allResults = combinedList);
-    }
-  }
-
-  Future<void> _onPullRefresh() async {
-    await Future.delayed(const Duration(seconds: 2));
-    await getRestaurantsStreamSnapshots();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            forceElevated: true,
-            elevation: 4,
-            floating: true,
-            snap: true,
-            title: const Text('Home'),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () => _authService.signOut(),
-                icon: const Icon(Icons.account_circle_rounded),
-                color: Colors.white,
-              ),
-            ],
-            bottom: SearchFilterRestaurants(
-                searchableRestaurants: _allResults,
-                updateResults: updateResults),
-          ),
-          CupertinoSliverRefreshControl(
-            onRefresh: _onPullRefresh,
-          ),
-          RestaurantList(restaurantsList: _resultsList)
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: const SpeedDialButton()
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is AuthenticationFailure) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+              (Route<dynamic> route) => false);
+        }
+      },
+      buildWhen: ((previous, current) {
+        if (current is AuthenticationFailure) {
+          return false;
+        }
+        return true;
+      }),
+      builder: (context, state) {
+        return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                IconButton(
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    onPressed: () async {
+                      context
+                          .read<AuthenticationBloc>()
+                          .add(AuthenticationSignedOut());
+                    })
+              ],
+              systemOverlayStyle:
+                  const SystemUiOverlayStyle(statusBarColor: Colors.blue),
+              title: Text((state as AuthenticationSuccess).username!),
+            ),
+            body: BlocBuilder<DatabaseBloc, DatabaseState>(
+              builder: (context, state) {
+                String? username = (context.read<AuthenticationBloc>().state
+                        as AuthenticationSuccess)
+                    .username;
+                if (state is DatabaseSuccess &&
+                    username !=
+                        (context.read<DatabaseBloc>().state as DatabaseSuccess)
+                            .username) {
+                  context.read<DatabaseBloc>().add(DatabaseFetched(username));
+                }
+                if (state is DatabaseInitial) {
+                  context.read<DatabaseBloc>().add(DatabaseFetched(username));
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is DatabaseSuccess) {
+                  if (state.userList.isEmpty) {
+                    return const Center(
+                      child: Text(Constants.textNoData),
+                    );
+                  } else {
+                    return Center(
+                      child: ListView.builder(
+                        itemCount: state.userList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Card(
+                            child: ListTile(
+                              title: Text(state.userList[index]!.username!),
+                              subtitle: Text(state.userList[index]!.email!),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ));
+      },
     );
   }
 }
