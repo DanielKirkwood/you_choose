@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/bloc/bloc_observer.dart';
-import 'package:you_choose/src/bloc/database/database_bloc.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
+import 'package:you_choose/src/bloc/user/user_bloc.dart';
 import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
 import 'package:you_choose/src/services/database/database_repository_impl.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
@@ -53,7 +53,7 @@ Future<void> main() async {
             AuthenticationRepositoryImpl(), DatabaseRepositoryImpl());
       }),
       BlocProvider(create: (context) {
-        return DatabaseBloc(DatabaseRepositoryImpl());
+        return UserBloc(DatabaseRepositoryImpl());
       })
     ],
     child: const MyApp(),
