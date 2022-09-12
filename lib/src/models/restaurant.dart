@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class Restaurant {
+class Restaurant extends Equatable {
   final String name;
   final int price;
   final String description;
@@ -42,4 +43,7 @@ class Restaurant {
       "lastModified": lastModified
     };
   }
+
+  @override
+  List<Object?> get props => [name, price, description, tags, lastModified];
 }
