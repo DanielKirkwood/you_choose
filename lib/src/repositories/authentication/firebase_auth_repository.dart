@@ -40,6 +40,7 @@ class FirebaseAuthRepository implements AuthenticationRepository {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
+      return null;
     }
   }
 
@@ -53,13 +54,13 @@ class FirebaseAuthRepository implements AuthenticationRepository {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
+      return null;
     }
   }
 
   @override
   Future<void> signOut() async {
     if (_auth.currentUser != null) {
-      String? uid = _auth.currentUser?.uid;
       await _auth.signOut();
     } else {
       logger.w('signOut failed as no user logged in');

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 // import 'package:you_choose/src/services/authentication/authentication_service.dart';
 
 class CreateGroupForm extends StatefulWidget {
@@ -15,7 +16,7 @@ class _CreateGroupFormState extends State<CreateGroupForm> {
   List<String> _members = [];
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final AuthenticationService _authService = AuthenticationService();
+  final FirebaseAuthRepository _authService = FirebaseAuthRepository();
 
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {

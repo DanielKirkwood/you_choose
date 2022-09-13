@@ -39,6 +39,7 @@ class AuthenticationService {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
+      return null;
     }
   }
 
@@ -47,16 +48,12 @@ class AuthenticationService {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: user.email!, password: user.password!);
-
-      if (userCredential.user != null) {
-        logger.i('signIn user ${userCredential.user!.uid}');
-      }
-
       return userCredential;
     } catch (error) {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
+      return null;
     }
   }
 
