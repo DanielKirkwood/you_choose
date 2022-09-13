@@ -24,11 +24,11 @@ Future<void> main() async {
 
   const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
-  const firestorePort = 8080;
-  const authPort = 9099;
-
   if (!isProduction) {
     logger.d('Connecting to firebase emulators');
+
+    const firestorePort = 8080;
+    const authPort = 9099;
 
     // [Firestore | localhost:8080]
     FirebaseFirestore.instance.settings = const Settings(
