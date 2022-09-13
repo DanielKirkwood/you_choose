@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:you_choose/src/models/user.dart';
-import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
-import 'package:you_choose/src/services/database/database_repository_impl.dart';
+import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 part 'form_event.dart';
@@ -11,8 +10,8 @@ part 'form_state.dart';
 
 class FormBloc extends Bloc<FormEvent, FormsValidate> {
   var logger = getLogger('FormBloc');
-  final AuthenticationRepository _authenticationRepository;
-  final DatabaseRepository _databaseRepository;
+  final FirebaseAuthRepository _authenticationRepository;
+  final FirestoreRepository _databaseRepository;
   FormBloc(this._authenticationRepository, this._databaseRepository)
       : super(const FormsValidate(
             email: "example@gmail.com",
@@ -109,7 +108,7 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
 
         logger.i('updatedUser = ${user.toString()}');
 
-        await _databaseRepository.saveUserData(updatedUser);
+        await _databaseRepository.addUserData(updatedUser);
         if (updatedUser.isVerified!) {
           emit(state.copyWith(isLoading: false, errorMessage: ""));
         } else {

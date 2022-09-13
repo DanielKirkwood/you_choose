@@ -1,18 +1,22 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:you_choose/src/models/auth_result_status.dart';
-import 'package:you_choose/src/models/user.dart';
+import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/repositories/authentication/authentication_repository.dart';
+import 'package:you_choose/src/repositories/database/firestore_repository.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
-class AuthenticationService {
-  var logger = getLogger('AuthService');
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+class FirebaseAuthRepository implements AuthenticationRepository {
+  final FirebaseAuth _auth;
+  final FirestoreRepository _db;
 
-  // get the currently logged in user
-  Stream<UserModel> retrieveCurrentUser() {
-    logger.d('retrieveCurrentUser');
+  FirebaseAuthRepository(
+      {FirebaseAuth? firebaseAuth, FirestoreRepository? firestoreRepository})
+      : _auth = firebaseAuth ?? FirebaseAuth.instance,
+        _db = FirestoreRepository();
+
+  var logger = getLogger('FirebaseAuthRepository');
+
+  @override
+  Stream<UserModel> getCurrentUser() {
     return _auth.authStateChanges().map((User? user) {
       if (user != null) {
         return UserModel(uid: user.uid, email: user.email);
@@ -22,16 +26,12 @@ class AuthenticationService {
     });
   }
 
-  // sign given user up using email/password
+  @override
   Future<UserCredential?> signUp(UserModel user) async {
     try {
-      logger.d('signUp');
-
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
               email: user.email!, password: user.password!);
-
-      logger.d('signUp - userCredential = ${userCredential.user!.email}');
 
       await verifyEmail();
 
@@ -43,22 +43,38 @@ class AuthenticationService {
     }
   }
 
-  // sign given user in using email/password
+  @override
   Future<UserCredential?> signIn(UserModel user) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: user.email!, password: user.password!);
-
-      if (userCredential.user != null) {
-        logger.i('signIn user ${userCredential.user!.uid}');
-      }
-
       return userCredential;
     } catch (error) {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
     }
+  }
+
+  @override
+  Future<void> signOut() async {
+    if (_auth.currentUser != null) {
+      String? uid = _auth.currentUser?.uid;
+      await _auth.signOut();
+    } else {
+      logger.w('signOut failed as no user logged in');
+    }
+  }
+
+  @override
+  Future<String?> getUsername(UserModel user) async {
+    UserModel? dbUser = await _db.getUser(user);
+
+    if (dbUser == null) {
+      return null;
+    }
+
+    return dbUser.username;
   }
 
   // send email verification email to user
@@ -69,23 +85,11 @@ class AuthenticationService {
     }
   }
 
-  // sign user out
-  Future<void> signOut() async {
-    if (_auth.currentUser != null) {
-      String? uid = _auth.currentUser?.uid;
-      logger.i('signOut user $uid');
-      await _auth.signOut();
-    } else {
-      logger.w('signOut failed as no user logged in');
-    }
-  }
-
   bool isValidEmail(String email) {
     return RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(email);
   }
 
   static handleException(e) {
-    debugPrint(e.code);
     AuthResultStatus status;
     switch (e.code) {
       case "invalid-email":

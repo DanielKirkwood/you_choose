@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:you_choose/src/models/user.dart';
-import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
+import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 part 'authentication_event.dart';
@@ -9,7 +9,7 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final AuthenticationRepository _authenticationRepository;
+  final FirebaseAuthRepository _authenticationRepository;
   var logger = getLogger('AuthenticationBloc');
 
   AuthenticationBloc(this._authenticationRepository)
@@ -23,11 +23,11 @@ class AuthenticationBloc
           logger.d('user.uid is not null - ${user.uid}');
 
           String? username =
-              await _authenticationRepository.retrieveUserName(user);
+              await _authenticationRepository.getUsername(user);
 
           emit(AuthenticationSuccess(username: username));
         } else {
-          logger.d('user.uid is null - emit AuthenticationFailure');
+          logger.e('user.uid is null - emit AuthenticationFailure');
 
           emit(AuthenticationFailure());
         }

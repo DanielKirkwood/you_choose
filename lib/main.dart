@@ -8,8 +8,7 @@ import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/bloc/bloc_observer.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
 import 'package:you_choose/src/bloc/user/user_bloc.dart';
-import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
-import 'package:you_choose/src/services/database/database_repository_impl.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 import 'firebase_options.dart';
@@ -45,15 +44,15 @@ Future<void> main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) {
-        return AuthenticationBloc(AuthenticationRepositoryImpl())
+        return AuthenticationBloc(FirebaseAuthRepository())
           ..add(AuthenticationStarted());
       }),
       BlocProvider(create: (context) {
         return FormBloc(
-            AuthenticationRepositoryImpl(), DatabaseRepositoryImpl());
+            FirebaseAuthRepository(), FirestoreRepository());
       }),
       BlocProvider(create: (context) {
-        return UserBloc(DatabaseRepositoryImpl());
+        return UserBloc(FirestoreRepository());
       })
     ],
     child: const MyApp(),

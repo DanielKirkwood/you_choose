@@ -1,28 +1,22 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:you_choose/src/models/group.dart';
-import 'package:you_choose/src/models/restaurant.dart';
-import 'package:you_choose/src/models/user.dart';
+import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/repositories/database/database_repository.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
-class DatabaseService {
+class FirestoreRepository implements DatabaseRepository {
   final FirebaseFirestore _db;
-  var logger = getLogger('DatabaseService');
+  var logger = getLogger('DatabaseRepositoryImpl');
 
-  DatabaseService({FirebaseFirestore? firebaseFirestore})
+  FirestoreRepository({FirebaseFirestore? firebaseFirestore})
       : _db = firebaseFirestore ?? FirebaseFirestore.instance;
 
-  Future<void> addUserData(UserModel userData) async {
-    logger.i('*** addUserData ***');
-    logger.i('doc id - ${userData.uid}');
-    logger.i('userData - $userData');
-    await _db.collection("users").doc(userData.uid).set(userData.toFirestore());
+  @override
+  Future<void> addUserData(UserModel user) async {
+    await _db.collection("users").doc(user.uid).set(user.toFirestore());
   }
 
-  Future<List<UserModel?>> retrieveUserData() async {
-    logger.i('*** retrieveUserData ***');
-
+  @override
+  Future<List<UserModel?>> getUserData() async {
     List<UserModel?> users = [];
 
     QuerySnapshot<UserModel> snapshot = await _db
@@ -38,21 +32,45 @@ class DatabaseService {
     return users;
   }
 
-  Future<String?> retrieveUserName(UserModel user) async {
-    logger.i('*** retrieveUserName ***');
+  @override
+  Future<UserModel?> getUser(UserModel user) async {
+    if (user.uid != null) {
+      DocumentSnapshot<UserModel> snapshot = await _db
+          .collection('users')
+          .doc(user.uid)
+          .withConverter(
+              fromFirestore: UserModel.fromFirestore,
+              toFirestore: (UserModel user, options) => user.toFirestore())
+          .get();
 
-    DocumentSnapshot<UserModel> snapshot = await _db
-        .collection('users')
-        .doc(user.uid)
-        .withConverter(
-            fromFirestore: UserModel.fromFirestore,
-            toFirestore: (UserModel user, options) => user.toFirestore())
-        .get();
+      return snapshot.data();
+    } else if (user.email != null) {
+      QuerySnapshot<UserModel> snapshot = await _db
+          .collection('users')
+          .withConverter(
+              fromFirestore: UserModel.fromFirestore,
+              toFirestore: (UserModel user, options) => user.toFirestore())
+          .where('email', isEqualTo: user.email)
+          .get();
 
-    return snapshot.data()!.username;
+      return snapshot.docs.first.data();
+    } else if (user.username != null) {
+      QuerySnapshot<UserModel> snapshot = await _db
+          .collection('users')
+          .withConverter(
+              fromFirestore: UserModel.fromFirestore,
+              toFirestore: (UserModel user, options) => user.toFirestore())
+          .where('username', isEqualTo: user.username)
+          .get();
+
+      return snapshot.docs.first.data();
+    } else {
+      return null;
+    }
   }
 
-  Future<List<Restaurant?>> retrieveRestaurantData() async {
+  @override
+  Future<List<Restaurant?>> getRestaurantData() async {
     List<Restaurant?> restaurants = [];
 
     QuerySnapshot<Restaurant> snapshot = await _db
@@ -67,6 +85,19 @@ class DatabaseService {
         restaurants.add(restaurantDoc.data()));
 
     return restaurants;
+  }
+
+  @override
+  Future<List<Group?>> getUserGroupData(String uid) async {
+    List<Group?> groups = await retrieveUserGroupsOnly(uid);
+
+    for (Group? group in groups) {
+      List<Restaurant?> restaurants = await retrieveGroupRestaurants(group!.id);
+
+      group.copyWith(restaurants: restaurants);
+    }
+
+    return groups;
   }
 
   Future<List<Restaurant?>> retrieveGroupRestaurants(String? id) async {
@@ -101,18 +132,6 @@ class DatabaseService {
 
     groupSnapshot.docs
         .map((DocumentSnapshot<Group> groupDoc) => groups.add(groupDoc.data()));
-
-    return groups;
-  }
-
-  Future<List<Group?>> retrieveUsersGroupData(String uid) async {
-    List<Group?> groups = await retrieveUserGroupsOnly(uid);
-
-    for (Group? group in groups) {
-      List<Restaurant?> restaurants = await retrieveGroupRestaurants(group!.id);
-
-      group.copyWith(restaurants: restaurants);
-    }
 
     return groups;
   }
