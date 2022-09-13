@@ -138,6 +138,7 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     if (state.isFormValid) {
       try {
         UserCredential? authUser = await _authenticationRepository.signIn(user);
+
         UserModel updatedUser =
             user.copyWith(isVerified: authUser!.user!.emailVerified);
         if (updatedUser.isVerified!) {

@@ -36,11 +36,11 @@ class FirebaseAuthRepository implements AuthenticationRepository {
       await verifyEmail();
 
       return userCredential;
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
-      return null;
+      throw FirebaseAuthException(code: error.code, message: errorMessage);
     }
   }
 
@@ -49,12 +49,13 @@ class FirebaseAuthRepository implements AuthenticationRepository {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: user.email!, password: user.password!);
+
       return userCredential;
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
-      return null;
+      throw FirebaseAuthException(code: error.code, message: errorMessage);
     }
   }
 

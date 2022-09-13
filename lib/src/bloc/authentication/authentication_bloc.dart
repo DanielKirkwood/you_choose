@@ -16,19 +16,16 @@ class AuthenticationBloc
       : super(AuthenticationInitial()) {
     on<AuthenticationEvent>((event, emit) async {
       if (event is AuthenticationStarted) {
-        logger.d('event is AuthenticationStarted');
+
         UserModel user = await _authenticationRepository.getCurrentUser().first;
 
         if (user.uid != 'uid') {
-          logger.d('user.uid is not null - ${user.uid}');
 
           String? username =
               await _authenticationRepository.getUsername(user);
 
           emit(AuthenticationSuccess(username: username));
         } else {
-          logger.e('user.uid is null - emit AuthenticationFailure');
-
           emit(AuthenticationFailure());
         }
       } else if (event is AuthenticationSignedOut) {
