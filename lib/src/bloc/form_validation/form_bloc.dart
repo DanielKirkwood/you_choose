@@ -99,14 +99,12 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         isLoading: true));
     if (state.isFormValid) {
       try {
-        logger.i('*** _updateUIAndSignUp ***');
-        logger.i('user = ${user.toString()}');
+
         UserCredential? authUser = await _authenticationRepository.signUp(user);
 
         UserModel updatedUser = user.copyWith(
             uid: authUser!.user!.uid, isVerified: authUser.user!.emailVerified);
 
-        logger.i('updatedUser = ${user.toString()}');
 
         await _databaseRepository.addUserData(updatedUser);
         if (updatedUser.isVerified!) {
@@ -119,6 +117,9 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
               isLoading: false));
         }
       } on FirebaseAuthException catch (e) {
+        emit(state.copyWith(
+            isLoading: false, errorMessage: e.message, isFormValid: false));
+      } on FirebaseException catch (e) {
         emit(state.copyWith(
             isLoading: false, errorMessage: e.message, isFormValid: false));
       }

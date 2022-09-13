@@ -12,7 +12,11 @@ class FirestoreRepository implements DatabaseRepository {
 
   @override
   Future<void> addUserData(UserModel user) async {
-    await _db.collection("users").doc(user.uid).set(user.toFirestore());
+    try {
+      await _db.collection("users").doc(user.uid).set(user.toFirestore());
+    } on FirebaseException {
+      rethrow;
+    }
   }
 
   @override
