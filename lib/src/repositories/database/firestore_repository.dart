@@ -92,16 +92,41 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<List<Group?>> getUserGroupData(String uid) async {
-    List<Group?> groups = await retrieveUserGroupsOnly(uid);
+  Future<List<Group>> getUserGroupData(String username) async {
+    List<Group> groups = await retrieveUserGroupsOnly(username);
 
-    for (Group? group in groups) {
-      List<Restaurant?> restaurants = await retrieveGroupRestaurants(group!.id);
+    for (Group group in groups) {
+      List<Restaurant?> restaurants = await retrieveGroupRestaurants(group.id);
 
       group.copyWith(restaurants: restaurants);
     }
 
+    logger.d(groups);
     return groups;
+  }
+
+  @override
+  Future<Group> addGroup(Group group) async {
+    try {
+      DocumentReference<Group> ref = _db
+          .collection('groups')
+          .withConverter(
+              fromFirestore: Group.fromFirestore,
+              toFirestore: (Group group, options) => group.toFirestore())
+          .doc();
+
+      String documentID = ref.id;
+      Group updatedGroup = group.copyWith(id: documentID);
+
+      await ref.set(updatedGroup);
+
+      return updatedGroup;
+    } on FirebaseException {
+      rethrow;
+    } catch (error) {
+      print(error.toString());
+      return group;
+    }
   }
 
   Future<List<Restaurant?>> retrieveGroupRestaurants(String? id) async {
@@ -123,19 +148,19 @@ class FirestoreRepository implements DatabaseRepository {
     return restaurants;
   }
 
-  Future<List<Group?>> retrieveUserGroupsOnly(String uid) async {
-    List<Group?> groups = [];
+  Future<List<Group>> retrieveUserGroupsOnly(String username) async {
+    List<Group> groups = [];
 
     QuerySnapshot<Group> groupSnapshot = await _db
         .collection('groups')
         .withConverter(
             fromFirestore: Group.fromFirestore,
             toFirestore: (Group group, options) => group.toFirestore())
-        .where('members', arrayContains: uid)
+        .where('members', arrayContains: username)
         .get();
 
-    groupSnapshot.docs
-        .map((DocumentSnapshot<Group> groupDoc) => groups.add(groupDoc.data()));
+    groupSnapshot.docs.map(
+        (DocumentSnapshot<Group> groupDoc) => groups.add(groupDoc.data()!));
 
     return groups;
   }

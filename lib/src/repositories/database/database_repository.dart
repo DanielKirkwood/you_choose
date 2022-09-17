@@ -6,4 +6,5 @@ abstract class DatabaseRepository {
   Future<UserModel?> getUser(UserModel user);
   Future<List<Restaurant?>> getRestaurantData();
   Future<List<Group?>> getUserGroupData(String uid);
+  Future<Group> addGroup(Group group);
 }

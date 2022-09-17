@@ -28,6 +28,9 @@ class Constants {
   static const textHome = "Home";
   static const textNoData = "No Data Available!";
   static const textFixIssues = "Please fill the data correctly!";
+  static const textGroupAdded = "New group successfully created";
+  static const textAddGroupTitle = "Create new group";
+  static const textAddGroupBtn = "Create Group";
 
   //navigate
   static const signInNavigate = '/sign-in';

@@ -7,6 +7,7 @@ import 'package:you_choose/src/app.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/bloc/bloc_observer.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
+import 'package:you_choose/src/bloc/group/group_bloc.dart';
 import 'package:you_choose/src/bloc/user/user_bloc.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
@@ -53,7 +54,10 @@ Future<void> main() async {
       }),
       BlocProvider(create: (context) {
         return UserBloc(FirestoreRepository());
-      })
+      }),
+      BlocProvider(create: (context) {
+        return GroupBloc(FirestoreRepository(), FirebaseAuthRepository());
+      }),
     ],
     child: const MyApp(),
   ));
