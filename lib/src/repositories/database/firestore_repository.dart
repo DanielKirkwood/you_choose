@@ -124,7 +124,7 @@ class FirestoreRepository implements DatabaseRepository {
     } on FirebaseException {
       rethrow;
     } catch (error) {
-      print(error.toString());
+      logger.e(error.toString());
       return group;
     }
   }
