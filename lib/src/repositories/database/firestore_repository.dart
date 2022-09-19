@@ -30,8 +30,9 @@ class FirestoreRepository implements DatabaseRepository {
             toFirestore: (UserModel user, options) => user.toFirestore())
         .get();
 
-    snapshot.docs.map(
-        (DocumentSnapshot<UserModel> userDoc) => users.add(userDoc.data()));
+    for (var i = 0; i < snapshot.size; i++) {
+      users.add(snapshot.docs[i].data());
+    }
 
     return users;
   }
@@ -46,6 +47,8 @@ class FirestoreRepository implements DatabaseRepository {
               fromFirestore: UserModel.fromFirestore,
               toFirestore: (UserModel user, options) => user.toFirestore())
           .get();
+
+
 
       return snapshot.data();
     } else if (user.email != null) {
@@ -85,15 +88,16 @@ class FirestoreRepository implements DatabaseRepository {
                 restaurant.toFirestore())
         .get();
 
-    snapshot.docs.map((DocumentSnapshot<Restaurant> restaurantDoc) =>
-        restaurants.add(restaurantDoc.data()));
+    for (var i = 0; i < snapshot.size; i++) {
+      restaurants.add(snapshot.docs[i].data());
+    }
 
     return restaurants;
   }
 
   @override
-  Future<List<Group>> getUserGroupData(String username) async {
-    List<Group> groups = await retrieveUserGroupsOnly(username);
+  Future<List<Group>> getUserGroupData(String uid) async {
+    List<Group> groups = await retrieveUserGroupsOnly(uid);
 
     for (Group group in groups) {
       List<Restaurant?> restaurants = await retrieveGroupRestaurants(group.id);
@@ -132,7 +136,7 @@ class FirestoreRepository implements DatabaseRepository {
   Future<List<Restaurant?>> retrieveGroupRestaurants(String? id) async {
     List<Restaurant?> restaurants = [];
 
-    QuerySnapshot<Restaurant> restaurantSnapshot = await _db
+    QuerySnapshot<Restaurant> snapshot = await _db
         .collection('groups')
         .doc(id)
         .collection('restaurants')
@@ -142,25 +146,27 @@ class FirestoreRepository implements DatabaseRepository {
                 restaurant.toFirestore())
         .get();
 
-    restaurantSnapshot.docs.map((DocumentSnapshot<Restaurant> restaurantDoc) =>
-        restaurants.add(restaurantDoc.data()));
+    for (var i = 0; i < snapshot.size; i++) {
+      restaurants.add(snapshot.docs[i].data());
+    }
 
     return restaurants;
   }
 
-  Future<List<Group>> retrieveUserGroupsOnly(String username) async {
+  Future<List<Group>> retrieveUserGroupsOnly(String uid) async {
     List<Group> groups = [];
 
-    QuerySnapshot<Group> groupSnapshot = await _db
+    QuerySnapshot<Group> snapshot = await _db
         .collection('groups')
         .withConverter(
             fromFirestore: Group.fromFirestore,
             toFirestore: (Group group, options) => group.toFirestore())
-        .where('members', arrayContains: username)
+        .where('members', arrayContains: uid)
         .get();
 
-    groupSnapshot.docs.map(
-        (DocumentSnapshot<Group> groupDoc) => groups.add(groupDoc.data()!));
+    for (var i = 0; i < snapshot.size; i++) {
+      groups.add(snapshot.docs[i].data());
+    }
 
     return groups;
   }

@@ -69,14 +69,14 @@ class FirebaseAuthRepository implements AuthenticationRepository {
   }
 
   @override
-  Future<String?> getUsername(UserModel user) async {
+  Future<UserModel?> getUserData(UserModel user) async {
     UserModel? dbUser = await _db.getUser(user);
 
     if (dbUser == null) {
       return null;
     }
 
-    return dbUser.username;
+    return dbUser;
   }
 
   // send email verification email to user

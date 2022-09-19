@@ -21,10 +21,10 @@ class AuthenticationBloc
 
         if (user.uid != 'uid') {
 
-          String? username =
-              await _authenticationRepository.getUsername(user);
+          UserModel? userData =
+              await _authenticationRepository.getUserData(user);
 
-          emit(AuthenticationSuccess(username: username));
+          emit(AuthenticationSuccess(user: userData));
         } else {
           emit(AuthenticationFailure());
         }

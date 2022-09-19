@@ -27,14 +27,18 @@ class AddGroupScreen extends StatelessWidget {
             } else if (state.isFormValidateFailed) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text(Constants.textFixIssues)));
+            } else if (state.isFormSuccessful) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text(Constants.textGroupAdded)));
             }
           },
         ),
         BlocListener<GroupBloc, GroupState>(
           listener: (context, state) {
-            if (state is GroupLoaded) {
+            if (state is GroupAdded) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text(Constants.textGroupAdded)));
+              // Navigator.of(context).pop();
             }
           },
         ),

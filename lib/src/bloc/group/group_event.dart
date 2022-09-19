@@ -7,7 +7,14 @@ abstract class GroupEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadGroups extends GroupEvent {}
+class LoadGroups extends GroupEvent {
+  final String userID;
+
+  const LoadGroups(this.userID);
+
+  @override
+  List<Object> get props => [userID];
+}
 
 class UpdateGroups extends GroupEvent {
   final List<Group> groups;
@@ -25,4 +32,13 @@ class AddGroup extends GroupEvent {
 
   @override
   List<Object> get props => [newGroup];
+}
+
+class DeleteGroup extends GroupEvent {
+  final Group group;
+
+  const DeleteGroup(this.group);
+
+  @override
+  List<Object> get props => [group];
 }

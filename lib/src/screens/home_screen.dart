@@ -45,27 +45,30 @@ class HomeScreen extends StatelessWidget {
             ],
             systemOverlayStyle:
                 const SystemUiOverlayStyle(statusBarColor: Colors.blue),
-            title: Text((state as AuthenticationSuccess).username!),
+            title: Text((state as AuthenticationSuccess).user!.username!),
+
           ),
           body: BlocBuilder<GroupBloc, GroupState>(
             builder: (context, state) {
-              if (state is GroupLoading) {
-                context.read<GroupBloc>().add(LoadGroups());
+              if (state is GroupInitial) {
+                context
+                    .read<GroupBloc>()
+                    .add(const LoadGroups('2yXstgBuTmtw8ca0soELK1cnGRCj'));
                 return const Center(child: CircularProgressIndicator());
               } else if (state is GroupLoaded) {
-                if (state.groups!.isEmpty) {
+                if (state.groups.isEmpty) {
                   return const Center(
                     child: Text(Constants.textNoData),
                   );
                 } else {
                   return Center(
                     child: ListView.builder(
-                      itemCount: state.groups!.length,
+                      itemCount: state.groups.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Card(
                           child: ListTile(
-                            title: Text(state.groups![index].name!),
-                            subtitle: Text(state.groups![index].id!),
+                            title: Text(state.groups[index].name!),
+                            subtitle: Text(state.groups[index].id!),
                           ),
                         );
                       },

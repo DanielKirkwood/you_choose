@@ -6,5 +6,5 @@ abstract class AuthenticationRepository {
   Future<UserCredential?> signUp(UserModel user);
   Future<UserCredential?> signIn(UserModel user);
   Future<void> signOut();
-  Future<String?> getUsername(UserModel user);
+  Future<UserModel?> getUserData(UserModel user);
 }

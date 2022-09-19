@@ -13,11 +13,11 @@ class AuthenticationInitial extends AuthenticationState {
 }
 
 class AuthenticationSuccess extends AuthenticationState {
-  final String? username;
-  const AuthenticationSuccess({this.username});
+  final UserModel? user;
+  const AuthenticationSuccess({this.user});
 
   @override
-  List<Object?> get props => [username];
+  List<Object?> get props => [user];
 }
 
 class AuthenticationFailure extends AuthenticationState {
