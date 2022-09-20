@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
 import 'package:you_choose/src/bloc/group/group_bloc.dart';
-import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 OutlineInputBorder border = const OutlineInputBorder(
@@ -92,6 +91,7 @@ class _GroupNameField extends StatelessWidget {
           width: size.width * 0.8,
           child: TextFormField(
               onChanged: (value) {
+
                 context.read<FormBloc>().add(GroupNameChanged(value));
               },
               keyboardType: TextInputType.text,
@@ -163,10 +163,10 @@ class _SubmitButton extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: !state.isFormValid
                       ? () {
-                          Group newGroup = Group(
+
+                          BlocProvider.of<GroupBloc>(context).add(AddGroup(
                               name: state.groupName,
-                              members: state.groupMembers);
-                          context.read<GroupBloc>().add(AddGroup(newGroup));
+                              groupMembers: state.groupMembers));
                           context.read<FormBloc>().add(const FormReset());
                         }
                       : null,

@@ -152,6 +152,7 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         isLoading: true));
 
     if (state.isFormValid) {
+      print("FORM VALID");
       try {
         await _databaseRepository.addGroup(group);
 

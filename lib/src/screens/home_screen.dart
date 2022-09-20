@@ -50,10 +50,10 @@ class HomeScreen extends StatelessWidget {
           ),
           body: BlocBuilder<GroupBloc, GroupState>(
             builder: (context, state) {
-              if (state is GroupInitial) {
+              if (state is GroupInitial || state is GroupAdded) {
                 context
                     .read<GroupBloc>()
-                    .add(const LoadGroups('2yXstgBuTmtw8ca0soELK1cnGRCj'));
+                    .add(const LoadGroups());
                 return const Center(child: CircularProgressIndicator());
               } else if (state is GroupLoaded) {
                 if (state.groups.isEmpty) {

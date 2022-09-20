@@ -10,7 +10,6 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
   final FirestoreRepository _dbRepository;
   final FirebaseAuthRepository _authenticationRepository;
 
-
   GroupBloc(this._dbRepository, this._authenticationRepository)
       : super(GroupInitial()) {
     on<LoadGroups>(_onLoadedGroups);
@@ -26,21 +25,27 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
       emit(GroupLoaded(groups: groups));
     } else {
       emit(const GroupError());
-
     }
-
   }
 
   _onAddGroups(AddGroup event, Emitter emit) async {
     try {
-      Group updatedGroup = await _dbRepository.addGroup(event.newGroup);
-      if (updatedGroup.id != null) {
-        emit(GroupAdded(newGroup: updatedGroup));
+      UserModel user = await _authenticationRepository.getCurrentUser().first;
+
+      if (user.uid != 'uid') {
+        Group newGroup = Group(
+            name: event.name, members: [...event.groupMembers, user.uid!]);
+        Group updatedGroup = await _dbRepository.addGroup(newGroup);
+        if (updatedGroup.id != null) {
+          emit(GroupAdded(newGroup: updatedGroup));
+        } else {
+          emit(GroupError(errorGroup: newGroup));
+        }
       } else {
-        emit(GroupError(errorGroup: event.newGroup));
+        emit(const GroupError());
       }
     } catch (e) {
-      emit(GroupError(errorGroup: event.newGroup));
+      emit(const GroupError());
     }
   }
 }
