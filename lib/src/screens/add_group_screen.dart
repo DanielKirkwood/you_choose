@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
 import 'package:you_choose/src/bloc/group/group_bloc.dart';
+import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 OutlineInputBorder border = const OutlineInputBorder(
@@ -27,9 +28,6 @@ class AddGroupScreen extends StatelessWidget {
             } else if (state.isFormValidateFailed) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text(Constants.textFixIssues)));
-            } else if (state.isFormSuccessful) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text(Constants.textGroupAdded)));
             }
           },
         ),
@@ -38,7 +36,9 @@ class AddGroupScreen extends StatelessWidget {
             if (state is GroupAdded) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text(Constants.textGroupAdded)));
-              // Navigator.of(context).pop();
+
+              Navigator.pushNamed(context, '/');
+
             }
           },
         ),
@@ -162,9 +162,13 @@ class _SubmitButton extends StatelessWidget {
                 width: size.width * 0.8,
                 child: OutlinedButton(
                   onPressed: !state.isFormValid
-                      ? () => context
-                          .read<FormBloc>()
-                          .add(const FormSubmitted(value: Status.createGroup))
+                      ? () {
+                          Group newGroup = Group(
+                              name: state.groupName,
+                              members: state.groupMembers);
+                          context.read<GroupBloc>().add(AddGroup(newGroup));
+                          context.read<FormBloc>().add(const FormReset());
+                        }
                       : null,
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(

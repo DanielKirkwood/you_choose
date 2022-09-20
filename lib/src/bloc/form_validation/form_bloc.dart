@@ -34,6 +34,7 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     on<GroupMembersChanged>(_onGroupMembersChanged);
     on<FormSubmitted>(_onFormSubmitted);
     on<FormSucceeded>(_onFormSucceeded);
+    on<FormReset>(_onFormReset);
   }
   final RegExp _emailRegExp = RegExp(
     r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
@@ -154,7 +155,8 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
       try {
         await _databaseRepository.addGroup(group);
 
-        emit(state.copyWith(isLoading: false, errorMessage: ""));
+        emit(state.copyWith(
+            isLoading: false, errorMessage: "", isFormSuccessful: true));
       } on FirebaseException catch (error) {
         emit(state.copyWith(
             isLoading: false, errorMessage: error.message, isFormValid: false));
@@ -233,6 +235,24 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
   }
 
   _onFormSucceeded(FormSucceeded event, Emitter<FormsValidate> emit) {
-    emit(state.copyWith(isFormSuccessful: true));
+    emit(state.copyWith(
+        isLoading: false, errorMessage: "", isFormSuccessful: true));
+  }
+
+  _onFormReset(FormReset event, Emitter<FormsValidate> emit) {
+    emit(state.copyWith(
+        email: "example@gmail.com",
+        password: "",
+        username: "example123",
+        groupName: "example group",
+        groupMembers: [],
+        isEmailValid: true,
+        isPasswordValid: true,
+        isGroupNameValid: true,
+        isGroupMembersValid: true,
+        isFormValid: false,
+        isLoading: false,
+        isUsernameValid: true,
+        isFormValidateFailed: false));
   }
 }

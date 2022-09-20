@@ -63,3 +63,10 @@ class FormSucceeded extends FormEvent {
   @override
   List<Object> get props => [];
 }
+
+class FormReset extends FormEvent {
+  const FormReset();
+
+  @override
+  List<Object> get props => [];
+}
