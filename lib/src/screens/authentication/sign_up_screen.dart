@@ -6,9 +6,6 @@ import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
 import 'package:you_choose/src/screens/home_screen.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
-OutlineInputBorder border = const OutlineInputBorder(
-    borderSide: BorderSide(color: Constants.kBorderColor, width: 3.0));
-
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -96,7 +93,7 @@ class _EmailField extends StatelessWidget {
                 hintText: 'Email',
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 15.0, horizontal: 10.0),
-                border: border,
+                border: Constants.formInputBorder,
               )),
         );
       },
@@ -119,7 +116,7 @@ class _PasswordField extends StatelessWidget {
             decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-              border: border,
+              border: Constants.formInputBorder,
               helperText:
                   '''Password should be at least 8 characters with at least one letter and number''',
               helperMaxLines: 2,
@@ -153,7 +150,7 @@ class _UsernameField extends StatelessWidget {
             decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-              border: border,
+              border: Constants.formInputBorder,
               helperText: '''Username must be valid!''',
               helperMaxLines: 2,
               labelText: 'Username',

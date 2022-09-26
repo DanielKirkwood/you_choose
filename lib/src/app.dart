@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const BlocNavigate(screen: HomeScreen()),
         '/add-restaurant': (context) =>
-            const BlocNavigate(screen: AddRestaurantScreen()),
+            BlocNavigate(screen: AddRestaurantScreen()),
         '/add-group': (context) => const BlocNavigate(screen: AddGroupScreen()),
       },
     );

@@ -39,4 +39,11 @@ class Constants {
   static const statusBarColor = SystemUiOverlayStyle(
       statusBarColor: Constants.kPrimaryColor,
       statusBarIconBrightness: Brightness.dark);
+
+  // forms
+  static const formInputBorder = OutlineInputBorder(
+      borderSide: BorderSide(color: Constants.kBorderColor, width: 3.0));
+
+  // data
+  static const pricesInputs = ['£', '££', '£££', "££££"];
 }
