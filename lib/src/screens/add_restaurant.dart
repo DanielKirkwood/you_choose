@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:you_choose/src/bloc/group/group_bloc.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class AddRestaurantScreen extends StatelessWidget {
@@ -16,7 +18,6 @@ class AddRestaurantScreen extends StatelessWidget {
       ),
       body: Center(
         child: SingleChildScrollView(
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -46,6 +47,8 @@ class AddRestaurantScreen extends StatelessWidget {
                         const DescriptionField(),
                         SizedBox(height: size.height * 0.03),
                         const TagsField(),
+                        SizedBox(height: size.height * 0.03),
+                        const GroupsField(),
                         SizedBox(height: size.height * 0.03),
                         const _SubmitButton(),
                       ],
@@ -194,6 +197,28 @@ class _TagsFieldState extends State<TagsField> {
           });
         },
       ),
+    );
+  }
+}
+
+class GroupsField extends StatefulWidget {
+  const GroupsField({super.key});
+
+  @override
+  State<GroupsField> createState() => _GroupsFieldState();
+}
+
+class _GroupsFieldState extends State<GroupsField> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GroupBloc, GroupState>(
+      builder: (context, state) {
+        if (state is! GroupLoaded) {
+          context.read<GroupBloc>().add(const LoadGroups());
+          return const CircularProgressIndicator();
+        }
+        return Container();
+      },
     );
   }
 }
