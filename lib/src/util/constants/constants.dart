@@ -43,8 +43,13 @@ class Constants {
       statusBarIconBrightness: Brightness.dark);
 
   // forms
+  static BoxDecoration formMultiSelect = BoxDecoration(
+      border: Border.all(color: Constants.kBorderColor, width: 3.0),
+      borderRadius: const BorderRadius.all(Radius.circular(4.0)));
+
   static const formInputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Constants.kBorderColor, width: 3.0));
+
   static formInputDecoration({helperText, labelText, errorText}) =>
       InputDecoration(
         contentPadding:
@@ -59,4 +64,14 @@ class Constants {
 
   // data
   static const pricesInputs = ['£', '££', '£££', "££££"];
+  static const tags = [
+    "Fancy",
+    "Chinese",
+    "Indian",
+    "Fast Food",
+    "Date Night",
+    "Casual",
+    "Steak",
+    "Pizza",
+  ];
 }

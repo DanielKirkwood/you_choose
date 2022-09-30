@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:you_choose/src/bloc/group/group_bloc.dart';
+import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class AddRestaurantScreen extends StatelessWidget {
@@ -174,30 +176,17 @@ class _TagsFieldState extends State<TagsField> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: size.width * 0.8,
-      child: TextFormField(
-        keyboardType: TextInputType.multiline,
-        minLines: 1,
-        maxLines: 5,
-        decoration: Constants.formInputDecoration(
-            helperText: '''How would you categorise the restaurant?''',
-            labelText: 'Tags',
-            errorText: null),
-        onChanged: (String value) {
-          List<String> tagList = [];
-          List<String> split = value.split(',');
-          for (var element in split) {
-            tagList.add(element.trim());
-          }
-          setState(() {
-            _tags = tagList;
-          });
+    return MultiSelectDialogField<String>(
+        items:
+            Constants.tags.map((e) => MultiSelectItem<String>(e, e)).toList(),
+        onConfirm: (values) {
+          _tags = values;
         },
-      ),
-    );
+        title: const Text('Tags'),
+        searchable: true,
+        buttonText: const Text('Tags'),
+        decoration: Constants.formMultiSelect);
   }
 }
 
@@ -209,6 +198,8 @@ class GroupsField extends StatefulWidget {
 }
 
 class _GroupsFieldState extends State<GroupsField> {
+  List<Group> _groups = [];
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GroupBloc, GroupState>(
@@ -217,7 +208,17 @@ class _GroupsFieldState extends State<GroupsField> {
           context.read<GroupBloc>().add(const LoadGroups());
           return const CircularProgressIndicator();
         }
-        return Container();
+        return MultiSelectDialogField<Group>(
+            items: state.groups
+                .map((e) => MultiSelectItem<Group>(e, e.name!))
+                .toList(),
+            onConfirm: (values) {
+              _groups = values;
+            },
+            title: const Text('Groups'),
+            searchable: true,
+            buttonText: const Text('Groups'),
+            decoration: Constants.formMultiSelect);
       },
     );
   }
