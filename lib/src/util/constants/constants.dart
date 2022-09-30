@@ -31,6 +31,8 @@ class Constants {
   static const textGroupAdded = "New group successfully created";
   static const textAddGroupTitle = "Create new group";
   static const textAddGroupBtn = "Create Group";
+  static const textAddRestaurantTitle = "Add new restaurant";
+  static const textAddRestaurantBtn = "Add restaurant";
 
   //navigate
   static const signInNavigate = '/sign-in';
@@ -43,6 +45,17 @@ class Constants {
   // forms
   static const formInputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Constants.kBorderColor, width: 3.0));
+  static formInputDecoration({helperText, labelText, errorText}) =>
+      InputDecoration(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        border: Constants.formInputBorder,
+        helperText: helperText,
+        helperMaxLines: 2,
+        labelText: labelText,
+        errorMaxLines: 2,
+        errorText: errorText,
+      );
 
   // data
   static const pricesInputs = ['£', '££', '£££', "££££"];

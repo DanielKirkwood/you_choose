@@ -124,11 +124,12 @@ class _GroupMembersField extends StatelessWidget {
           width: size.width * 0.8,
           child: TextFormField(
               onChanged: (value) {
-                List<String> memberList = value.split(',');
-                for (var element in memberList) {
-                  element.replaceAll(RegExp(r"\s+"), "");
+                List<String> membersList = [];
+                List<String> split = value.split(',');
+                for (var element in split) {
+                  membersList.add(element.trim());
                 }
-                context.read<FormBloc>().add(GroupMembersChanged(memberList));
+                context.read<FormBloc>().add(GroupMembersChanged(membersList));
               },
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
