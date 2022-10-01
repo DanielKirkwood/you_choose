@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/models/restaurant.dart';
+import 'package:you_choose/src/models/models.dart';
 
 class RestaurantList extends StatefulWidget {
   final List<Restaurant> restaurantsList;
@@ -15,7 +15,7 @@ class _RestaurantListState extends State<RestaurantList> {
   Widget _buildListItem(BuildContext context, Restaurant document) {
     final String name = document.name;
     final int price = document.price;
-    final List<String> tags = document.tags;
+    // final List<Tag> tags = document.tags;
     final String description = document.description;
 
     return Container(
@@ -58,20 +58,20 @@ class _RestaurantListState extends State<RestaurantList> {
                     const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
               ),
               const SizedBox(height: 10),
-              Wrap(
-                  spacing: 8.0,
-                  runSpacing: 4.0,
-                  children: List.generate(tags.length, (index) {
-                    return Chip(
-                      label: Text(tags[index]),
-                      backgroundColor: Colors.lightBlueAccent,
-                      elevation: 2.0,
-                      labelStyle: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    );
-                  }))
+              // Wrap(
+              //     spacing: 8.0,
+              //     runSpacing: 4.0,
+              //     children: List.generate(tags.length, (index) {
+              //       return Chip(
+              //         label: Text(tags[index]),
+              //         backgroundColor: Colors.lightBlueAccent,
+              //         elevation: 2.0,
+              //         labelStyle: const TextStyle(
+              //           fontSize: 12,
+              //           fontWeight: FontWeight.w400,
+              //         ),
+              //       );
+              //     }))
             ],
           ),
         ));

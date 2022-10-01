@@ -12,11 +12,11 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
 
   GroupBloc(this._dbRepository, this._authenticationRepository)
       : super(GroupInitial()) {
-    on<LoadGroups>(_onLoadedGroups);
+    on<LoadGroups>(_onLoadGroups);
     on<AddGroup>(_onAddGroups);
   }
 
-  _onLoadedGroups(LoadGroups event, Emitter emit) async {
+  _onLoadGroups(LoadGroups event, Emitter emit) async {
     UserModel user = await _authenticationRepository.getCurrentUser().first;
 
     if (user.uid != 'uid') {
