@@ -48,8 +48,6 @@ class FirestoreRepository implements DatabaseRepository {
               toFirestore: (UserModel user, options) => user.toFirestore())
           .get();
 
-
-
       return snapshot.data();
     } else if (user.email != null) {
       QuerySnapshot<UserModel> snapshot = await _db
@@ -169,5 +167,26 @@ class FirestoreRepository implements DatabaseRepository {
     }
 
     return groups;
+  }
+
+  @override
+  Future<void> addRestaurant(Restaurant restaurant, List<Group> groups) async {
+    try {
+      for (Group group in groups) {
+        CollectionReference<Restaurant> collection = _db
+            .collection('groups')
+            .doc(group.id)
+            .collection('restaurants')
+            .withConverter(
+                fromFirestore: Restaurant.fromFirestore,
+                toFirestore: (Restaurant restaurant, options) =>
+                    restaurant.toFirestore());
+
+        await collection.add(restaurant);
+      }
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
   }
 }
