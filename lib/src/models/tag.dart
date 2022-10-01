@@ -3,23 +3,19 @@ import 'package:equatable/equatable.dart';
 
 class Tag extends Equatable {
   final String name;
-  final String color;
   final String? id;
 
   const Tag({
     required this.name,
-    required this.color,
     this.id,
   });
 
   Tag copyWith({
     String? name,
-    String? color,
     String? id,
   }) {
     return Tag(
       name: name ?? this.name,
-      color: color ?? this.color,
       id: id ?? this.id,
     );
   }
@@ -31,7 +27,6 @@ class Tag extends Equatable {
     final data = snapshot.data();
     return Tag(
       name: data?['name'],
-      color: data?['color'],
       id: data?['id'],
     );
   }
@@ -39,14 +34,13 @@ class Tag extends Equatable {
   Map<String, dynamic> toFirestore() {
     return {
       "name": name,
-      "color": color,
       "id": id,
     };
   }
 
   @override
-  String toString() => 'Tag(name: $name, color: $color, id: $id)';
+  String toString() => 'Tag(name: $name, id: $id)';
 
   @override
-  List<Object?> get props => [name, color, id];
+  List<Object?> get props => [name, id];
 }
