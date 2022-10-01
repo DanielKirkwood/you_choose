@@ -173,7 +173,7 @@ class FirestoreRepository implements DatabaseRepository {
   Future<void> addRestaurant(Restaurant restaurant, List<Group> groups) async {
     try {
       for (Group group in groups) {
-        CollectionReference<Restaurant> collection = _db
+        CollectionReference<Restaurant> restaurantsCollection = _db
             .collection('groups')
             .doc(group.id)
             .collection('restaurants')
@@ -182,7 +182,19 @@ class FirestoreRepository implements DatabaseRepository {
                 toFirestore: (Restaurant restaurant, options) =>
                     restaurant.toFirestore());
 
-        await collection.add(restaurant);
+        restaurantsCollection.add(restaurant).then((doc) {
+          if (restaurant.tags != null) {
+            CollectionReference<Tag> tagsCollection = doc
+                .collection('tags')
+                .withConverter(
+                    fromFirestore: Tag.fromFirestore,
+                    toFirestore: (Tag tag, options) => tag.toFirestore());
+
+            for (Tag tag in restaurant.tags!) {
+              tagsCollection.add(tag);
+            }
+          }
+        });
       }
     } catch (error) {
       logger.e(error.toString());
