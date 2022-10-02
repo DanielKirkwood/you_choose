@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:you_choose/src/models/user.dart';
-import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
-import 'package:you_choose/src/services/database/database_repository_impl.dart';
+import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 part 'form_event.dart';
@@ -11,14 +10,19 @@ part 'form_state.dart';
 
 class FormBloc extends Bloc<FormEvent, FormsValidate> {
   var logger = getLogger('FormBloc');
-  final AuthenticationRepository _authenticationRepository;
-  final DatabaseRepository _databaseRepository;
+  final FirebaseAuthRepository _authenticationRepository;
+  final FirestoreRepository _databaseRepository;
   FormBloc(this._authenticationRepository, this._databaseRepository)
       : super(const FormsValidate(
             email: "example@gmail.com",
             password: "",
+            username: "example123",
+            groupName: "example group",
+            groupMembers: [],
             isEmailValid: true,
             isPasswordValid: true,
+            isGroupNameValid: true,
+            isGroupMembersValid: true,
             isFormValid: false,
             isLoading: false,
             isUsernameValid: true,
@@ -26,8 +30,11 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<UsernameChanged>(_onUsernameChanged);
+    on<GroupNameChanged>(_onGroupNameChanged);
+    on<GroupMembersChanged>(_onGroupMembersChanged);
     on<FormSubmitted>(_onFormSubmitted);
     on<FormSucceeded>(_onFormSucceeded);
+    on<FormReset>(_onFormReset);
   }
   final RegExp _emailRegExp = RegExp(
     r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$',
@@ -35,6 +42,12 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
   final RegExp _passwordRegExp = RegExp(
     r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
   );
+
+  final RegExp _usernameRegExp = RegExp(
+    r'^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$',
+  );
+
+  final RegExp _groupNameRegExp = RegExp(r'^[A-Za-z0-9-]{1,25}$');
 
   bool _isEmailValid(String email) {
     return _emailRegExp.hasMatch(email);
@@ -44,8 +57,16 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     return _passwordRegExp.hasMatch(password);
   }
 
-  bool _isUsernameValid(String? username) {
-    return username!.isNotEmpty;
+  bool _isUsernameValid(String username) {
+    return _usernameRegExp.hasMatch(username);
+  }
+
+  bool _isGroupNameValid(String groupName) {
+    return _groupNameRegExp.hasMatch(groupName);
+  }
+
+  bool _isGroupMembersValid(List<String> groupMembers) {
+    return groupMembers.isNotEmpty;
   }
 
   _onEmailChanged(EmailChanged event, Emitter<FormsValidate> emit) {
@@ -79,14 +100,68 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     ));
   }
 
-  _onFormSubmitted(FormSubmitted event, Emitter<FormsValidate> emit) async {
-    UserModel user = UserModel(
-        email: state.email, password: state.password, username: state.username);
+  _onGroupNameChanged(GroupNameChanged event, Emitter<FormsValidate> emit) {
+    emit(state.copyWith(
+      isFormSuccessful: false,
+      isFormValidateFailed: false,
+      errorMessage: "",
+      groupName: event.groupName,
+      isGroupNameValid: _isGroupNameValid(event.groupName),
+    ));
+  }
 
+  _onGroupMembersChanged(
+      GroupMembersChanged event, Emitter<FormsValidate> emit) {
+    emit(state.copyWith(
+      isFormSuccessful: false,
+      isFormValidateFailed: false,
+      errorMessage: "",
+      groupMembers: event.groupMembers,
+      isGroupMembersValid: _isGroupMembersValid(event.groupMembers),
+    ));
+  }
+
+  _onFormSubmitted(FormSubmitted event, Emitter<FormsValidate> emit) async {
     if (event.value == Status.signUp) {
+      UserModel user = UserModel(
+          email: state.email,
+          password: state.password,
+          username: state.username);
+
       await _updateUIAndSignUp(event, emit, user);
     } else if (event.value == Status.signIn) {
+      UserModel user = UserModel(
+          email: state.email,
+          password: state.password,
+          username: state.username);
+
       await _authenticateUser(event, emit, user);
+    } else if (event.value == Status.createGroup) {
+      Group group = Group(name: state.groupName, members: state.groupMembers);
+
+      await _addNewGroup(event, emit, group);
+    }
+  }
+
+  _addNewGroup(
+      FormSubmitted event, Emitter<FormsValidate> emit, Group group) async {
+    emit(state.copyWith(
+        errorMessage: "",
+        isFormValid: _isGroupNameValid(state.groupName) &&
+            _isGroupMembersValid(state.groupMembers),
+        isLoading: true));
+
+    if (state.isFormValid) {
+
+      try {
+        await _databaseRepository.addGroup(group);
+
+        emit(state.copyWith(
+            isLoading: false, errorMessage: "", isFormSuccessful: true));
+      } on FirebaseException catch (error) {
+        emit(state.copyWith(
+            isLoading: false, errorMessage: error.message, isFormValid: false));
+      }
     }
   }
 
@@ -100,16 +175,12 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         isLoading: true));
     if (state.isFormValid) {
       try {
-        logger.i('*** _updateUIAndSignUp ***');
-        logger.i('user = ${user.toString()}');
         UserCredential? authUser = await _authenticationRepository.signUp(user);
 
         UserModel updatedUser = user.copyWith(
             uid: authUser!.user!.uid, isVerified: authUser.user!.emailVerified);
 
-        logger.i('updatedUser = ${user.toString()}');
-
-        await _databaseRepository.saveUserData(updatedUser);
+        await _databaseRepository.addUserData(updatedUser);
         if (updatedUser.isVerified!) {
           emit(state.copyWith(isLoading: false, errorMessage: ""));
         } else {
@@ -120,6 +191,9 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
               isLoading: false));
         }
       } on FirebaseAuthException catch (e) {
+        emit(state.copyWith(
+            isLoading: false, errorMessage: e.message, isFormValid: false));
+      } on FirebaseException catch (e) {
         emit(state.copyWith(
             isLoading: false, errorMessage: e.message, isFormValid: false));
       }
@@ -139,6 +213,7 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     if (state.isFormValid) {
       try {
         UserCredential? authUser = await _authenticationRepository.signIn(user);
+
         UserModel updatedUser =
             user.copyWith(isVerified: authUser!.user!.emailVerified);
         if (updatedUser.isVerified!) {
@@ -161,6 +236,24 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
   }
 
   _onFormSucceeded(FormSucceeded event, Emitter<FormsValidate> emit) {
-    emit(state.copyWith(isFormSuccessful: true));
+    emit(state.copyWith(
+        isLoading: false, errorMessage: "", isFormSuccessful: true));
+  }
+
+  _onFormReset(FormReset event, Emitter<FormsValidate> emit) {
+    emit(state.copyWith(
+        email: "example@gmail.com",
+        password: "",
+        username: "example123",
+        groupName: "example group",
+        groupMembers: [],
+        isEmailValid: true,
+        isPasswordValid: true,
+        isGroupNameValid: true,
+        isGroupMembersValid: true,
+        isFormValid: false,
+        isLoading: false,
+        isUsernameValid: true,
+        isFormValidateFailed: false));
   }
 }

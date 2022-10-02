@@ -18,23 +18,26 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Poppins'),
       initialRoute: '/',
       routes: {
-        '/': (context) => const BlocNavigate(),
-        '/add-restaurant': (context) => const AddRestaurantScreen(),
-        '/add-group': (context) => const CreateGroupScreen(),
+        '/': (context) => const BlocNavigate(screen: HomeScreen()),
+        '/add-restaurant': (context) =>
+            const BlocNavigate(screen: AddRestaurantScreen()),
+        '/add-group': (context) => const BlocNavigate(screen: AddGroupScreen()),
       },
     );
   }
 }
 
 class BlocNavigate extends StatelessWidget {
-  const BlocNavigate({Key? key}) : super(key: key);
+  final Widget screen;
+
+  const BlocNavigate({Key? key, required this.screen}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
         if (state is AuthenticationSuccess) {
-          return const HomeScreen();
+          return screen;
         } else {
           return const WelcomeScreen();
         }

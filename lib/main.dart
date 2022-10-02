@@ -6,10 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/bloc/bloc_observer.dart';
-import 'package:you_choose/src/bloc/database/database_bloc.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
-import 'package:you_choose/src/services/authentication/authentication_repository_impl.dart';
-import 'package:you_choose/src/services/database/database_repository_impl.dart';
+import 'package:you_choose/src/bloc/group/group_bloc.dart';
+import 'package:you_choose/src/bloc/restaurant/restaurant_bloc.dart';
+import 'package:you_choose/src/bloc/user/user_bloc.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 import 'firebase_options.dart';
@@ -25,11 +26,11 @@ Future<void> main() async {
 
   const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
-  const firestorePort = 8080;
-  const authPort = 9099;
-
   if (!isProduction) {
     logger.d('Connecting to firebase emulators');
+
+    const firestorePort = 8080;
+    const authPort = 9099;
 
     // [Firestore | localhost:8080]
     FirebaseFirestore.instance.settings = const Settings(
@@ -45,16 +46,22 @@ Future<void> main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) {
-        return AuthenticationBloc(AuthenticationRepositoryImpl())
+        return AuthenticationBloc(FirebaseAuthRepository())
           ..add(AuthenticationStarted());
       }),
       BlocProvider(create: (context) {
         return FormBloc(
-            AuthenticationRepositoryImpl(), DatabaseRepositoryImpl());
+            FirebaseAuthRepository(), FirestoreRepository());
       }),
       BlocProvider(create: (context) {
-        return DatabaseBloc(DatabaseRepositoryImpl());
-      })
+        return UserBloc(FirestoreRepository());
+      }),
+      BlocProvider(create: (context) {
+        return GroupBloc(FirestoreRepository(), FirebaseAuthRepository());
+      }),
+      BlocProvider(create: (context) {
+        return RestaurantBloc(FirestoreRepository());
+      }),
     ],
     child: const MyApp(),
   ));

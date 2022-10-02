@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Constants {
-  //colors
+  //colours
   static const kPrimaryColor = Color(0xFFFFFFFF);
   static const kGreyColor = Color(0xFFEEEEEE);
   static const kBlackColor = Color(0xFF000000);
@@ -28,6 +28,11 @@ class Constants {
   static const textHome = "Home";
   static const textNoData = "No Data Available!";
   static const textFixIssues = "Please fill the data correctly!";
+  static const textGroupAdded = "New group successfully created";
+  static const textAddGroupTitle = "Create new group";
+  static const textAddGroupBtn = "Create Group";
+  static const textAddRestaurantTitle = "Add new restaurant";
+  static const textAddRestaurantBtn = "Add restaurant";
 
   //navigate
   static const signInNavigate = '/sign-in';
@@ -36,4 +41,37 @@ class Constants {
   static const statusBarColor = SystemUiOverlayStyle(
       statusBarColor: Constants.kPrimaryColor,
       statusBarIconBrightness: Brightness.dark);
+
+  // forms
+  static BoxDecoration formMultiSelect = BoxDecoration(
+      border: Border.all(color: Constants.kBorderColor, width: 3.0),
+      borderRadius: const BorderRadius.all(Radius.circular(4.0)));
+
+  static const formInputBorder = OutlineInputBorder(
+      borderSide: BorderSide(color: Constants.kBorderColor, width: 3.0));
+
+  static formInputDecoration({helperText, labelText, errorText}) =>
+      InputDecoration(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        border: Constants.formInputBorder,
+        helperText: helperText,
+        helperMaxLines: 2,
+        labelText: labelText,
+        errorMaxLines: 2,
+        errorText: errorText,
+      );
+
+  // data
+  static const pricesInputs = ['£', '££', '£££', "££££"];
+  static const tags = [
+    "Fancy",
+    "Chinese",
+    "Indian",
+    "Fast Food",
+    "Date Night",
+    "Casual",
+    "Steak",
+    "Pizza",
+  ];
 }

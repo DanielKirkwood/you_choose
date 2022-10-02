@@ -1,6 +1,6 @@
 part of 'form_bloc.dart';
 
-enum Status { signIn, signUp }
+enum Status { signIn, signUp, createGroup }
 
 abstract class FormEvent extends Equatable {
   const FormEvent();
@@ -25,6 +25,22 @@ class PasswordChanged extends FormEvent {
   List<Object> get props => [password];
 }
 
+class GroupNameChanged extends FormEvent {
+  final String groupName;
+  const GroupNameChanged(this.groupName);
+
+  @override
+  List<Object> get props => [groupName];
+}
+
+class GroupMembersChanged extends FormEvent {
+  final List<String> groupMembers;
+  const GroupMembersChanged(this.groupMembers);
+
+  @override
+  List<Object> get props => [groupMembers];
+}
+
 class UsernameChanged extends FormEvent {
   final String username;
   const UsernameChanged(this.username);
@@ -43,6 +59,13 @@ class FormSubmitted extends FormEvent {
 
 class FormSucceeded extends FormEvent {
   const FormSucceeded();
+
+  @override
+  List<Object> get props => [];
+}
+
+class FormReset extends FormEvent {
+  const FormReset();
 
   @override
   List<Object> get props => [];

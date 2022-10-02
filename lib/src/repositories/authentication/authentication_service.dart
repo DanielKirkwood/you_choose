@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/models/auth_result_status.dart';
-import 'package:you_choose/src/models/user.dart';
+import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 class AuthenticationService {
@@ -40,6 +39,7 @@ class AuthenticationService {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
+      return null;
     }
   }
 
@@ -48,16 +48,12 @@ class AuthenticationService {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: user.email!, password: user.password!);
-
-      if (userCredential.user != null) {
-        logger.i('signIn user ${userCredential.user!.uid}');
-      }
-
       return userCredential;
     } catch (error) {
       AuthResultStatus status = handleException(error);
       String errorMessage = generateExceptionMessage(status);
       logger.e(errorMessage);
+      return null;
     }
   }
 

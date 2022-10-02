@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import 'package:you_choose/src/models/models.dart';
 
-class Restaurant {
+class Restaurant extends Equatable {
   final String name;
   final int price;
   final String description;
-  final List<String> tags;
+  final List<Tag>? tags;
   final Object lastModified;
 
   Restaurant(
       {required this.name,
         required this.price,
         required this.description,
-        required this.tags,
+      this.tags,
       Timestamp? lastModified})
       : lastModified = lastModified ?? FieldValue.serverTimestamp();
 
@@ -29,7 +31,6 @@ class Restaurant {
         name: data?['name'],
         price: data?['price'],
         description: data?['description'],
-        tags: data?['tags'] is Iterable ? List.from(data?['tags']) : [],
         lastModified: data?['lastModified']);
   }
 
@@ -38,8 +39,10 @@ class Restaurant {
       "name": name,
       "price": price,
       "description": description,
-      "tags": tags,
       "lastModified": lastModified
     };
   }
+
+  @override
+  List<Object?> get props => [name, price, description, tags, lastModified];
 }
