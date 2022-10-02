@@ -23,6 +23,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
           children: <Widget>[
             TopHeader(
                 title: 'Groups',
+                label: 'Add Group',
                 onPress: () => Navigator.pushNamed(context, '/add-group')),
             searchBar(),
             BlocBuilder<GroupBloc, GroupState>(
