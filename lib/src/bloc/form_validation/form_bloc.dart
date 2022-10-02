@@ -44,7 +44,7 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
   );
 
   final RegExp _usernameRegExp = RegExp(
-    r'^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$',
+    r'^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$',
   );
 
   final RegExp _groupNameRegExp = RegExp(r'^[A-Za-z0-9-]{1,25}$');

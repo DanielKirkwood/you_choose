@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/bloc/form_validation/form_bloc.dart';
 import 'package:you_choose/src/screens/authentication/sign_up_screen.dart';
-import 'package:you_choose/src/screens/home_screen.dart';
+import 'package:you_choose/src/screens/home/home_screen.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 OutlineInputBorder border = const OutlineInputBorder(

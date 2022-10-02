@@ -4,7 +4,7 @@ import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/screens/add_group_screen.dart';
 import 'package:you_choose/src/screens/add_restaurant.dart';
 import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
-import 'package:you_choose/src/screens/home_screen.dart';
+import 'package:you_choose/src/screens/home/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
