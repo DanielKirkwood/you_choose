@@ -4,7 +4,6 @@ import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
 import 'package:you_choose/src/screens/home/groups_screen.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
-import 'package:you_choose/src/widgets/speed_dial.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,7 +27,7 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           body: const GroupsScreen(),
-          floatingActionButton: const SpeedDialButton(),
+          // floatingActionButton: const SpeedDialButton(),
           bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: Constants.kDarkBlueColor,
             unselectedItemColor: Constants.kBlackColor,
@@ -37,15 +36,15 @@ class HomeScreen extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             items: const [
               BottomNavigationBarItem(
-                icon: Icon(Icons.message),
-                label: 'Chats',
+                icon: Icon(Icons.group),
+                label: 'Groups',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.group_work),
-                label: 'Channels',
+                icon: Icon(Icons.add),
+                label: 'Add',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.account_box),
+                icon: Icon(Icons.account_circle),
                 label: 'Profile',
               ),
             ],
