@@ -43,7 +43,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return GroupListTile(
-                          name: state.groups[index].name!,
+                          group: state.groups[index],
                           numRestaurants: 40,
                         );
                       },
