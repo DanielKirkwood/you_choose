@@ -15,7 +15,7 @@ class AddRestaurantScreen extends StatefulWidget {
 
 class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
   String _name = '';
-  int _selectedPrice = 0;
+  int _selectedPrice = 1;
   String _description = '';
   List<Tag> _tags = [];
   List<Group> _groups = [];
