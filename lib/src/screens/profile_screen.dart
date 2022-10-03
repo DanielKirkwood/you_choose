@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/screens/edit_profile_screen.dart';
 import 'package:you_choose/src/widgets/appbar_widget.dart';
 import 'package:you_choose/src/widgets/profile_widget.dart';
 
@@ -13,8 +14,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +27,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileWidget(
                   imagePath:
                       'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
-                  onClicked: () async {},
+                  onClicked: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const EditProfileScreen()),
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
                 buildName(state.user!),
