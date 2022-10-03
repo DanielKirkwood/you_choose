@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:you_choose/src/models/models.dart';
@@ -45,4 +46,18 @@ class Restaurant extends Equatable {
 
   @override
   List<Object?> get props => [name, price, description, tags, lastModified];
+
+  Restaurant copyWith({
+    String? name,
+    int? price,
+    String? description,
+    List<Tag>? tags,
+  }) {
+    return Restaurant(
+      name: name ?? this.name,
+      price: price ?? this.price,
+      description: description ?? this.description,
+      tags: tags ?? this.tags,
+    );
+  }
 }

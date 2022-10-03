@@ -19,11 +19,12 @@ class RestaurantLoading extends RestaurantState {
 
 class RestaurantsLoaded extends RestaurantState {
   final List<Restaurant> restaurants;
+  final String groupID;
 
-  const RestaurantsLoaded({required this.restaurants});
+  const RestaurantsLoaded({required this.restaurants, required this.groupID});
 
   @override
-  List<Object> get props => [restaurants];
+  List<Object> get props => [restaurants, groupID];
 }
 
 class RestaurantAdded extends RestaurantState {
