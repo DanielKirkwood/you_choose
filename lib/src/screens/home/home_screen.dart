@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
@@ -26,7 +27,11 @@ class HomeScreen extends StatelessWidget {
       }),
       builder: (context, state) {
         return Scaffold(
-          body: const GroupsScreen(),
+
+          body: const AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.dark,
+            child: GroupsScreen(),
+          ),
           // floatingActionButton: const SpeedDialButton(),
           bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: Constants.kDarkBlueColor,

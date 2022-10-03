@@ -45,7 +45,11 @@ class AddGroupScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           systemOverlayStyle:
-              const SystemUiOverlayStyle(statusBarColor: Colors.blue),
+              const SystemUiOverlayStyle(
+            statusBarColor: Colors.blue,
+            statusBarBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.dark,
+          ),
           title: const Text(Constants.textAddGroupTitle),
         ),
         backgroundColor: Constants.kPrimaryColor,

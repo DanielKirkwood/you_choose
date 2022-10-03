@@ -3,9 +3,14 @@ import 'package:you_choose/src/util/constants/constants.dart';
 
 class TopHeader extends StatelessWidget {
   final String title;
+  final String label;
   final void Function() onPress;
 
-  const TopHeader({super.key, required this.title, required this.onPress});
+  const TopHeader(
+      {super.key,
+      required this.title,
+      required this.onPress,
+      this.label = 'Add New'});
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +35,20 @@ class TopHeader extends StatelessWidget {
               child: InkWell(
                 onTap: onPress,
                 child: Row(
-                  children: const <Widget>[
-                    Icon(
+                  children: <Widget>[
+                    const Icon(
                       Icons.add,
                       color: Constants.kDarkBlueColor,
                       size: 20,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 2,
                     ),
                     Text(
-                      "Add New",
+                      label,
                       style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

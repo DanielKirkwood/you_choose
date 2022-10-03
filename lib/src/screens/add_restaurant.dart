@@ -15,7 +15,7 @@ class AddRestaurantScreen extends StatefulWidget {
 
 class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
   String _name = '';
-  int _selectedPrice = 0;
+  int _selectedPrice = 1;
   String _description = '';
   List<Tag> _tags = [];
   List<Group> _groups = [];
@@ -84,7 +84,7 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
                           items: Constants.pricesInputs
                               .map<DropdownMenuItem<int>>((String value) {
                             return DropdownMenuItem<int>(
-                              value: value.length - 1,
+                              value: value.length,
                               child: Text(value),
                             );
                           }).toList(),
@@ -169,7 +169,6 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
                                   description: _description,
                                   tags: _tags);
 
-                              print(newRestaurant);
 
                               BlocProvider.of<RestaurantBloc>(context).add(
                                   AddRestaurant(

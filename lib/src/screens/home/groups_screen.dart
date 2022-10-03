@@ -23,6 +23,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
           children: <Widget>[
             TopHeader(
                 title: 'Groups',
+                label: 'Add Group',
                 onPress: () => Navigator.pushNamed(context, '/add-group')),
             searchBar(),
             BlocBuilder<GroupBloc, GroupState>(
@@ -43,7 +44,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return GroupListTile(
-                          name: state.groups[index].name!,
+                          group: state.groups[index],
                           numRestaurants: 40,
                         );
                       },

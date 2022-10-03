@@ -75,19 +75,41 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<List<Restaurant?>> getRestaurantData() async {
-    List<Restaurant?> restaurants = [];
+  Future<List<Restaurant>> getRestaurantData(String groupID) async {
+    List<Restaurant> restaurants = [];
 
-    QuerySnapshot<Restaurant> snapshot = await _db
+    final groupDocument = _db.collection('groups').doc(groupID);
+
+    final restaurantsCollection = groupDocument
         .collection('restaurants')
         .withConverter(
             fromFirestore: Restaurant.fromFirestore,
             toFirestore: (Restaurant restaurant, options) =>
-                restaurant.toFirestore())
-        .get();
+                restaurant.toFirestore());
 
-    for (var i = 0; i < snapshot.size; i++) {
-      restaurants.add(snapshot.docs[i].data());
+    final restaurantQuery = await restaurantsCollection.get();
+
+    for (var i = 0; i < restaurantQuery.size; i++) {
+      String restaurantId = restaurantQuery.docs[i].id;
+      Restaurant restaurant = restaurantQuery.docs[i].data();
+      List<Tag> tags = [];
+
+      final tagsCollection = groupDocument
+          .collection('restaurants')
+          .doc(restaurantId)
+          .collection('tags')
+          .withConverter(
+              fromFirestore: Tag.fromFirestore,
+              toFirestore: (Tag tag, options) => tag.toFirestore());
+
+      QuerySnapshot<Tag> tagQuery = await tagsCollection.get();
+
+      for (var i = 0; i < tagQuery.size; i++) {
+        tags.add(tagQuery.docs[i].data());
+      }
+
+      restaurant = restaurant.copyWith(tags: tags);
+      restaurants.add(restaurant);
     }
 
     return restaurants;
