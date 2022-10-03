@@ -63,7 +63,7 @@ class RestaurantCard extends StatelessWidget {
                   children: List.generate(tags.length, (index) {
                     return Text(
                       tags[index].name,
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Constants.kDarkBlueColor),
                     );
                   }))
             ],
