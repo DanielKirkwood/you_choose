@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/widgets/appbar_widget.dart';
-import 'package:you_choose/src/widgets/button_widget.dart';
 import 'package:you_choose/src/widgets/profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -12,32 +13,33 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  UserModel user = UserModel(
-      uid: 'uid',
-      username: 'twinsdd',
-      email: 'user@email.com',
-      isVerified: true,
-      password: 'password123');
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          ProfileWidget(
-            imagePath:
-                'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
-            onClicked: () async {},
-          ),
-          const SizedBox(height: 24),
-          buildName(user),
-          const SizedBox(height: 24),
-          Center(child: buildUpgradeButton()),
-          const SizedBox(height: 24),
-          buildAbout(user),
-        ],
+      body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          if (state is AuthenticationSuccess) {
+            return ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                ProfileWidget(
+                  imagePath:
+                      'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
+                  onClicked: () async {},
+                ),
+                const SizedBox(height: 24),
+                buildName(state.user!),
+                const SizedBox(height: 24),
+                buildFriends(state.user!),
+              ],
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
@@ -56,23 +58,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       );
 
-  Widget buildUpgradeButton() => ButtonWidget(
-        text: 'Upgrade To PRO',
-        onClicked: () {},
-      );
-
-  Widget buildAbout(UserModel user) => Container(
+  Widget buildFriends(UserModel user) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             Text(
-              'About',
+              'Friends',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Text(
-              'Test',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer non semper urna. Donec posuere lobortis ligula, id venenatis ante bibendum ut. Aliquam erat volutpat. Phasellus.',
               style: TextStyle(fontSize: 16, height: 1.4),
             ),
           ],
