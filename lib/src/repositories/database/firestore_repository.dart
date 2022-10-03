@@ -75,10 +75,12 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<List<Restaurant?>> getRestaurantData() async {
-    List<Restaurant?> restaurants = [];
+  Future<List<Restaurant>> getRestaurantData(String groupID) async {
+    List<Restaurant> restaurants = [];
 
-    QuerySnapshot<Restaurant> snapshot = await _db
+    QuerySnapshot<Restaurant> restaurantsCollection = await _db
+        .collection('groups')
+        .doc(groupID)
         .collection('restaurants')
         .withConverter(
             fromFirestore: Restaurant.fromFirestore,
@@ -86,8 +88,8 @@ class FirestoreRepository implements DatabaseRepository {
                 restaurant.toFirestore())
         .get();
 
-    for (var i = 0; i < snapshot.size; i++) {
-      restaurants.add(snapshot.docs[i].data());
+    for (var i = 0; i < restaurantsCollection.size; i++) {
+      restaurants.add(restaurantsCollection.docs[i].data());
     }
 
     return restaurants;

@@ -14,7 +14,14 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
   }
 
   _onLoadRestaurants(LoadRestaurants event, Emitter emit) async {
-    throw UnimplementedError();
+    try {
+      List<Restaurant> restaurants =
+          await _dbRepository.getRestaurantData(event.groupId);
+      emit(RestaurantsLoaded(restaurants: restaurants));
+    } catch (e) {
+      emit(const RestaurantError(
+          message: 'There was an error loading the restaurants"'));
+    }
   }
 
   _onAddRestaurant(AddRestaurant event, Emitter emit) async {
