@@ -6,6 +6,7 @@ import 'package:you_choose/src/screens/add_group_screen.dart';
 import 'package:you_choose/src/screens/add_restaurant.dart';
 import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
 import 'package:you_choose/src/screens/home/home_screen.dart';
+import 'package:you_choose/src/screens/profile_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/add-restaurant': (context) =>
             const BlocNavigate(screen: AddRestaurantScreen()),
         '/add-group': (context) => const BlocNavigate(screen: AddGroupScreen()),
+        '/profile': (context) => const BlocNavigate(screen: ProfileScreen()),
       },
     );
   }
