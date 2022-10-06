@@ -1,14 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
+import 'package:you_choose/src/util/constants/constants.dart';
 import 'package:you_choose/src/widgets/appbar_widget.dart';
 import 'package:you_choose/src/widgets/button_widget.dart';
-import 'package:you_choose/src/widgets/profile_text_field.dart';
+import 'package:you_choose/src/widgets/create_snackbar.dart';
 import 'package:you_choose/src/widgets/profile_widget.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -19,10 +16,36 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  String _filepath =
-      'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80';
+
+  final RegExp _passwordRegExp = RegExp(
+    r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
+  );
+
+  bool _isPasswordValid(String password) {
+    return _passwordRegExp.hasMatch(password);
+  }
+
+  Future<XFile?> _pickImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+      if (image == null) return null;
+
+      return image;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String? _newUsername;
+  String? _newPassword;
+  XFile? _profileImage;
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: buildAppBar(context),
       body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -34,46 +57,85 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 ProfileWidget(
                   isEdit: true,
-                  imagePath: _filepath,
+                  imagePath: state.user!.profileImage!,
                   onClicked: () async {
-                    try {
-                      final ImagePicker picker = ImagePicker();
-                      final XFile? image =
-                          await picker.pickImage(source: ImageSource.gallery);
+                    XFile? image = await _pickImage();
 
-                      if (image == null) return;
-
-                      final directory =
-                          await getApplicationDocumentsDirectory();
-                      final name = basename(image.path);
-                      final imageFile = File('${directory.path}/$name');
-                      final newImage =
-                          await File(image.path).copy(imageFile.path);
-
-                      setState(() {
-                        _filepath = newImage.path;
-                      });
-                    } catch (e) {
-                      // TODO: show snackbar error
-                      print(e.toString());
+                    if (image == null) {
+                      createSnackBar(
+                          message: "Could not update image",
+                          error: true,
+                          context: context);
                       return;
                     }
+
+                    setState(() {
+                      _profileImage = image;
+                    });
                   },
                 ),
                 const SizedBox(height: 24),
-                TextFieldWidget(
-                    label: 'Username',
-                    text: state.user!.username!,
-                    onChanged: (String name) {}),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                    label: 'Email',
-                    text: state.user!.email!,
-                    onChanged: (String email) {}),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: size.width * 0.8,
+                      child: TextFormField(
+                        initialValue: state.user?.username!,
+                        keyboardType: TextInputType.text,
+                        maxLines: 1,
+                        decoration: Constants.formInputDecoration(
+                            labelText: 'Username', errorText: null),
+                        onChanged: (String value) {
+                          setState(() {
+                            _newUsername = value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: size.width * 0.8,
+                      child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        obscureText: true,
+                        maxLines: 1,
+                        decoration: Constants.formInputDecoration(
+                            labelText: 'Password', errorText: null),
+                        onChanged: (String value) {
+                          setState(() {
+                            _newPassword = value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (!_isPasswordValid(value)) {
+                            return 'Password is not valid';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 24),
                 ButtonWidget(
                   text: 'Save',
                   onClicked: () {
+                    // profile image changed
+                    if (_profileImage != null) {
+                      BlocProvider.of<AuthenticationBloc>(context).add(
+                          AuthenticationProfileImageChanged(
+                              newImage: _profileImage!, uid: state.user!.uid!));
+                    }
+
                     Navigator.of(context).pop();
                   },
                 ),

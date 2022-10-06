@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -33,15 +31,23 @@ class ProfileWidget extends StatelessWidget {
   }
 
   Widget buildImage() {
-    final image = imagePath.contains('https://')
-        ? NetworkImage(imagePath)
-        : FileImage(File(imagePath));
+
+    Image image = Image.network(
+      imagePath,
+      width: 128,
+      height: 128,
+    );
+    // final image = imagePath.contains('https://')
+    //     ? NetworkImage(imagePath)
+    //     : FileImage(File(imagePath));
+
+    // final image = NetworkImage(imagePath);
 
     return ClipOval(
       child: Material(
         color: Colors.transparent,
         child: Ink.image(
-          image: image as ImageProvider,
+          image: image.image,
           fit: BoxFit.cover,
           width: 128,
           height: 128,

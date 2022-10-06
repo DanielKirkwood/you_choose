@@ -1,14 +1,21 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/repositories/database/database_repository.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 class FirestoreRepository implements DatabaseRepository {
   final FirebaseFirestore _db;
+  final FirebaseStorage _storage;
   var logger = getLogger('DatabaseRepositoryImpl');
 
-  FirestoreRepository({FirebaseFirestore? firebaseFirestore})
-      : _db = firebaseFirestore ?? FirebaseFirestore.instance;
+  FirestoreRepository(
+      {FirebaseFirestore? firebaseFirestore, FirebaseStorage? firebaseStorage})
+      : _db = firebaseFirestore ?? FirebaseFirestore.instance,
+        _storage = firebaseStorage ?? FirebaseStorage.instance;
 
   @override
   Future<void> addUserData(UserModel user) async {
@@ -222,5 +229,55 @@ class FirestoreRepository implements DatabaseRepository {
       logger.e(error.toString());
       rethrow;
     }
+  }
+
+  Future<String> getProfileImage(String uid) async {
+    var storageRef = _storage.ref().child('user/profile/$uid');
+
+    return storageRef.getDownloadURL();
+  }
+
+  /// The user selects a file, and the task is added to the list.
+  Future<UploadTask> uploadFile(XFile file, String uid) async {
+    UploadTask uploadTask;
+
+    // Create a Reference to the file
+    Reference ref =
+        _storage.ref().child('user').child('profile').child("$uid.jpg");
+
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': file.path},
+    );
+
+    uploadTask = ref.putFile(File(file.path), metadata);
+
+    return Future.value(uploadTask);
+  }
+
+  // Future<String> uploadFile(File file, String uid) async {
+  //   var storageRef = _storage.ref().child('user/profile/$uid');
+
+  //   try {
+  //     TaskSnapshot task = await storageRef.putFile(file);
+
+  //     String downloadUrl = await task.ref.getDownloadURL();
+  //     return downloadUrl;
+  //   } catch (e) {
+  //     logger.w(e.toString());
+  //     return "";
+  //   }
+  // }
+
+  Future<void> updateProfileImage(XFile image, String uid) async {
+    UploadTask task = await uploadFile(image, uid);
+
+    String downloadURL = await getProfileImage(uid);
+
+    final ref = _db.collection('users').doc(uid);
+
+    await ref.update({
+      "profileImage": downloadURL,
+    });
   }
 }

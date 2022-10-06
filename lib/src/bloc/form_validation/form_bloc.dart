@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
+import 'package:you_choose/src/util/constants/constants.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 part 'form_event.dart';
@@ -178,7 +179,9 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         UserCredential? authUser = await _authenticationRepository.signUp(user);
 
         UserModel updatedUser = user.copyWith(
-            uid: authUser!.user!.uid, isVerified: authUser.user!.emailVerified);
+            uid: authUser!.user!.uid,
+            isVerified: authUser.user!.emailVerified,
+            profileImage: Constants.defaultProfileImage);
 
         await _databaseRepository.addUserData(updatedUser);
         if (updatedUser.isVerified!) {

@@ -21,25 +21,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is AuthenticationSuccess) {
-            return ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                ProfileWidget(
-                  imagePath:
-                      'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
-                  onClicked: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen()),
-                    );
-                  },
+
+            return Stack(children: [
+              ListView(
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  ProfileWidget(
+                    imagePath:
+                        state.user!.profileImage!,
+                    onClicked: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const EditProfileScreen()),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  buildName(state.user!),
+                  const SizedBox(height: 24),
+                  buildFriends(state.user!),
+                ],
+              ),
+              Positioned(
+                bottom: 0,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: TextButton(
+                      onPressed: () =>
+                          BlocProvider.of<AuthenticationBloc>(context)
+                              .add(AuthenticationSignedOut()),
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(color: Colors.red),
+                      )),
                 ),
-                const SizedBox(height: 24),
-                buildName(state.user!),
-                const SizedBox(height: 24),
-                buildFriends(state.user!),
-              ],
-            );
+              ),
+            ]);
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -73,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 16),
             Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer non semper urna. Donec posuere lobortis ligula, id venenatis ante bibendum ut. Aliquam erat volutpat. Phasellus.',
+              'Test',
               style: TextStyle(fontSize: 16, height: 1.4),
             ),
           ],

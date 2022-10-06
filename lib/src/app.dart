@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) {
-            return AuthenticationBloc(FirebaseAuthRepository())
+            return AuthenticationBloc(
+                FirebaseAuthRepository(), FirestoreRepository())
               ..add(AuthenticationStarted());
           }),
           BlocProvider(create: (context) {

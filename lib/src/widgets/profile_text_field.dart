@@ -4,13 +4,17 @@ import 'package:you_choose/src/util/constants/constants.dart';
 class TextFieldWidget extends StatefulWidget {
   final String label;
   final String text;
+  final String? errorMessage;
+  final bool isPassword;
   final ValueChanged<String> onChanged;
 
   const TextFieldWidget(
       {super.key,
       required this.label,
       required this.text,
-      required this.onChanged});
+      required this.onChanged,
+      this.isPassword = false,
+      this.errorMessage});
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -45,7 +49,10 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         const SizedBox(height: 8),
         TextField(
           controller: controller,
-          decoration: const InputDecoration(border: Constants.formInputBorder),
+            decoration: InputDecoration(
+                border: Constants.formInputBorder,
+                errorText: widget.errorMessage),
+            obscureText: widget.isPassword
         )
       ],
     );

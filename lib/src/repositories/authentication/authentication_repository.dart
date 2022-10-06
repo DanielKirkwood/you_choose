@@ -7,4 +7,5 @@ abstract class AuthenticationRepository {
   Future<UserCredential?> signIn(UserModel user);
   Future<void> signOut();
   Future<UserModel?> getUserData(UserModel user);
+  Future<void> changeUserPassword(String newPassword);
 }
