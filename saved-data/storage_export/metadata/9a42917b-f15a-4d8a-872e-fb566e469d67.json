@@ -1,0 +1,21 @@
+{
+  "name": "user/profile/zUQaMZQ7Cv1TOjxfrxE2My4MaupI.jpg",
+  "bucket": "restaurant-picker-flutter.appspot.com",
+  "metageneration": 1,
+  "generation": 1665139130092,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "e9f4c4f0-7100-4139-84a2-a46058dde8d2"
+  ],
+  "etag": "l0AG0XKJz7kCDIcTyJiONF+iZbs",
+  "customMetadata": {
+    "picked-file-path": "/Users/danielkirkwood/Library/Developer/CoreSimulator/Devices/2C0AAF2E-98C5-4631-BB26-3A597D056104/data/Containers/Data/Application/EB48A7E9-3891-4FC4-863C-321E6BC0CF7B/tmp/image_picker_14C970E8-587E-47E3-B6B9-8DE54BC87F39-53340-00000B6AE7CD69EC.jpg"
+  },
+  "timeCreated": "2022-10-07T10:38:50.093Z",
+  "updated": "2022-10-07T10:38:50.093Z",
+  "size": 988960,
+  "md5Hash": "sciV6SuItUOXm6mHu4I24w==",
+  "crc32c": "2912815243"
+}
