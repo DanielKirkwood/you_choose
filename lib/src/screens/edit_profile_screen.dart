@@ -48,7 +48,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context: context, hasBackButton: true),
       body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is AuthenticationSuccess) {

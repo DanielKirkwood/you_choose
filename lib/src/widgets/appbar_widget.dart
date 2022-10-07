@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-AppBar buildAppBar(BuildContext context) {
+AppBar buildAppBar(
+    {required BuildContext context, required bool hasBackButton}) {
   return AppBar(
-    leading: const BackButton(
-      color: Colors.black,
-    ),
+    leading: hasBackButton
+        ? const BackButton(
+            color: Colors.black,
+          )
+        : null,
     backgroundColor: Colors.transparent,
     elevation: 0,
     actions: [
