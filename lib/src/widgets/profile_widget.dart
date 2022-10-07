@@ -1,12 +1,15 @@
+import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String imagePath;
+  final String uid;
   final VoidCallback onClicked;
   final bool isEdit;
 
   const ProfileWidget({
     Key? key,
+    required this.uid,
     required this.imagePath,
     required this.onClicked,
     this.isEdit = false,
@@ -31,29 +34,14 @@ class ProfileWidget extends StatelessWidget {
   }
 
   Widget buildImage() {
-
-    Image image = Image.network(
-      imagePath,
-      width: 128,
-      height: 128,
-    );
-    // final image = imagePath.contains('https://')
-    //     ? NetworkImage(imagePath)
-    //     : FileImage(File(imagePath));
-
-    // final image = NetworkImage(imagePath);
-
-    return ClipOval(
-      child: Material(
-        color: Colors.transparent,
-        child: Ink.image(
-          image: image.image,
-          fit: BoxFit.cover,
-          width: 128,
-          height: 128,
-          child: InkWell(onTap: onClicked),
-        ),
-      ),
+    return InkWell(
+      onTap: onClicked,
+      child: RemotePicture(
+          imagePath: imagePath,
+          mapKey: uid,
+          useAvatarView: true,
+          avatarViewRadius: 60,
+          fit: BoxFit.cover),
     );
   }
 

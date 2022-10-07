@@ -27,6 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 physics: const BouncingScrollPhysics(),
                 children: [
                   ProfileWidget(
+                    uid: state.user!.uid!,
                     imagePath:
                         state.user!.profileImage!,
                     onClicked: () {

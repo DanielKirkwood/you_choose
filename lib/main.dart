@@ -38,23 +38,24 @@ Future<void> _setupEmulators() async {
 
 Future<void> main() async {
   var logger = getLogger('main');
+  const bool isProduction = bool.fromEnvironment('dart.vm.product');
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  Bloc.observer = MyBlocObserver();
-
-  final storage = await HydratedStorage.build(
-      storageDirectory: await getTemporaryDirectory());
-
-  const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
   if (!isProduction) {
     logger.d('Connecting to firebase emulators');
 
     await _setupEmulators();
   }
+
+
+  Bloc.observer = MyBlocObserver();
+
+  final storage = await HydratedStorage.build(
+      storageDirectory: await getTemporaryDirectory());
 
   HydratedBlocOverrides.runZoned(
     () => runApp(const MyApp()),

@@ -255,29 +255,8 @@ class FirestoreRepository implements DatabaseRepository {
     return Future.value(uploadTask);
   }
 
-  // Future<String> uploadFile(File file, String uid) async {
-  //   var storageRef = _storage.ref().child('user/profile/$uid');
-
-  //   try {
-  //     TaskSnapshot task = await storageRef.putFile(file);
-
-  //     String downloadUrl = await task.ref.getDownloadURL();
-  //     return downloadUrl;
-  //   } catch (e) {
-  //     logger.w(e.toString());
-  //     return "";
-  //   }
-  // }
 
   Future<void> updateProfileImage(XFile image, String uid) async {
-    UploadTask task = await uploadFile(image, uid);
-
-    String downloadURL = await getProfileImage(uid);
-
-    final ref = _db.collection('users').doc(uid);
-
-    await ref.update({
-      "profileImage": downloadURL,
-    });
+    await uploadFile(image, uid);
   }
 }

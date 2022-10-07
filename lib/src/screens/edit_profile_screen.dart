@@ -1,3 +1,4 @@
+import 'package:cached_firestorage/cached_firestorage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -56,6 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               physics: const BouncingScrollPhysics(),
               children: [
                 ProfileWidget(
+                  uid: state.user!.uid!,
                   isEdit: true,
                   imagePath: state.user!.profileImage!,
                   onClicked: () async {
@@ -131,9 +133,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onClicked: () {
                     // profile image changed
                     if (_profileImage != null) {
+
                       BlocProvider.of<AuthenticationBloc>(context).add(
                           AuthenticationProfileImageChanged(
                               newImage: _profileImage!, uid: state.user!.uid!));
+
+                      CachedFirestorage.instance
+                          .removeCacheEntry(mapKey: state.user!.uid!);
                     }
 
                     Navigator.of(context).pop();

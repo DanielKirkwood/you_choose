@@ -49,6 +49,7 @@ dependencies:
   json_annotation: ^4.7.0
   path: ^1.8.1
   firebase_storage: ^10.3.10
+  cached_firestorage: ^0.1.4
 
 dev_dependencies:
   flutter_test:

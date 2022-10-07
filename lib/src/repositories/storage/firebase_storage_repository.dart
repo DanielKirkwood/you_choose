@@ -18,17 +18,16 @@ class FirebaseStorageRepository implements StorageRepository {
   }
 
   @override
-  Future<String> uploadFile(File file, String uid) async {
+  Future<void> uploadFile(File file, String uid) async {
     var storageRef = _storage.ref().child('user/profile/$uid');
 
     try {
       await storageRef.putFile(file);
 
-      String downloadUrl = await storageRef.getDownloadURL();
-      return downloadUrl;
+      return;
     } catch (e) {
       logger.w(e.toString());
-      return "";
+      return;
     }
   }
 }
