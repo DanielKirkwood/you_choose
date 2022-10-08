@@ -74,4 +74,6 @@ class Constants {
     "Steak",
     "Pizza",
   ];
+  static const defaultProfileImage =
+      "gs://restaurant-picker-flutter.appspot.com/user/profile/default_profile.jpg";
 }

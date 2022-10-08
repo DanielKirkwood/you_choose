@@ -158,4 +158,18 @@ class FirebaseAuthRepository implements AuthenticationRepository {
 
     return errorMessage;
   }
+
+  @override
+  Future<void> changeUserPassword(String newPassword) async {
+    try {
+      User? currentUser = _auth.currentUser;
+
+      await currentUser?.updatePassword(newPassword);
+    } on FirebaseAuthException catch (error) {
+      AuthResultStatus status = handleException(error);
+      String errorMessage = generateExceptionMessage(status);
+      logger.e(errorMessage);
+      throw FirebaseAuthException(code: error.code, message: errorMessage);
+    }
+  }
 }

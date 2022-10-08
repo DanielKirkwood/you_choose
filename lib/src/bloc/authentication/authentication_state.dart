@@ -18,6 +18,10 @@ class AuthenticationSuccess extends AuthenticationState {
 
   @override
   List<Object?> get props => [user];
+
+  AuthenticationSuccess copyWith({UserModel? user}) {
+    return AuthenticationSuccess(user: user ?? this.user);
+  }
 }
 
 class AuthenticationFailure extends AuthenticationState {

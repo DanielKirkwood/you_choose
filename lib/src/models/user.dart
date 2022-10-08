@@ -6,6 +6,7 @@ class UserModel {
   String? email;
   bool? isVerified;
   String? password;
+  String? profileImage;
 
   UserModel({
     this.uid,
@@ -13,6 +14,7 @@ class UserModel {
     this.email,
     this.isVerified,
     this.password,
+      this.profileImage
   });
 
   @override
@@ -31,6 +33,7 @@ class UserModel {
       username: data?['username'],
       email: data?['email'],
       isVerified: data?['isVerified'],
+      profileImage: data?['profileImage'],
     );
   }
 
@@ -40,6 +43,7 @@ class UserModel {
       "uid": uid,
       "email": email,
       "isVerified": isVerified,
+      "profileImage": profileImage,
     };
   }
 
@@ -49,12 +53,14 @@ class UserModel {
     String? uid,
     String? email,
     String? password,
+    String? profileImage,
   }) {
     return UserModel(
         uid: uid ?? this.uid,
         email: email ?? this.email,
         username: username ?? this.username,
         isVerified: isVerified ?? this.isVerified,
-        password: password ?? this.password);
+        password: password ?? this.password,
+        profileImage: profileImage ?? this.profileImage);
   }
 }

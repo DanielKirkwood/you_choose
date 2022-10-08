@@ -4,10 +4,39 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/authentication/authentication_bloc.dart';
 import 'package:you_choose/src/screens/authentication/welcome_screen.dart';
 import 'package:you_choose/src/screens/home/groups_screen.dart';
-import 'package:you_choose/src/util/constants/constants.dart';
+import 'package:you_choose/src/screens/profile_screen.dart';
+import 'package:you_choose/src/widgets/bottom_nav_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selected = 0;
+
+  final screens = [
+    const AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: GroupsScreen(),
+    ),
+    const AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: GroupsScreen(),
+    ),
+    const AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: ProfileScreen(),
+    ),
+  ];
+
+  void _onTap(int value) {
+    setState(() {
+      _selected = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,32 +57,10 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
 
-          body: const AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child: GroupsScreen(),
-          ),
+          body: screens[_selected],
           // floatingActionButton: const SpeedDialButton(),
-          bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Constants.kDarkBlueColor,
-            unselectedItemColor: Constants.kBlackColor,
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.group),
-                label: 'Groups',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add),
-                label: 'Add',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle),
-                label: 'Profile',
-              ),
-            ],
-          ),
+          bottomNavigationBar:
+              BottomNavigation(currentIndex: _selected, onTap: _onTap),
         );
       },
     );
