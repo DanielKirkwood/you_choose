@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:you_choose/src/models/models.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
-import 'package:you_choose/src/util/constants/constants.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 part 'form_event.dart';
@@ -124,19 +123,15 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
 
   _onFormSubmitted(FormSubmitted event, Emitter<FormsValidate> emit) async {
     if (event.value == Status.signUp) {
-      UserModel user = UserModel(
-          email: state.email,
-          password: state.password,
-          username: state.username);
+      String email = state.email;
+      String password = state.password;
 
-      await _updateUIAndSignUp(event, emit, user);
+      await _updateUIAndSignUp(event, emit, email, password);
     } else if (event.value == Status.signIn) {
-      UserModel user = UserModel(
-          email: state.email,
-          password: state.password,
-          username: state.username);
+      String email = state.email;
+      String password = state.password;
 
-      await _authenticateUser(event, emit, user);
+      await _authenticateUser(event, emit, email, password);
     } else if (event.value == Status.createGroup) {
       Group group = Group(name: state.groupName, members: state.groupMembers);
 
@@ -153,7 +148,6 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         isLoading: true));
 
     if (state.isFormValid) {
-
       try {
         await _databaseRepository.addGroup(group);
 
@@ -166,8 +160,8 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
     }
   }
 
-  _updateUIAndSignUp(
-      FormSubmitted event, Emitter<FormsValidate> emit, UserModel user) async {
+  _updateUIAndSignUp(FormSubmitted event, Emitter<FormsValidate> emit,
+      String email, String password) async {
     emit(state.copyWith(
         errorMessage: "",
         isFormValid: _isPasswordValid(state.password) &&
@@ -176,15 +170,20 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         isLoading: true));
     if (state.isFormValid) {
       try {
-        UserCredential? authUser = await _authenticationRepository.signUp(user);
+        UserCredential authUser = await _authenticationRepository.signUp(
+            email: email, password: password);
 
-        UserModel updatedUser = user.copyWith(
-            uid: authUser!.user!.uid,
+        UserModel user = UserModel(
+          uid: authUser.user!.uid,
+          username: state.username,
+          email: email,
             isVerified: authUser.user!.emailVerified,
-            profileImage: Constants.defaultProfileImage);
+          useDefaultProfileImage: true,
+        );
 
-        await _databaseRepository.addUserData(updatedUser);
-        if (updatedUser.isVerified!) {
+
+        await _databaseRepository.addUserData(user);
+        if (user.isVerified) {
           emit(state.copyWith(isLoading: false, errorMessage: ""));
         } else {
           emit(state.copyWith(
@@ -207,7 +206,8 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
   }
 
   _authenticateUser(
-      FormSubmitted event, Emitter<FormsValidate> emit, UserModel user) async {
+      FormSubmitted event, Emitter<FormsValidate> emit,
+      String email, String password) async {
     emit(state.copyWith(
         errorMessage: "",
         isFormValid:
@@ -215,11 +215,19 @@ class FormBloc extends Bloc<FormEvent, FormsValidate> {
         isLoading: true));
     if (state.isFormValid) {
       try {
-        UserCredential? authUser = await _authenticationRepository.signIn(user);
+        UserCredential authUser = await _authenticationRepository.signIn(
+            email: email, password: password);
 
-        UserModel updatedUser =
-            user.copyWith(isVerified: authUser!.user!.emailVerified);
-        if (updatedUser.isVerified!) {
+        UserModel user = UserModel(
+          uid: authUser.user!.uid,
+          username: state.username,
+          email: email,
+          isVerified: authUser.user!.emailVerified,
+          useDefaultProfileImage: true,
+        );
+
+
+        if (user.isVerified) {
           emit(state.copyWith(isLoading: false, errorMessage: ""));
         } else {
           emit(state.copyWith(

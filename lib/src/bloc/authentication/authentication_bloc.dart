@@ -25,8 +25,9 @@ class AuthenticationBloc
   _onAuthenticationStarted(AuthenticationStarted event, Emitter emit) async {
     UserModel user = await _authenticationRepository.getCurrentUser().first;
 
-    if (user.uid != 'uid') {
-      UserModel? userData = await _authenticationRepository.getUserData(user);
+    if (user != const UserModel.empty()) {
+      UserModel userData =
+          await _authenticationRepository.getUserData(email: user.email);
 
       emit(AuthenticationSuccess(user: userData));
     } else {
@@ -52,8 +53,9 @@ class AuthenticationBloc
 
     UserModel user = await _authenticationRepository.getCurrentUser().first;
 
-    if (user.uid != 'uid') {
-      UserModel? userData = await _authenticationRepository.getUserData(user);
+    if (user != const UserModel.empty()) {
+      UserModel userData =
+          await _authenticationRepository.getUserData(email: user.email);
 
       emit(AuthenticationSuccess(user: userData));
     } else {

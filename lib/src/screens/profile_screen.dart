@@ -27,9 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 physics: const BouncingScrollPhysics(),
                 children: [
                   ProfileWidget(
-                    uid: state.user!.uid!,
-                    imagePath:
-                        state.user!.profileImage!,
+                    uid: state.user.uid,
+                    useDefault: state.user.useDefaultProfileImage,
                     onClicked: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -38,9 +37,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  buildName(state.user!),
+                  buildName(state.user),
                   const SizedBox(height: 24),
-                  buildFriends(state.user!),
+                  buildFriends(state.user),
                 ],
               ),
               Positioned(
@@ -69,12 +68,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget buildName(UserModel user) => Column(
         children: [
           Text(
-            user.username!,
+            user.username,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
           Text(
-            user.email!,
+            user.email,
             style: const TextStyle(color: Colors.grey),
           )
         ],

@@ -19,19 +19,25 @@ class FirebaseAuthRepository implements AuthenticationRepository {
   Stream<UserModel> getCurrentUser() {
     return _auth.authStateChanges().map((User? user) {
       if (user != null) {
-        return UserModel(uid: user.uid, email: user.email);
+        return UserModel(
+          uid: user.uid,
+          username: "",
+          email: user.email!,
+          isVerified: user.emailVerified,
+          useDefaultProfileImage: true,
+        );
       } else {
-        return UserModel(uid: 'uid');
+        return const UserModel.empty();
       }
     });
   }
 
   @override
-  Future<UserCredential?> signUp(UserModel user) async {
+  Future<UserCredential> signUp(
+      {required String email, required String password}) async {
     try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-              email: user.email!, password: user.password!);
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
 
       await verifyEmail();
 
@@ -45,10 +51,11 @@ class FirebaseAuthRepository implements AuthenticationRepository {
   }
 
   @override
-  Future<UserCredential?> signIn(UserModel user) async {
+  Future<UserCredential> signIn(
+      {required String email, required String password}) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: user.email!, password: user.password!);
+          email: email, password: password);
 
       return userCredential;
     } on FirebaseAuthException catch (error) {
@@ -69,13 +76,8 @@ class FirebaseAuthRepository implements AuthenticationRepository {
   }
 
   @override
-  Future<UserModel?> getUserData(UserModel user) async {
-    UserModel? dbUser = await _db.getUser(user);
-
-    if (dbUser == null) {
-      return null;
-    }
-
+  Future<UserModel> getUserData({required String email}) async {
+    UserModel dbUser = await _db.getUser(email: email);
     return dbUser;
   }
 
