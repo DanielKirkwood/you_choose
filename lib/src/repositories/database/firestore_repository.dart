@@ -45,40 +45,17 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<UserModel?> getUser(UserModel user) async {
-    if (user.uid != null) {
-      DocumentSnapshot<UserModel> snapshot = await _db
-          .collection('users')
-          .doc(user.uid)
-          .withConverter(
-              fromFirestore: UserModel.fromFirestore,
-              toFirestore: (UserModel user, options) => user.toFirestore())
-          .get();
-
-      return snapshot.data();
-    } else if (user.email != null) {
-      QuerySnapshot<UserModel> snapshot = await _db
+  Future<UserModel> getUser({required String email}) async {
+    QuerySnapshot<UserModel> snapshot = await _db
           .collection('users')
           .withConverter(
               fromFirestore: UserModel.fromFirestore,
               toFirestore: (UserModel user, options) => user.toFirestore())
-          .where('email', isEqualTo: user.email)
+        .where('email', isEqualTo: email)
           .get();
 
-      return snapshot.docs.first.data();
-    } else if (user.username != null) {
-      QuerySnapshot<UserModel> snapshot = await _db
-          .collection('users')
-          .withConverter(
-              fromFirestore: UserModel.fromFirestore,
-              toFirestore: (UserModel user, options) => user.toFirestore())
-          .where('username', isEqualTo: user.username)
-          .get();
+    return snapshot.docs.first.data();
 
-      return snapshot.docs.first.data();
-    } else {
-      return null;
-    }
   }
 
   @override

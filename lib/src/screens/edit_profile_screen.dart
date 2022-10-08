@@ -57,9 +57,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               physics: const BouncingScrollPhysics(),
               children: [
                 ProfileWidget(
-                  uid: state.user!.uid!,
+                  uid: state.user.uid,
                   isEdit: true,
-                  imagePath: state.user!.profileImage!,
+                  useDefault: state.user.useDefaultProfileImage,
+
                   onClicked: () async {
                     XFile? image = await _pickImage();
 
@@ -82,7 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       width: size.width * 0.8,
                       child: TextFormField(
-                        initialValue: state.user?.username!,
+                        initialValue: state.user.username,
                         keyboardType: TextInputType.text,
                         maxLines: 1,
                         decoration: Constants.formInputDecoration(
@@ -136,10 +137,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                       BlocProvider.of<AuthenticationBloc>(context).add(
                           AuthenticationProfileImageChanged(
-                              newImage: _profileImage!, uid: state.user!.uid!));
+                              newImage: _profileImage!, uid: state.user.uid));
 
                       CachedFirestorage.instance
-                          .removeCacheEntry(mapKey: state.user!.uid!);
+                          .removeCacheEntry(mapKey: state.user.uid);
                     }
 
                     Navigator.of(context).pop();

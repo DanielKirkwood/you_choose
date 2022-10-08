@@ -1,25 +1,43 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class UserModel {
-  String? uid;
-  String? username;
-  String? email;
-  bool? isVerified;
-  String? password;
-  String? profileImage;
+class UserModel extends Equatable {
+  final String uid;
+  final String username;
+  final String email;
+  final bool isVerified;
+  final bool useDefaultProfileImage;
 
-  UserModel({
-    this.uid,
-    this.username,
-    this.email,
-    this.isVerified,
-    this.password,
-      this.profileImage
-  });
+  const UserModel(
+      {required this.uid,
+      required this.username,
+      required this.email,
+      required this.isVerified,
+      required this.useDefaultProfileImage});
 
-  @override
-  String toString() {
-    return "uid: $uid, username: $username, email: $email";
+  const UserModel.empty()
+      : uid = "",
+        username = "",
+        email = "",
+        isVerified = false,
+        useDefaultProfileImage = true;
+
+  UserModel copyWith({
+    String? uid,
+    String? username,
+    String? email,
+    bool? isVerified,
+    bool? useDefaultProfileImage,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      isVerified: isVerified ?? this.isVerified,
+      useDefaultProfileImage:
+          useDefaultProfileImage ?? this.useDefaultProfileImage,
+    );
   }
 
   factory UserModel.fromFirestore(
@@ -33,34 +51,30 @@ class UserModel {
       username: data?['username'],
       email: data?['email'],
       isVerified: data?['isVerified'],
-      profileImage: data?['profileImage'],
+        useDefaultProfileImage: data?['useDefaultProfileImage']
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
       "username": username,
-      "uid": uid,
       "email": email,
       "isVerified": isVerified,
-      "profileImage": profileImage,
+      "useDefaultProfileImage": useDefaultProfileImage
     };
   }
 
-  UserModel copyWith({
-    bool? isVerified,
-    String? username,
-    String? uid,
-    String? email,
-    String? password,
-    String? profileImage,
-  }) {
-    return UserModel(
-        uid: uid ?? this.uid,
-        email: email ?? this.email,
-        username: username ?? this.username,
-        isVerified: isVerified ?? this.isVerified,
-        password: password ?? this.password,
-        profileImage: profileImage ?? this.profileImage);
+  @override
+  List<Object> get props {
+    return [
+      uid,
+      username,
+      email,
+      isVerified,
+      useDefaultProfileImage,
+    ];
   }
+
+  @override
+  bool get stringify => true;
 }

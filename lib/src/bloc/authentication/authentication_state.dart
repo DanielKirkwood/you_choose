@@ -4,20 +4,20 @@ abstract class AuthenticationState extends Equatable {
   const AuthenticationState();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class AuthenticationInitial extends AuthenticationState {
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class AuthenticationSuccess extends AuthenticationState {
-  final UserModel? user;
-  const AuthenticationSuccess({this.user});
+  final UserModel user;
+  const AuthenticationSuccess({required this.user});
 
   @override
-  List<Object?> get props => [user];
+  List<Object> get props => [user];
 
   AuthenticationSuccess copyWith({UserModel? user}) {
     return AuthenticationSuccess(user: user ?? this.user);
@@ -26,5 +26,5 @@ class AuthenticationSuccess extends AuthenticationState {
 
 class AuthenticationFailure extends AuthenticationState {
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }

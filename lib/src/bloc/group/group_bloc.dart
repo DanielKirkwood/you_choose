@@ -19,8 +19,8 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
   _onLoadGroups(LoadGroups event, Emitter emit) async {
     UserModel user = await _authenticationRepository.getCurrentUser().first;
 
-    if (user.uid != 'uid') {
-      List<Group> groups = await _dbRepository.getUserGroupData(user.uid!);
+    if (user != const UserModel.empty()) {
+      List<Group> groups = await _dbRepository.getUserGroupData(user.uid);
 
       emit(GroupLoaded(groups: groups));
     } else {
@@ -32,9 +32,9 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
     try {
       UserModel user = await _authenticationRepository.getCurrentUser().first;
 
-      if (user.uid != 'uid') {
+      if (user != const UserModel.empty()) {
         Group newGroup = Group(
-            name: event.name, members: [...event.groupMembers, user.uid!]);
+            name: event.name, members: [...event.groupMembers, user.uid]);
         Group updatedGroup = await _dbRepository.addGroup(newGroup);
         if (updatedGroup.id != null) {
           emit(GroupAdded(newGroup: updatedGroup));
