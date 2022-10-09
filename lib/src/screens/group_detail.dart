@@ -42,7 +42,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                       width: 2,
                     ),
                     Text(
-                      widget.group.name!,
+                      widget.group.name,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600),
                     ),
@@ -104,7 +104,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
           } else {
             context
                 .read<RestaurantBloc>()
-                .add(LoadRestaurants(groupId: widget.group.id!));
+                .add(LoadRestaurants(groupId: widget.group.id));
             return const Center(child: CircularProgressIndicator());
           }
         },

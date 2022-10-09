@@ -23,7 +23,7 @@ class GroupCubit extends Cubit<GroupState> {
 
     Group addedGroup = await _firestoreRepository.addGroup(group);
 
-    if (addedGroup.id != null) {
+    if (addedGroup.id != "") {
       emit(state.copyWith(
           status: GroupStatus.success, groups: [...state.groups, addedGroup]));
     } else {

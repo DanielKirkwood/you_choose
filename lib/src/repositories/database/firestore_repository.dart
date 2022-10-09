@@ -104,7 +104,7 @@ class FirestoreRepository implements DatabaseRepository {
     List<Group> groups = await retrieveUserGroupsOnly(uid);
 
     for (Group group in groups) {
-      List<Restaurant?> restaurants = await retrieveGroupRestaurants(group.id);
+      List<Restaurant> restaurants = await retrieveGroupRestaurants(group.id);
 
       group.copyWith(restaurants: restaurants);
     }
@@ -137,8 +137,8 @@ class FirestoreRepository implements DatabaseRepository {
     }
   }
 
-  Future<List<Restaurant?>> retrieveGroupRestaurants(String? id) async {
-    List<Restaurant?> restaurants = [];
+  Future<List<Restaurant>> retrieveGroupRestaurants(String? id) async {
+    List<Restaurant> restaurants = [];
 
     QuerySnapshot<Restaurant> snapshot = await _db
         .collection('groups')

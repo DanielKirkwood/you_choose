@@ -41,7 +41,7 @@ class _GroupListTileState extends State<GroupListTile> {
                     child: Container(
                       color: Colors.transparent,
                       child: Text(
-                        widget.group.name!,
+                        widget.group.name,
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
