@@ -37,14 +37,27 @@ class GroupView extends StatelessWidget {
             onPress: () => Navigator.pushNamed(context, '/add-group')),
         searchBar(),
         BlocConsumer<GroupCubit, GroupState>(
+          listenWhen: (previous, current) => previous.status != current.status,
           listener: (context, state) {
-            if (state.status == GroupStatus.initial) {
-              context.read<GroupCubit>().loadGroups(user.uid);
+            if (state.status == GroupStatus.failure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('There was an error fetching group data.'),
+                  ),
+                );
             }
           },
+          buildWhen: (previous, current) =>
+              previous.status != current.status ||
+              previous.groups != current.groups,
           builder: (context, state) {
-            if (state.status == GroupStatus.loading ||
-                state.status == GroupStatus.initial) {
+            if (state.status == GroupStatus.initial) {
+              context.read<GroupCubit>().loadGroups(user.uid);
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.status == GroupStatus.loading) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.status == GroupStatus.failure) {
