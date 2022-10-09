@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:you_choose/src/app/app.dart';
+import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/group/widgets/widgets.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
@@ -24,6 +26,8 @@ class GroupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -34,26 +38,40 @@ class GroupView extends StatelessWidget {
         searchBar(),
         BlocConsumer<GroupCubit, GroupState>(
           listener: (context, state) {
-            // TODO: implement listener
+            if (state.status == GroupStatus.initial) {
+              context.read<GroupCubit>().loadGroups(user.uid);
+            }
           },
           builder: (context, state) {
-            if (state.groups.isEmpty) {
+            if (state.status == GroupStatus.loading ||
+                state.status == GroupStatus.initial) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.status == GroupStatus.failure) {
               return const Center(
-                child: Text(Constants.textNoData),
+                child: Text('There was an error loading group data.'),
               );
             }
-            return ListView.builder(
-              itemCount: state.groups.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 16),
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return GroupListTile(
-                  group: state.groups[index],
-                  numRestaurants: 40,
+            if (state.status == GroupStatus.success) {
+              if (state.groups.isEmpty) {
+                return const Center(
+                  child: Text(Constants.textNoData),
                 );
-              },
-            );
+              }
+              return ListView.builder(
+                itemCount: state.groups.length,
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 16),
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return GroupListTile(
+                    group: state.groups[index],
+                    numRestaurants: 40,
+                  );
+                },
+              );
+            }
+            return const Center(child: Text('An unknown error has occurred'));
           },
         ),
       ]),

@@ -11,16 +11,23 @@ class GroupCubit extends Cubit<GroupState> {
   final FirestoreRepository _firestoreRepository;
 
   Future<void> loadGroups(String uid) async {
+    emit(state.copyWith(status: GroupStatus.loading));
+
     List<Group> groups = await _firestoreRepository.getUserGroupData(uid);
 
-    emit(state.copyWith(groups: groups));
+    emit(state.copyWith(status: GroupStatus.success, groups: groups));
   }
 
   Future<void> addGroup(Group group, String uid) async {
+    emit(state.copyWith(status: GroupStatus.loading));
+
     Group addedGroup = await _firestoreRepository.addGroup(group);
 
     if (addedGroup.id != null) {
-      emit(state.copyWith(groups: [...state.groups, addedGroup]));
+      emit(state.copyWith(
+          status: GroupStatus.success, groups: [...state.groups, addedGroup]));
+    } else {
+      emit(state.copyWith(status: GroupStatus.failure));
     }
   }
 }

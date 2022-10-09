@@ -28,52 +28,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//   Widget build(BuildContext context) {
-//     return MultiBlocProvider(
-//         providers: [
-//           BlocProvider(create: (context) {
-//             return AuthenticationBloc(
-//                 FirebaseAuthRepository(), FirestoreRepository())
-//               ..add(AuthenticationStarted());
-//           }),
-//           BlocProvider(create: (context) {
-//             return FormBloc(FirebaseAuthRepository(), FirestoreRepository());
-//           }),
-//           BlocProvider(create: (context) {
-//             return UserBloc(FirestoreRepository());
-//           }),
-//           BlocProvider(create: (context) {
-//             return GroupBloc(FirestoreRepository(), FirebaseAuthRepository());
-//           }),
-//           BlocProvider(create: (context) {
-//             return RestaurantBloc(FirestoreRepository());
-//           }),
-//         ],
-//         child: MaterialApp(
-//           debugShowCheckedModeBanner: false,
-//           title: 'You Choose',
-//           theme: ThemeData(
-//               primarySwatch: Colors.blue,
-//               fontFamily: 'Poppins',
-//               appBarTheme: const AppBarTheme(
-//                   systemOverlayStyle: SystemUiOverlayStyle(
-//                 statusBarBrightness: Brightness.light,
-//                 statusBarIconBrightness: Brightness.light,
-//               ))),
-//           initialRoute: '/',
-//           routes: {
-//             '/': (context) => const BlocNavigate(screen: HomeScreen()),
-//             '/add-restaurant': (context) =>
-//                 const BlocNavigate(screen: AddRestaurantScreen()),
-//             '/add-group': (context) =>
-//                 const BlocNavigate(screen: AddGroupScreen()),
-//             '/profile': (context) =>
-//                 const BlocNavigate(screen: ProfileScreen()),
-//           },
-//         )
-//     );
-//   }
-// }
 
 class AppView extends StatelessWidget {
   const AppView({super.key});
@@ -88,22 +42,3 @@ class AppView extends StatelessWidget {
     );
   }
 }
-
-// class BlocNavigate extends StatelessWidget {
-//   final Widget screen;
-
-//   const BlocNavigate({Key? key, required this.screen}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-//       builder: (context, state) {
-//         if (state is AuthenticationSuccess) {
-//           return screen;
-//         } else {
-//           return const WelcomeScreen();
-//         }
-//       },
-//     );
-//   }
-// }
