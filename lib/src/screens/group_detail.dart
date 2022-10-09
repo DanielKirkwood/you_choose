@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/bloc/restaurant/restaurant_bloc.dart';
-import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 import 'package:you_choose/src/widgets/restaurant_card.dart';
 

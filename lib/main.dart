@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:you_choose/src/app.dart';
-import 'package:you_choose/src/bloc/bloc_observer.dart';
+import 'package:you_choose/src/app/bloc_observer.dart';
+import 'package:you_choose/src/app/view/app.dart';
+import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/logger/logger.dart';
 
 import 'firebase_options.dart';
@@ -41,6 +41,8 @@ Future<void> main() async {
   const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = AppBlocObserver();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -51,14 +53,8 @@ Future<void> main() async {
     await _setupEmulators();
   }
 
+  final authenticationRepository = FirebaseAuthRepository();
+  await authenticationRepository.user.first;
 
-  Bloc.observer = MyBlocObserver();
-
-  final storage = await HydratedStorage.build(
-      storageDirectory: await getTemporaryDirectory());
-
-  HydratedBlocOverrides.runZoned(
-    () => runApp(const MyApp()),
-    storage: storage,
-  );
+  runApp(MyApp(authenticationRepository: authenticationRepository));
 }

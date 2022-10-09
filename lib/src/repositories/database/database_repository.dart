@@ -1,4 +1,4 @@
-import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/data/data.dart';
 
 abstract class DatabaseRepository {
   Future<void> addUserData(UserModel user);

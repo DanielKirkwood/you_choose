@@ -50,6 +50,9 @@ dependencies:
   path: ^1.8.1
   firebase_storage: ^10.3.10
   cached_firestorage: ^0.1.4
+  meta: ^1.8.0
+  formz: ^0.4.1
+  flow_builder: ^0.0.9
 
 dev_dependencies:
   flutter_test:
