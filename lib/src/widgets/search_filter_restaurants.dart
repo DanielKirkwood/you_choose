@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/models/restaurant.dart';
+import 'package:you_choose/src/data/models/restaurant.dart';
 
 class SearchFilterRestaurants extends StatefulWidget with PreferredSizeWidget {
   final List<Restaurant> searchableRestaurants;

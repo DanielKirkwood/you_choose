@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:you_choose/src/bloc/group/group_bloc.dart';
 import 'package:you_choose/src/bloc/restaurant/restaurant_bloc.dart';
-import 'package:you_choose/src/models/models.dart';
+import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class AddRestaurantScreen extends StatefulWidget {
