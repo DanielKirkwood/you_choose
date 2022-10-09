@@ -2,24 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/screens/group_detail.dart';
 
-class GroupListTile extends StatefulWidget {
+class GroupTile extends StatelessWidget {
+  const GroupTile(
+      {super.key, required this.group, required this.numRestaurants});
+
   final Group group;
   final int numRestaurants;
 
-  const GroupListTile(
-      {super.key, required this.group, required this.numRestaurants});
-
-  @override
-  State<GroupListTile> createState() => _GroupListTileState();
-}
-
-class _GroupListTileState extends State<GroupListTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return GroupDetailScreen(group: widget.group);
+          return GroupDetailScreen(group: group);
         }));
       },
       child: Container(
@@ -41,7 +36,7 @@ class _GroupListTileState extends State<GroupListTile> {
                     child: Container(
                       color: Colors.transparent,
                       child: Text(
-                        widget.group.name,
+                        group.name,
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
@@ -50,7 +45,7 @@ class _GroupListTileState extends State<GroupListTile> {
               ),
             ),
             Text(
-              (widget.numRestaurants).toString(),
+              (numRestaurants).toString(),
               style:
                   const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
             ),

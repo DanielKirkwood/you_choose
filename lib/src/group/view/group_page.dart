@@ -77,7 +77,7 @@ class GroupView extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 16),
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return GroupListTile(
+                  return GroupTile(
                     group: state.groups[index],
                     numRestaurants: 40,
                   );
