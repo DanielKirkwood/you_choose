@@ -52,6 +52,8 @@ class Group extends Equatable {
   bool get isNotEmpty => this != const Group.empty();
 
   /// Convenience copyWith method to update fields
+  ///
+  /// {@macro group}
   Group copyWith({
     String? id,
     String? name,
