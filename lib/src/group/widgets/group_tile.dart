@@ -14,7 +14,7 @@ class GroupTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return GroupDetailScreen(group: group);
+          return GroupDetailPage(group: group);
         }));
       },
       child: Container(

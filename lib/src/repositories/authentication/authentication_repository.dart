@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:you_choose/src/data/data.dart';
 
 abstract class AuthenticationRepository {
