@@ -107,12 +107,12 @@ class _PriceField extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: size.width * 0.8,
-      child: BlocBuilder<RestaurantCubit, RestaurantState>(
-        buildWhen: (previous, current) => previous.price != current.price,
-        builder: (context, state) {
-          return DropdownButtonFormField<int>(
+    return BlocBuilder<RestaurantCubit, RestaurantState>(
+      buildWhen: (previous, current) => previous.price != current.price,
+      builder: (context, state) {
+        return SizedBox(
+          width: size.width * 0.8,
+          child: DropdownButtonFormField<int>(
             value: state.price.value,
             onChanged: (int? price) =>
                 context.read<RestaurantCubit>().priceChanged(price!),
@@ -127,9 +127,9 @@ class _PriceField extends StatelessWidget {
                 helperText: '''How expensive is the restaurant?''',
                 labelText: 'Price',
                 errorText: null),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -175,12 +175,12 @@ class _GroupsField extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     UserModel user = context.select((AppBloc bloc) => bloc.state.user);
 
-    return SizedBox(
-      width: size.width * 0.8,
-      child: BlocBuilder<RestaurantCubit, RestaurantState>(
-        buildWhen: (previous, current) => previous.groups != current.groups,
-        builder: (context, state) {
-          return BlocBuilder<GroupCubit, GroupState>(
+    return BlocBuilder<RestaurantCubit, RestaurantState>(
+      buildWhen: (previous, current) => previous.groups != current.groups,
+      builder: (context, state) {
+        return SizedBox(
+          width: size.width * 0.8,
+          child: BlocBuilder<GroupCubit, GroupState>(
             builder: (context, state) {
               if (state.status == GroupStatus.initial) {
                 context.read<GroupCubit>().loadGroups(user.uid);
@@ -213,9 +213,9 @@ class _GroupsField extends StatelessWidget {
               }
               return const Center(child: Text('An unknown error has occurred'));
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
