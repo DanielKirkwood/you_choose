@@ -9,9 +9,7 @@ part of 'group_cubit.dart';
 /// [success] - action carried out successfully and state has been updated with changes.
 ///
 /// [failure] - action has failed.
-///
-/// [adding] - new group is being added to groups.
-enum GroupStatus { initial, loading, success, failure, adding }
+enum GroupStatus { initial, loading, success, failure }
 
 /// {@template groupState}
 /// A single state used to hold state about groups.
