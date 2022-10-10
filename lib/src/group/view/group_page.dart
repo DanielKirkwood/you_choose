@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app/app.dart';
 import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
+import 'package:you_choose/src/group/view/add_group_page.dart';
 import 'package:you_choose/src/group/widgets/widgets.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
@@ -32,19 +33,36 @@ class GroupView extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         TopHeader(
-            title: 'Groups',
-            label: 'Add Group',
-            onPress: () => Navigator.pushNamed(context, '/add-group')),
+          title: 'Groups',
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const AddGroupPage();
+            }));
+          },
+        ),
         searchBar(),
         BlocConsumer<GroupCubit, GroupState>(
+          listenWhen: (previous, current) => previous.status != current.status,
           listener: (context, state) {
-            if (state.status == GroupStatus.initial) {
-              context.read<GroupCubit>().loadGroups(user.uid);
+            if (state.status == GroupStatus.failure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('There was an error fetching group data.'),
+                  ),
+                );
             }
           },
+          buildWhen: (previous, current) =>
+              previous.status != current.status ||
+              previous.groups != current.groups,
           builder: (context, state) {
-            if (state.status == GroupStatus.loading ||
-                state.status == GroupStatus.initial) {
+            if (state.status == GroupStatus.initial) {
+              context.read<GroupCubit>().loadGroups(user.uid);
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.status == GroupStatus.loading) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state.status == GroupStatus.failure) {
@@ -64,7 +82,7 @@ class GroupView extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 16),
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return GroupListTile(
+                  return GroupTile(
                     group: state.groups[index],
                     numRestaurants: 40,
                   );
