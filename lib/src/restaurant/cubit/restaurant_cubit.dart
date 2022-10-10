@@ -22,7 +22,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
         status: RestaurantStatus.success, restaurants: restaurants));
   }
 
-  Future<void> addRestaurant(String groupID) async {
+  Future<void> addRestaurant() async {
     if (!state.formStatus.isValidated) return;
 
     emit(state.copyWith(formStatus: FormzStatus.submissionInProgress));
@@ -43,5 +43,50 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     } catch (_) {
       emit(state.copyWith(formStatus: FormzStatus.submissionFailure));
     }
+  }
+
+  void nameChanged(String value) {
+    final name = RestaurantName.dirty(value: value);
+    emit(state.copyWith(
+      name: name,
+      formStatus: Formz.validate(
+          [name, state.price, state.description, state.tags, state.groups]),
+    ));
+  }
+
+  void priceChanged(int value) {
+    final price = RestaurantPrice.dirty(value: value);
+    emit(state.copyWith(
+      price: price,
+      formStatus: Formz.validate(
+          [state.name, price, state.description, state.tags, state.groups]),
+    ));
+  }
+
+  void descriptionChanged(String value) {
+    final description = RestaurantDescription.dirty(value: value);
+    emit(state.copyWith(
+      description: description,
+      formStatus: Formz.validate(
+          [state.name, state.price, description, state.tags, state.groups]),
+    ));
+  }
+
+  void tagsChanged(List<Tag> value) {
+    final tags = RestaurantTags.dirty(value: value);
+    emit(state.copyWith(
+      tags: tags,
+      formStatus: Formz.validate(
+          [state.name, state.price, state.description, tags, state.groups]),
+    ));
+  }
+
+  void groupsChanged(List<Group> value) {
+    final groups = RestaurantGroups.dirty(value: value);
+    emit(state.copyWith(
+      groups: groups,
+      formStatus: Formz.validate(
+          [state.name, state.price, state.description, state.tags, groups]),
+    ));
   }
 }
