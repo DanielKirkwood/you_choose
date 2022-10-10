@@ -3,3 +3,8 @@ export 'email.dart';
 export 'group_members.dart';
 export 'group_name.dart';
 export 'password.dart';
+export 'restaurant.price.dart';
+export 'restaurant_description.dart';
+export 'restaurant_groups.dart';
+export 'restaurant_name.dart';
+export 'restaurant_tags.dart';

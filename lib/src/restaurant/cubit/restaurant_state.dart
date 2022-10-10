@@ -20,7 +20,14 @@ class RestaurantState extends Equatable {
   /// {@macro restaurantState}
   const RestaurantState(
       {this.restaurants = const <Restaurant>[],
-      this.status = RestaurantStatus.initial});
+      this.status = RestaurantStatus.initial,
+      this.name = const RestaurantName.pure(),
+      this.price = const RestaurantPrice.pure(),
+      this.description = const RestaurantDescription.pure(),
+      this.tags = const RestaurantTags.pure(),
+      this.groups = const RestaurantGroups.pure(),
+      this.formStatus = FormzStatus.pure,
+      this.errorMessage});
 
   /// the list of restaurants.
   final List<Restaurant> restaurants;
@@ -28,13 +35,43 @@ class RestaurantState extends Equatable {
   /// the status of the cubit.
   final RestaurantStatus status;
 
+  final RestaurantName name;
+
+  final RestaurantPrice price;
+
+  final RestaurantDescription description;
+
+  final RestaurantTags tags;
+
+  final RestaurantGroups groups;
+
+  final FormzStatus formStatus;
+
+  final String? errorMessage;
+
   RestaurantState copyWith(
-      {List<Restaurant>? restaurants, RestaurantStatus? status}) {
+      {List<Restaurant>? restaurants,
+      RestaurantStatus? status,
+      RestaurantName? name,
+      RestaurantPrice? price,
+      RestaurantDescription? description,
+      RestaurantTags? tags,
+      RestaurantGroups? groups,
+      FormzStatus? formStatus,
+      String? errorMessage}) {
     return RestaurantState(
         restaurants: restaurants ?? this.restaurants,
-        status: status ?? this.status);
+        status: status ?? this.status,
+        name: name ?? this.name,
+        price: price ?? this.price,
+        description: description ?? this.description,
+        tags: tags ?? this.tags,
+        groups: groups ?? this.groups,
+        formStatus: formStatus ?? this.formStatus,
+        errorMessage: errorMessage ?? this.errorMessage);
   }
 
   @override
-  List<Object> get props => [restaurants, status];
+  List<Object> get props =>
+      [restaurants, status, name, price, description, tags, groups, formStatus];
 }

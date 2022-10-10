@@ -176,7 +176,8 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<void> addRestaurant(Restaurant restaurant, List<Group> groups) async {
+  Future<void> addRestaurant(
+      {required Restaurant restaurant, required List<Group> groups}) async {
     try {
       for (Group group in groups) {
         CollectionReference<Restaurant> restaurantsCollection = _db
