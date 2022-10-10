@@ -4,6 +4,7 @@ import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/widgets/widgets.dart';
 import 'package:you_choose/src/repositories/database/firestore_repository.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
+import 'package:you_choose/src/restaurant/restaurant.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 import 'package:you_choose/src/widgets/top_header.dart';
 
