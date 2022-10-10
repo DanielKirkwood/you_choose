@@ -124,7 +124,7 @@ class _PriceField extends StatelessWidget {
               );
             }).toList(),
             decoration: Constants.formInputDecoration(
-                helperText: '''How expensive is the restaurant?''',
+                helperText: null,
                 labelText: 'Price',
                 errorText: null),
           ),
