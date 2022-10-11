@@ -7,5 +7,6 @@ abstract class DatabaseRepository {
   Future<List<Restaurant>> getRestaurantData(String groupID);
   Future<List<Group?>> getUserGroupData(String uid);
   Future<Group> addGroup(Group group);
-  Future<void> addRestaurant(Restaurant restaurant, List<Group> groups);
+  Future<void> addRestaurant(
+      {required Restaurant restaurant, required List<Group> groups});
 }

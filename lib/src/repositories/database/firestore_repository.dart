@@ -47,15 +47,14 @@ class FirestoreRepository implements DatabaseRepository {
   @override
   Future<UserModel> getUser({required String email}) async {
     QuerySnapshot<UserModel> snapshot = await _db
-          .collection('users')
-          .withConverter(
-              fromFirestore: UserModel.fromFirestore,
-              toFirestore: (UserModel user, options) => user.toFirestore())
+        .collection('users')
+        .withConverter(
+            fromFirestore: UserModel.fromFirestore,
+            toFirestore: (UserModel user, options) => user.toFirestore())
         .where('email', isEqualTo: email)
-          .get();
+        .get();
 
     return snapshot.docs.first.data();
-
   }
 
   @override
@@ -176,7 +175,8 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<void> addRestaurant(Restaurant restaurant, List<Group> groups) async {
+  Future<void> addRestaurant(
+      {required Restaurant restaurant, required List<Group> groups}) async {
     try {
       for (Group group in groups) {
         CollectionReference<Restaurant> restaurantsCollection = _db
@@ -232,8 +232,53 @@ class FirestoreRepository implements DatabaseRepository {
     return Future.value(uploadTask);
   }
 
-
   Future<void> updateProfileImage(XFile image, String uid) async {
     await uploadFile(image, uid);
+  }
+
+  Future<List<Tag>> getGroupTags({required String groupID}) async {
+    List<Tag> tags = [];
+    try {
+      QuerySnapshot<Tag> snapshot = await _db
+          .collection('groups')
+          .doc(groupID)
+          .collection('tags')
+          .withConverter(
+              fromFirestore: Tag.fromFirestore,
+              toFirestore: (Tag tag, options) => tag.toFirestore())
+          .get();
+
+      for (var i = 0; i < snapshot.size; i++) {
+        tags.add(snapshot.docs[i].data());
+      }
+
+      return tags;
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<Tag> addGroupTag({required Tag tag, required String groupID}) async {
+    try {
+      DocumentReference<Tag> tagDoc = _db
+          .collection('groups')
+          .doc(groupID)
+          .collection('tags')
+          .withConverter(
+              fromFirestore: Tag.fromFirestore,
+              toFirestore: (Tag tag, options) => tag.toFirestore())
+          .doc();
+
+      String documentID = tagDoc.id;
+      Tag updatedTag = tag.copyWith(id: documentID);
+
+      await tagDoc.set(updatedTag);
+
+      return updatedTag;
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
   }
 }

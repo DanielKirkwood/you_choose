@@ -28,7 +28,7 @@ class AddGroupForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text('${state.name} successfully created.'),
+                content: Text('${state.name.value} successfully created.'),
               ),
             );
         }
@@ -54,7 +54,7 @@ class AddGroupForm extends StatelessWidget {
               SizedBox(height: size.height * 0.01),
               const _MembersField(),
               SizedBox(height: size.height * 0.01),
-              _AddGroupButton()
+              const _AddGroupButton()
             ],
           ),
         ),
@@ -123,6 +123,8 @@ class _MembersField extends StatelessWidget {
 }
 
 class _AddGroupButton extends StatelessWidget {
+  const _AddGroupButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     UserModel user = context.select((AppBloc bloc) => bloc.state.user);
