@@ -23,10 +23,6 @@ class _HomePageState extends State<HomePage> {
     ),
     const AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: GroupPage(),
-    ),
-    const AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
       child: ProfilePage(),
     ),
   ];
@@ -41,7 +37,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[_selected],
-      // floatingActionButton: const SpeedDialButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        tooltip: 'Add',
+        elevation: 2.0,
+        child: const Icon(Icons.add),
+      ),
       bottomNavigationBar:
           BottomNavigation(currentIndex: _selected, onTap: _onTap),
     );

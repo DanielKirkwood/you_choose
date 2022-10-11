@@ -33,12 +33,8 @@ class ProfilePage extends StatelessWidget {
               buildName(user),
               const SizedBox(height: 24),
               buildFriends(user),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
+              const SizedBox(height: 24),
+              Center(
               child: TextButton(
                   onPressed: () =>
                       context.read<AppBloc>().add(AppLogoutRequested()),
@@ -47,7 +43,9 @@ class ProfilePage extends StatelessWidget {
                     style: TextStyle(color: Colors.red),
                   )),
             ),
+            ],
           ),
+
         ]));
   }
 
