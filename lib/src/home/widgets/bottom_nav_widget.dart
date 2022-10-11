@@ -25,7 +25,10 @@ class BottomNavigation extends StatelessWidget {
           icon: Icon(Icons.group),
           label: 'Groups',
         ),
-
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          label: 'Add',
+        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.account_circle),
           label: 'Profile',
