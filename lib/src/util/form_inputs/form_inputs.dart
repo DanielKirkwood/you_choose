@@ -8,3 +8,4 @@ export 'restaurant_description.dart';
 export 'restaurant_groups.dart';
 export 'restaurant_name.dart';
 export 'restaurant_tags.dart';
+export 'tag_name.dart';
