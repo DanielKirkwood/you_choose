@@ -40,7 +40,7 @@ class RestaurantView extends StatelessWidget {
             title: 'Restaurants',
             onPress: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const AddRestaurantPage();
+                return AddRestaurantPage(groupID: groupID);
               }));
             },
           ),

@@ -6,10 +6,14 @@ import 'package:you_choose/src/app/app.dart';
 import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
+import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class AddRestaurantForm extends StatelessWidget {
-  const AddRestaurantForm({super.key});
+  const AddRestaurantForm({super.key, required this.groupID});
+
+  final String groupID;
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +62,8 @@ class AddRestaurantForm extends StatelessWidget {
               const _PriceField(),
               SizedBox(height: size.height * 0.03),
               const _DescriptionField(),
+              SizedBox(height: size.height * 0.03),
+              const _TagsField(),
               SizedBox(height: size.height * 0.03),
               const _GroupsField(),
               SizedBox(height: size.height * 0.03),
@@ -161,6 +167,59 @@ class _DescriptionField extends StatelessWidget {
                     vertical: 15.0, horizontal: 10.0),
                 border: Constants.formInputBorder,
               )),
+        );
+      },
+    );
+  }
+}
+
+class _TagsField extends StatelessWidget {
+  const _TagsField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+
+    return BlocBuilder<RestaurantCubit, RestaurantState>(
+      buildWhen: (previous, current) => previous.tags != current.tags,
+      builder: (context, state) {
+        return SizedBox(
+          width: size.width * 0.8,
+          child: BlocBuilder<TagCubit, TagState>(
+            builder: (context, state) {
+              if (state.status == TagStatus.initial) {
+                context.read<TagCubit>().loadTags();
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state.status == TagStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state.status == TagStatus.failure) {
+                return const Center(
+                  child: Text('There was an error loading tag data.'),
+                );
+              }
+              if (state.status == TagStatus.success) {
+                if (state.tags.isEmpty) {
+                  return const Center(
+                    child: Text(Constants.textNoData),
+                  );
+                }
+                return MultiSelectDialogField<Tag>(
+                    items: state.tags
+                        .map((e) => MultiSelectItem<Tag>(e, e.name))
+                        .toList(),
+                    onConfirm: (tags) =>
+                        context.read<RestaurantCubit>().tagsChanged(tags),
+                    title: const Text('Tags'),
+                    searchable: true,
+                    buttonText: const Text('Tags'),
+                    decoration: Constants.formMultiSelect);
+              }
+              return const Center(child: Text('An unknown error has occurred'));
+            },
+          ),
         );
       },
     );

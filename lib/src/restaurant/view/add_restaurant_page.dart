@@ -5,12 +5,15 @@ import 'package:you_choose/src/profile/profile.dart';
 import 'package:you_choose/src/repositories/database/firestore_repository.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
 import 'package:you_choose/src/restaurant/view/view.dart';
+import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
 
 class AddRestaurantPage extends StatelessWidget {
-  const AddRestaurantPage({super.key});
+  const AddRestaurantPage({super.key, required this.groupID});
 
-  static Page<void> page() =>
-      const MaterialPage<void>(child: AddRestaurantPage());
+  final String groupID;
+
+  static Page<void> page(String groupID) =>
+      MaterialPage<void>(child: AddRestaurantPage(groupID: groupID));
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,12 @@ class AddRestaurantPage extends StatelessWidget {
           BlocProvider<GroupCubit>(
             create: (BuildContext context) => GroupCubit(FirestoreRepository()),
           ),
+          BlocProvider<TagCubit>(
+            create: (BuildContext context) =>
+                TagCubit(FirestoreRepository(), groupID),
+          ),
         ],
-        child: const AddRestaurantForm(),
+        child: AddRestaurantForm(groupID: groupID),
       ),
     );
   }

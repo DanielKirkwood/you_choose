@@ -8,16 +8,17 @@ import 'package:you_choose/src/util/form_inputs/form_inputs.dart';
 part 'tag_state.dart';
 
 class TagCubit extends Cubit<TagState> {
-  TagCubit(this._firestoreRepository) : super(const TagState());
+  TagCubit(this._firestoreRepository, this._groupID) : super(const TagState());
 
   final FirestoreRepository _firestoreRepository;
+  final String _groupID;
 
-  Future<void> loadTags(String groupID) async {
+  Future<void> loadTags() async {
     emit(state.copyWith(status: TagStatus.loading));
 
     try {
       List<Tag> tags =
-          await _firestoreRepository.getGroupTags(groupID: groupID);
+          await _firestoreRepository.getGroupTags(groupID: _groupID);
 
       emit(state.copyWith(status: TagStatus.success, tags: tags));
     } catch (_) {
@@ -25,7 +26,7 @@ class TagCubit extends Cubit<TagState> {
     }
   }
 
-  Future<void> addTag(String groupID) async {
+  Future<void> addTag() async {
     if (!state.formStatus.isValidated) return;
 
     emit(state.copyWith(formStatus: FormzStatus.submissionInProgress));
@@ -33,7 +34,8 @@ class TagCubit extends Cubit<TagState> {
       Tag newTag = Tag(name: state.name.value);
 
       Tag addedTag =
-          await _firestoreRepository.addGroupTag(groupID: groupID, tag: newTag);
+          await _firestoreRepository.addGroupTag(
+          groupID: _groupID, tag: newTag);
 
       if (addedTag.id != null) {
         emit(state.copyWith(
