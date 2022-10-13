@@ -97,12 +97,10 @@ class FirebaseAuthRepository extends AuthenticationRepository {
       firebase_auth.FirebaseAuth? firebaseAuth,
       FirestoreRepository? firestoreRepository})
       : _cache = cache ?? CacheClient(),
-        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _db = FirestoreRepository();
+        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
 
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
-  final FirestoreRepository _db;
 
   /// User cache key.
   /// Should only be used for testing purposes.

@@ -25,7 +25,7 @@ class RestaurantState extends Equatable {
       this.price = const RestaurantPrice.pure(),
       this.description = const RestaurantDescription.pure(),
       this.tags = const RestaurantTags.pure(),
-      this.groups = const RestaurantGroups.pure(),
+      this.groups = const GroupsList.pure(),
       this.formStatus = FormzStatus.pure,
       this.errorMessage});
 
@@ -43,7 +43,7 @@ class RestaurantState extends Equatable {
 
   final RestaurantTags tags;
 
-  final RestaurantGroups groups;
+  final GroupsList groups;
 
   final FormzStatus formStatus;
 
@@ -56,7 +56,7 @@ class RestaurantState extends Equatable {
       RestaurantPrice? price,
       RestaurantDescription? description,
       RestaurantTags? tags,
-      RestaurantGroups? groups,
+      GroupsList? groups,
       FormzStatus? formStatus,
       String? errorMessage}) {
     return RestaurantState(

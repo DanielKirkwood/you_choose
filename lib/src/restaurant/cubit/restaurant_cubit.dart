@@ -82,7 +82,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   void groupsChanged(List<Group> value) {
-    final groups = RestaurantGroups.dirty(value: value);
+    final groups = GroupsList.dirty(value: value);
     emit(state.copyWith(
       groups: groups,
       formStatus: Formz.validate(
