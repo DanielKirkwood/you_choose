@@ -3,6 +3,7 @@ import 'package:you_choose/src/add/add.dart';
 import 'package:you_choose/src/group/group.dart';
 import 'package:you_choose/src/profile/profile.dart';
 import 'package:you_choose/src/restaurant/view/add_restaurant_page.dart';
+import 'package:you_choose/src/tag/tag.dart';
 
 class AddPage extends StatelessWidget {
   const AddPage({super.key});
@@ -54,7 +55,7 @@ class AddPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddGroupPage()));
+                        builder: (context) => const AddTagPage()));
               },
             ),
           ],
