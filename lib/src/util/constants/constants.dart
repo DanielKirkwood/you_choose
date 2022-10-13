@@ -33,6 +33,8 @@ class Constants {
   static const textAddGroupBtn = "Create Group";
   static const textAddRestaurantTitle = "Add new restaurant";
   static const textAddRestaurantBtn = "Add restaurant";
+  static const textAddTagTitle = "Create a tag";
+  static const textAddTagBtn = "Create tag";
 
   //navigate
   static const signInNavigate = '/sign-in';

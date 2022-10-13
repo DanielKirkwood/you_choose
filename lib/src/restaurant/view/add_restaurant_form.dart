@@ -14,7 +14,6 @@ class AddRestaurantForm extends StatelessWidget {
 
   final String groupID;
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -63,7 +62,7 @@ class AddRestaurantForm extends StatelessWidget {
               SizedBox(height: size.height * 0.03),
               const _DescriptionField(),
               SizedBox(height: size.height * 0.03),
-              const _TagsField(),
+              _TagsField(groupID: groupID),
               SizedBox(height: size.height * 0.03),
               const _GroupsField(),
               SizedBox(height: size.height * 0.03),
@@ -130,9 +129,7 @@ class _PriceField extends StatelessWidget {
               );
             }).toList(),
             decoration: Constants.formInputDecoration(
-                helperText: null,
-                labelText: 'Price',
-                errorText: null),
+                helperText: null, labelText: 'Price', errorText: null),
           ),
         );
       },
@@ -174,7 +171,9 @@ class _DescriptionField extends StatelessWidget {
 }
 
 class _TagsField extends StatelessWidget {
-  const _TagsField({super.key});
+  const _TagsField({super.key, required this.groupID});
+
+  final String groupID;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +188,7 @@ class _TagsField extends StatelessWidget {
           child: BlocBuilder<TagCubit, TagState>(
             builder: (context, state) {
               if (state.status == TagStatus.initial) {
-                context.read<TagCubit>().loadTags();
+                context.read<TagCubit>().loadTags(groupID);
                 return const Center(child: CircularProgressIndicator());
               }
               if (state.status == TagStatus.loading) {

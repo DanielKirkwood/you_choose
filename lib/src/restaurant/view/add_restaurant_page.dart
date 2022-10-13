@@ -30,7 +30,7 @@ class AddRestaurantPage extends StatelessWidget {
           ),
           BlocProvider<TagCubit>(
             create: (BuildContext context) =>
-                TagCubit(FirestoreRepository(), groupID),
+                TagCubit(FirestoreRepository()),
           ),
         ],
         child: AddRestaurantForm(groupID: groupID),

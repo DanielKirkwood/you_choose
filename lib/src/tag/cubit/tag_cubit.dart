@@ -8,17 +8,16 @@ import 'package:you_choose/src/util/form_inputs/form_inputs.dart';
 part 'tag_state.dart';
 
 class TagCubit extends Cubit<TagState> {
-  TagCubit(this._firestoreRepository, this._groupID) : super(const TagState());
+  TagCubit(this._firestoreRepository) : super(const TagState());
 
   final FirestoreRepository _firestoreRepository;
-  final String _groupID;
 
-  Future<void> loadTags() async {
+  Future<void> loadTags(String groupID) async {
     emit(state.copyWith(status: TagStatus.loading));
 
     try {
       List<Tag> tags =
-          await _firestoreRepository.getGroupTags(groupID: _groupID);
+          await _firestoreRepository.getGroupTags(groupID: groupID);
 
       emit(state.copyWith(status: TagStatus.success, tags: tags));
     } catch (_) {
@@ -26,7 +25,7 @@ class TagCubit extends Cubit<TagState> {
     }
   }
 
-  Future<void> addTag() async {
+  Future<void> addTag(String groupID) async {
     if (!state.formStatus.isValidated) return;
 
     emit(state.copyWith(formStatus: FormzStatus.submissionInProgress));
@@ -34,8 +33,7 @@ class TagCubit extends Cubit<TagState> {
       Tag newTag = Tag(name: state.name.value);
 
       Tag addedTag =
-          await _firestoreRepository.addGroupTag(
-          groupID: _groupID, tag: newTag);
+          await _firestoreRepository.addGroupTag(groupID: groupID, tag: newTag);
 
       if (addedTag.id != null) {
         emit(state.copyWith(
@@ -45,5 +43,21 @@ class TagCubit extends Cubit<TagState> {
     } catch (_) {
       emit(state.copyWith(formStatus: FormzStatus.submissionFailure));
     }
+  }
+
+  void nameChanged(String value) {
+    final name = TagName.dirty(value: value);
+    emit(state.copyWith(
+      name: name,
+      formStatus: Formz.validate([name]),
+    ));
+  }
+
+  void groupsChanged(List<Group> value) {
+    final groups = GroupsList.dirty(value: value);
+    emit(state.copyWith(
+      groups: groups,
+      formStatus: Formz.validate([state.name, groups]),
+    ));
   }
 }

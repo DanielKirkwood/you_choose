@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:you_choose/src/add/add.dart';
 import 'package:you_choose/src/group/group.dart';
 import 'package:you_choose/src/home/home.dart';
 import 'package:you_choose/src/profile/profile.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     ),
     const AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: GroupPage(),
+      child: AddPage(),
     ),
     const AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[_selected],
-      // floatingActionButton: const SpeedDialButton(),
+
       bottomNavigationBar:
           BottomNavigation(currentIndex: _selected, onTap: _onTap),
     );
