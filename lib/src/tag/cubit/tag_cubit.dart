@@ -44,4 +44,20 @@ class TagCubit extends Cubit<TagState> {
       emit(state.copyWith(formStatus: FormzStatus.submissionFailure));
     }
   }
+
+  void nameChanged(String value) {
+    final name = TagName.dirty(value: value);
+    emit(state.copyWith(
+      name: name,
+      formStatus: Formz.validate([name]),
+    ));
+  }
+
+  void groupsChanged(List<Group> value) {
+    final groups = GroupsList.dirty(value: value);
+    emit(state.copyWith(
+      groups: groups,
+      formStatus: Formz.validate([state.name, groups]),
+    ));
+  }
 }

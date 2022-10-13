@@ -7,6 +7,7 @@ class TagState extends Equatable {
       {this.tags = const <Tag>[],
       this.status = TagStatus.initial,
       this.name = const TagName.pure(),
+      this.groups = const GroupsList.pure(),
       this.formStatus = FormzStatus.pure,
       this.errorMessage});
 
@@ -16,6 +17,8 @@ class TagState extends Equatable {
 
   final TagName name;
 
+  final GroupsList groups;
+
   final FormzStatus formStatus;
 
   final String? errorMessage;
@@ -24,6 +27,7 @@ class TagState extends Equatable {
     List<Tag>? tags,
     TagStatus? status,
     TagName? name,
+    GroupsList? groups,
     FormzStatus? formStatus,
     String? errorMessage,
   }) {
@@ -31,6 +35,7 @@ class TagState extends Equatable {
         tags: tags ?? this.tags,
         status: status ?? this.status,
         name: name ?? this.name,
+        groups: groups ?? this.groups,
         formStatus: formStatus ?? this.formStatus,
         errorMessage: errorMessage ?? this.errorMessage);
   }
