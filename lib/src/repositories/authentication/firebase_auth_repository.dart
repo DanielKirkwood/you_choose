@@ -122,7 +122,7 @@ class FirebaseAuthRepository extends AuthenticationRepository {
               email: firebaseUser.email!,
               isVerified: firebaseUser.emailVerified,
               useDefaultProfileImage: true,
-              friends: const []);
+              friends: const <Map<String, FriendStatus>>[]);
 
       return user;
     });

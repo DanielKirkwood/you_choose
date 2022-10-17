@@ -1,13 +1,13 @@
 part of 'friends_cubit.dart';
 
-enum FriendStatus { initial, loading, success, failure }
+enum FriendCubitStatus { initial, loading, success, failure }
 
 class FriendsState extends Equatable {
   const FriendsState({required this.status});
 
-  final FriendStatus status;
+  final FriendCubitStatus status;
 
-  FriendsState copyWith({FriendStatus? status}) {
+  FriendsState copyWith({FriendCubitStatus? status}) {
     return FriendsState(status: status ?? this.status);
   }
 
