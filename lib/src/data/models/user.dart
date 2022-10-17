@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
+enum FriendStatus { requested, incomingRequest, friend }
+
 /// {@template user}
 /// User model
 ///
@@ -14,7 +16,8 @@ class UserModel extends Equatable {
       required this.username,
       required this.email,
       required this.isVerified,
-      required this.useDefaultProfileImage});
+      required this.useDefaultProfileImage,
+      required this.friends});
 
   /// the current user's id.
   final String uid;
@@ -31,13 +34,17 @@ class UserModel extends Equatable {
   /// true if user has not set profile image, false otherwise.
   final bool useDefaultProfileImage;
 
+  /// the users friends list
+  final List<Map<String, FriendStatus>> friends;
+
   /// Empty user which represents an unauthenticated user.
   const UserModel.empty()
       : uid = "",
         username = "",
         email = "",
         isVerified = false,
-        useDefaultProfileImage = true;
+        useDefaultProfileImage = true,
+        friends = const [];
 
   /// Convenience getter to determine whether the current user is empty.
   bool get isEmpty => this == const UserModel.empty();
@@ -52,6 +59,7 @@ class UserModel extends Equatable {
     String? email,
     bool? isVerified,
     bool? useDefaultProfileImage,
+    List<Map<String, FriendStatus>>? friends,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -60,6 +68,7 @@ class UserModel extends Equatable {
       isVerified: isVerified ?? this.isVerified,
       useDefaultProfileImage:
           useDefaultProfileImage ?? this.useDefaultProfileImage,
+      friends: friends ?? this.friends,
     );
   }
 
@@ -75,7 +84,8 @@ class UserModel extends Equatable {
         username: data?['username'],
         email: data?['email'],
         isVerified: data?['isVerified'],
-        useDefaultProfileImage: data?['useDefaultProfileImage']);
+        useDefaultProfileImage: data?['useDefaultProfileImage'],
+        friends: data?['friends']);
   }
 
   /// Method for adding [UserModel] to firestore.
@@ -84,7 +94,8 @@ class UserModel extends Equatable {
       "username": username,
       "email": email,
       "isVerified": isVerified,
-      "useDefaultProfileImage": useDefaultProfileImage
+      "useDefaultProfileImage": useDefaultProfileImage,
+      "friends": friends
     };
   }
 
@@ -96,6 +107,7 @@ class UserModel extends Equatable {
       email,
       isVerified,
       useDefaultProfileImage,
+      friends
     ];
   }
 
