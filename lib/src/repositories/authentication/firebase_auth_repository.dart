@@ -121,7 +121,8 @@ class FirebaseAuthRepository extends AuthenticationRepository {
               username: "",
               email: firebaseUser.email!,
               isVerified: firebaseUser.emailVerified,
-              useDefaultProfileImage: true);
+              useDefaultProfileImage: true,
+              friends: const []);
 
       return user;
     });
