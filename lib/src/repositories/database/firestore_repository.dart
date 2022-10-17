@@ -281,4 +281,76 @@ class FirestoreRepository implements DatabaseRepository {
       rethrow;
     }
   }
+
+  Future<void> sendFriendRequest(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({
+        "friends": FieldValue.arrayUnion([
+          {userID: FriendStatus.incomingRequest}
+        ])
+      });
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({
+        "friends": FieldValue.arrayUnion([
+          {friendID: FriendStatus.requested}
+        ])
+      });
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> acceptFriendRequest(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({
+        "friends": FieldValue.arrayUnion([
+          {userID: FriendStatus.friend}
+        ])
+      });
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({
+        "friends": FieldValue.arrayUnion([
+          {friendID: FriendStatus.friend}
+        ])
+      });
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> declineFriendRequest(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({
+        "friends": FieldValue.arrayRemove([
+          {userID: FriendStatus.incomingRequest}
+        ])
+      });
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({
+        "friends": FieldValue.arrayRemove([
+          {friendID: FriendStatus.requested}
+        ])
+      });
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
 }
