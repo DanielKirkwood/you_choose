@@ -287,19 +287,11 @@ class FirestoreRepository implements DatabaseRepository {
     try {
       final friendDoc = _db.collection('users').doc(friendID);
 
-      await friendDoc.update({
-        "friends": FieldValue.arrayUnion([
-          {userID: FriendStatus.incomingRequest}
-        ])
-      });
+      await friendDoc.update({"friends.$userID": "incomingRequest"});
 
       final userDoc = _db.collection('users').doc(userID);
 
-      await userDoc.update({
-        "friends": FieldValue.arrayUnion([
-          {friendID: FriendStatus.requested}
-        ])
-      });
+      await userDoc.update({"friends.$friendID": "requested"});
     } catch (error) {
       logger.e(error.toString());
       rethrow;
@@ -311,19 +303,11 @@ class FirestoreRepository implements DatabaseRepository {
     try {
       final friendDoc = _db.collection('users').doc(friendID);
 
-      await friendDoc.update({
-        "friends": FieldValue.arrayUnion([
-          {userID: FriendStatus.friend}
-        ])
-      });
+      await friendDoc.update({"friends.$userID.status": "friend"});
 
       final userDoc = _db.collection('users').doc(userID);
 
-      await userDoc.update({
-        "friends": FieldValue.arrayUnion([
-          {friendID: FriendStatus.friend}
-        ])
-      });
+      await userDoc.update({"friends.$friendID.status": "friend"});
     } catch (error) {
       logger.e(error.toString());
       rethrow;
@@ -335,19 +319,11 @@ class FirestoreRepository implements DatabaseRepository {
     try {
       final friendDoc = _db.collection('users').doc(friendID);
 
-      await friendDoc.update({
-        "friends": FieldValue.arrayRemove([
-          {userID: FriendStatus.incomingRequest}
-        ])
-      });
+      await friendDoc.update({"friends.$userID": FieldValue.delete()});
 
       final userDoc = _db.collection('users').doc(userID);
 
-      await userDoc.update({
-        "friends": FieldValue.arrayRemove([
-          {friendID: FriendStatus.requested}
-        ])
-      });
+      await userDoc.update({"friends.$friendID": FieldValue.delete()});
     } catch (error) {
       logger.e(error.toString());
       rethrow;
