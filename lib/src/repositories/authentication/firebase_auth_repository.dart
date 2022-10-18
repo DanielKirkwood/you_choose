@@ -130,21 +130,6 @@ class FirebaseAuthRepository extends AuthenticationRepository {
       }
     });
   }
-  // Stream<UserModel> get user {
-  //   return _firebaseAuth.authStateChanges().map((firebaseUser) {
-  //     final user = firebaseUser == null
-  //         ? const UserModel.empty()
-  //         : UserModel(
-  //             uid: firebaseUser.uid,
-  //             username: "",
-  //             email: firebaseUser.email!,
-  //             isVerified: firebaseUser.emailVerified,
-  //             useDefaultProfileImage: true,
-  //             friends: const <Map<String, FriendStatus>>[]);
-
-  //     return user;
-  //   });
-  // }
 
   /// Returns the current cached user.
   /// Defaults to [UserModel.empty()] if there is no cached user.
