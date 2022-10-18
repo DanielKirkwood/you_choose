@@ -1,41 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
 
 part 'friends_state.dart';
 
 class FriendsCubit extends Cubit<FriendsState> {
-  FriendsCubit(this._firestoreRepository, this._authRepository)
-      : super(const FriendsState(status: FriendCubitStatus.initial));
+  FriendsCubit(this._firestoreRepository)
+      : super(const FriendsState(
+            friends: [],
+            friendRequests: [],
+            status: FriendCubitStatus.initial));
 
   final FirestoreRepository _firestoreRepository;
-  final FirebaseAuthRepository _authRepository;
-
-  void loadFriends() {
-    emit(state.copyWith(status: FriendCubitStatus.loading));
-
-    UserModel user = _authRepository.currentUser;
-    List<Map<String, FriendStatus>> friends = user.friends;
-
-    friends.retainWhere((Map<String, FriendStatus> element) =>
-        element.containsValue(FriendStatus.friend));
-
-    emit(state.copyWith(status: FriendCubitStatus.success));
-
-  }
-
-  void loadFriendRequests() {
-    emit(state.copyWith(status: FriendCubitStatus.loading));
-
-    UserModel user = _authRepository.currentUser;
-    List<Map<String, FriendStatus>> friends = user.friends;
-
-    friends.retainWhere((Map<String, FriendStatus> element) =>
-        element.containsValue(FriendStatus.incomingRequest));
-
-    emit(state.copyWith(status: FriendCubitStatus.success));
-  }
 
   Future<void> sendFriendRequest(String userID, String friendID) async {
     emit(state.copyWith(status: FriendCubitStatus.loading));

@@ -2,7 +2,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-enum FriendStatus { requested, incomingRequest, friend }
 
 /// {@template user}
 /// User model
@@ -35,7 +34,7 @@ class UserModel extends Equatable {
   final bool useDefaultProfileImage;
 
   /// the users friends list
-  final List<Map<String, FriendStatus>> friends;
+  final Map<String, dynamic> friends;
 
   /// Empty user which represents an unauthenticated user.
   const UserModel.empty()
@@ -44,7 +43,7 @@ class UserModel extends Equatable {
         email = "",
         isVerified = false,
         useDefaultProfileImage = true,
-        friends = const [];
+        friends = const {};
 
   /// Convenience getter to determine whether the current user is empty.
   bool get isEmpty => this == const UserModel.empty();
@@ -59,7 +58,7 @@ class UserModel extends Equatable {
     String? email,
     bool? isVerified,
     bool? useDefaultProfileImage,
-    List<Map<String, FriendStatus>>? friends,
+    Map<String, dynamic>? friends,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
