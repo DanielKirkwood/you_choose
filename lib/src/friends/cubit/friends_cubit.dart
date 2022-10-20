@@ -13,7 +13,8 @@ class FriendsCubit extends Cubit<FriendsState> {
 
   final FirestoreRepository _firestoreRepository;
 
-  Future<void> sendFriendRequest(String userID, String friendID) async {
+  Future<void> sendFriendRequest(
+      {required String userID, required String friendID}) async {
     emit(state.copyWith(status: FriendCubitStatus.loading));
 
     try {
@@ -26,7 +27,8 @@ class FriendsCubit extends Cubit<FriendsState> {
     }
   }
 
-  Future<void> acceptFriendRequest(String userID, String friendID) async {
+  Future<void> acceptFriendRequest(
+      {required String userID, required String friendID}) async {
     emit(state.copyWith(status: FriendCubitStatus.loading));
 
     try {
@@ -39,11 +41,26 @@ class FriendsCubit extends Cubit<FriendsState> {
     }
   }
 
-  Future<void> declineFriendRequest(String userID, String friendID) async {
+  Future<void> declineFriendRequest(
+      {required String userID, required String friendID}) async {
     emit(state.copyWith(status: FriendCubitStatus.loading));
 
     try {
       await _firestoreRepository.declineFriendRequest(
+          friendID: friendID, userID: userID);
+
+      emit(state.copyWith(status: FriendCubitStatus.success));
+    } catch (error) {
+      emit(state.copyWith(status: FriendCubitStatus.failure));
+    }
+  }
+
+  Future<void> removeFriend(
+      {required String userID, required String friendID}) async {
+    emit(state.copyWith(status: FriendCubitStatus.loading));
+
+    try {
+      await _firestoreRepository.removeFriend(
           friendID: friendID, userID: userID);
 
       emit(state.copyWith(status: FriendCubitStatus.success));

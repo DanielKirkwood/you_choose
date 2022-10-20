@@ -98,6 +98,8 @@ class BuildFriends extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -108,22 +110,44 @@ class BuildFriends extends StatelessWidget {
         const SizedBox(height: 16),
         ...friends.entries.map((friend) {
           return ListTile(
-              onTap: () {},
+              onTap: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Wrap(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              friend.value['username'],
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 24),
+                            child: ListTile(
+                              onTap: () => context
+                                  .read<FriendsCubit>()
+                                  .removeFriend(
+                                      userID: user.uid, friendID: friend.key),
+                              leading: const Icon(
+                                Icons.remove,
+                                color: Colors.red,
+                              ),
+                              title: const Text('Remove friend'),
+                            ),
+                          )
+                        ],
+                      );
+                    });
+              },
               leading: const CircleAvatar(backgroundColor: Colors.black),
               title: Text(friend.value['username']),
               trailing: const Icon(Icons.arrow_forward_ios));
         }).toList()
       ],
     );
-  }
-
-  buildListTile() {
-    friends.entries.map((friend) {
-      return ListTile(
-          onTap: () {},
-          leading: const CircleAvatar(backgroundColor: Colors.black),
-          title: Text(friend.value.username),
-          trailing: const Icon(Icons.arrow_forward_ios));
-    });
   }
 }

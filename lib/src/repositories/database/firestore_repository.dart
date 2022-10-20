@@ -329,4 +329,20 @@ class FirestoreRepository implements DatabaseRepository {
       rethrow;
     }
   }
+
+  Future<void> removeFriend(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({"friends.$userID": FieldValue.delete()});
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({"friends.$friendID": FieldValue.delete()});
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
 }
