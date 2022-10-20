@@ -99,6 +99,7 @@ class BuildFriends extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+    final t = BlocProvider.of<FriendsCubit>(context, listen: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,33 +114,36 @@ class BuildFriends extends StatelessWidget {
               onTap: () {
                 showModalBottomSheet(
                     context: context,
-                    builder: (context) {
-                      return Wrap(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              friend.value['username'],
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 24),
-                            child: ListTile(
-                              onTap: () => context
-                                  .read<FriendsCubit>()
-                                  .removeFriend(
-                                      userID: user.uid, friendID: friend.key),
-                              leading: const Icon(
-                                Icons.remove,
-                                color: Colors.red,
+                    builder: (_) {
+                      return BlocProvider.value(
+                        value: t,
+                        child: Wrap(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(
+                                friend.value['username'],
+                                style: const TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
                               ),
-                              title: const Text('Remove friend'),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 24),
+                              child: ListTile(
+                                onTap: () => context
+                                    .read<FriendsCubit>()
+                                    .removeFriend(
+                                        userID: user.uid, friendID: friend.key),
+                                leading: const Icon(
+                                  Icons.remove,
+                                  color: Colors.red,
+                                ),
+                                title: const Text('Remove friend'),
+                              ),
+                            )
+                          ],
+                        ),
                       );
                     });
               },

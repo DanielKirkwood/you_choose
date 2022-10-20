@@ -283,15 +283,27 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   Future<void> sendFriendRequest(
-      {required String friendID, required String userID}) async {
+      {required String friendUsername, required String userID}) async {
     try {
-      final friendDoc = _db.collection('users').doc(friendID);
+      final friendQuery = await _db
+          .collection('users')
+          .where('username', isEqualTo: friendUsername)
+          .get();
 
-      await friendDoc.update({"friends.$userID": "incomingRequest"});
+      if (friendQuery.size != 1) {
+        throw Exception('No user with that username.');
+      }
+
+      final friendId = friendQuery.docs[0].id;
+
+      await _db
+          .collection('users')
+          .doc(friendId)
+          .update({"friends.$userID": "incomingRequest"});
 
       final userDoc = _db.collection('users').doc(userID);
 
-      await userDoc.update({"friends.$friendID": "requested"});
+      await userDoc.update({"friends.$friendId": "requested"});
     } catch (error) {
       logger.e(error.toString());
       rethrow;
