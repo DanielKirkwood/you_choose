@@ -9,3 +9,4 @@ export 'restaurant_description.dart';
 export 'restaurant_name.dart';
 export 'restaurant_tags.dart';
 export 'tag_name.dart';
+export 'username.dart';

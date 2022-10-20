@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:you_choose/src/add/add.dart';
+import 'package:you_choose/src/friends/friends.dart';
 import 'package:you_choose/src/group/group.dart';
 import 'package:you_choose/src/profile/profile.dart';
 import 'package:you_choose/src/restaurant/view/add_restaurant_page.dart';
@@ -56,6 +57,17 @@ class AddPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const AddTagPage()));
+              },
+            ),
+            ButtonLink(
+              title: 'Add Friend',
+              subTitle: 'Find your friends',
+              screen: const AddFriendPage(),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddFriendPage()));
               },
             ),
           ],

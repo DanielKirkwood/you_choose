@@ -97,10 +97,12 @@ class FirebaseAuthRepository extends AuthenticationRepository {
       firebase_auth.FirebaseAuth? firebaseAuth,
       FirestoreRepository? firestoreRepository})
       : _cache = cache ?? CacheClient(),
-        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
+        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+        _firestoreRepository = firestoreRepository ?? FirestoreRepository();
 
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
+  final FirestoreRepository _firestoreRepository;
 
   /// User cache key.
   /// Should only be used for testing purposes.
@@ -113,17 +115,19 @@ class FirebaseAuthRepository extends AuthenticationRepository {
   /// Emits [UserModel.empty()] if the user is not authenticated.
   @override
   Stream<UserModel> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      final user = firebaseUser == null
-          ? const UserModel.empty()
-          : UserModel(
-              uid: firebaseUser.uid,
-              username: "",
-              email: firebaseUser.email!,
-              isVerified: firebaseUser.emailVerified,
-              useDefaultProfileImage: true);
-
-      return user;
+    return _firebaseAuth
+        .authStateChanges()
+        .asyncExpand<UserModel>((firebaseUser) async* {
+      if (firebaseUser == null) {
+        UserModel user = const UserModel.empty();
+        _cache.write(key: userCacheKey, value: user);
+        yield user;
+      } else {
+        UserModel user =
+            await _firestoreRepository.getUser(email: firebaseUser.email!);
+        _cache.write(key: userCacheKey, value: user);
+        yield user;
+      }
     });
   }
 

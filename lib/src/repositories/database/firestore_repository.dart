@@ -281,4 +281,80 @@ class FirestoreRepository implements DatabaseRepository {
       rethrow;
     }
   }
+
+  Future<void> sendFriendRequest(
+      {required String friendUsername, required String userID}) async {
+    try {
+      final friendQuery = await _db
+          .collection('users')
+          .where('username', isEqualTo: friendUsername)
+          .get();
+
+      if (friendQuery.size != 1) {
+        throw Exception('No user with that username.');
+      }
+
+      final friendId = friendQuery.docs[0].id;
+
+      await _db
+          .collection('users')
+          .doc(friendId)
+          .update({"friends.$userID": "incomingRequest"});
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({"friends.$friendId": "requested"});
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> acceptFriendRequest(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({"friends.$userID.status": "friend"});
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({"friends.$friendID.status": "friend"});
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> declineFriendRequest(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({"friends.$userID": FieldValue.delete()});
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({"friends.$friendID": FieldValue.delete()});
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> removeFriend(
+      {required String friendID, required String userID}) async {
+    try {
+      final friendDoc = _db.collection('users').doc(friendID);
+
+      await friendDoc.update({"friends.$userID": FieldValue.delete()});
+
+      final userDoc = _db.collection('users').doc(userID);
+
+      await userDoc.update({"friends.$friendID": FieldValue.delete()});
+    } catch (error) {
+      logger.e(error.toString());
+      rethrow;
+    }
+  }
 }

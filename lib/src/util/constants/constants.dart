@@ -35,6 +35,9 @@ class Constants {
   static const textAddRestaurantBtn = "Add restaurant";
   static const textAddTagTitle = "Create a tag";
   static const textAddTagBtn = "Create tag";
+  static const textAddFriendTitle = "Add a Friend";
+  static const textAddFriendBtn = "Send friend request";
+
 
   //navigate
   static const signInNavigate = '/sign-in';
