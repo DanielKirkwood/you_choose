@@ -6,8 +6,6 @@ import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
 import 'package:you_choose/src/util/form_inputs/form_inputs.dart';
-import 'package:you_choose/src/util/form_inputs/restaurant.price.dart';
-import 'package:you_choose/src/util/form_inputs/restaurant_name.dart';
 
 String groupID = 'test123';
 Restaurant restaurant =
@@ -16,9 +14,7 @@ Restaurant restaurant =
 class MockFirestoreRepository extends Mock implements FirestoreRepository {}
 
 void main() {
-  // setUpAll(() {
-  //   registerFallbackValue(restaurant);
-  // });
+
   group(
     "RestaurantCubit",
     () {
