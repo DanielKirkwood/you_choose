@@ -27,24 +27,6 @@ class FirestoreRepository implements DatabaseRepository {
   }
 
   @override
-  Future<List<UserModel?>> getUserData() async {
-    List<UserModel?> users = [];
-
-    QuerySnapshot<UserModel> snapshot = await _db
-        .collection("users")
-        .withConverter(
-            fromFirestore: UserModel.fromFirestore,
-            toFirestore: (UserModel user, options) => user.toFirestore())
-        .get();
-
-    for (var i = 0; i < snapshot.size; i++) {
-      users.add(snapshot.docs[i].data());
-    }
-
-    return users;
-  }
-
-  @override
   Future<UserModel> getUser({required String email}) async {
     QuerySnapshot<UserModel> snapshot = await _db
         .collection('users')
