@@ -1,17 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:you_choose/src/app/app.dart';
 import 'package:you_choose/src/data/data.dart';
-import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/home/home.dart';
 import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/welcome/welcome.dart';
-
-import '../../helpers/firebase_mocks.dart';
 
 class MockUser extends Mock implements UserModel {}
 
@@ -20,22 +16,7 @@ class MockAuthenticationRepository extends Mock
 
 class MockAppBloc extends MockBloc<AppEvent, AppState> implements AppBloc {}
 
-class MockGroupCubit extends MockCubit<GroupState> implements GroupCubit {}
-
 void main() {
-  setupFirebaseMocks();
-
-  setUpAll(() async {
-    await Firebase.initializeApp(
-        name: 'test',
-        options: const FirebaseOptions(
-          apiKey: '123',
-          appId: '123',
-          messagingSenderId: '123',
-          projectId: '123',
-          storageBucket: 'restaurant-picker-flutter.appspot.com',
-        ));
-  });
 
   group('App', () {
     late FirebaseAuthRepository authenticationRepository;
