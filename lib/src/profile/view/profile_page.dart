@@ -33,15 +33,15 @@ class ProfileView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 32),
       physics: const BouncingScrollPhysics(),
       children: [
-        AvatarProfile(
-          uid: user.uid,
-          useDefault: user.useDefaultProfileImage,
-          onClicked: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const EditProfilePage()),
-            );
-          },
-        ),
+        // AvatarProfile(
+        //   uid: user.uid,
+        //   useDefault: user.useDefaultProfileImage,
+        //   onClicked: () {
+        //     Navigator.of(context).push(
+        //       MaterialPageRoute(builder: (context) => const EditProfilePage()),
+        //     );
+        //   },
+        // ),
         const SizedBox(height: 24),
         BuildName(
           username: user.username,
