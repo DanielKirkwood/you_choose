@@ -14,17 +14,28 @@ Restaurant restaurant =
 class MockFirestoreRepository extends Mock implements FirestoreRepository {}
 
 void main() {
-
+  setUpAll(() {
+    registerFallbackValue(restaurant);
+  });
   group(
     "RestaurantCubit",
     () {
       late FirestoreRepository firestoreRepository;
+      late RestaurantName name;
+      late RestaurantPrice price;
+      late RestaurantDescription description;
+      late RestaurantTags tags;
+      late GroupsList groups;
 
       setUp(() {
         firestoreRepository = MockFirestoreRepository();
 
         when(() => firestoreRepository.getRestaurantData(groupID))
             .thenAnswer((_) async => const <Restaurant>[]);
+
+        when(() => firestoreRepository.addRestaurant(
+            restaurant: any(named: 'restaurant'),
+            groups: any(named: 'groups'))).thenAnswer((_) async {});
       });
 
       group(
@@ -51,17 +62,55 @@ void main() {
       );
 
       group(
-        "form fields",
+        "addRestaurant",
         () {
           RestaurantState initialState = const RestaurantState();
 
-          RestaurantName name = const RestaurantName.dirty(value: 'name');
-          RestaurantPrice price = const RestaurantPrice.dirty(value: 1);
-          RestaurantDescription description =
-              const RestaurantDescription.dirty(value: 'description');
-          RestaurantTags tags = const RestaurantTags.dirty(value: []);
-          GroupsList groups = const GroupsList.dirty(
+          const name = RestaurantName.dirty(value: 'name');
+          const price = RestaurantPrice.dirty(value: 1);
+          const description = RestaurantDescription.dirty(value: 'description');
+          const tags = RestaurantTags.dirty(value: []);
+          const groups = GroupsList.dirty(
               value: [Group(id: 'id', name: 'name', members: [])]);
+
+          Restaurant restaurant = Restaurant(
+              name: name.value,
+              price: price.value,
+              description: description.value,
+              tags: tags.value);
+
+          RestaurantState validState = RestaurantState(
+              restaurants: [restaurant],
+              name: name,
+              price: price,
+              description: description,
+              tags: tags,
+              groups: groups,
+              formStatus: FormzStatus.submissionInProgress);
+
+          blocTest<RestaurantCubit, RestaurantState>(
+            'emits [MyState] when MyEvent is added.',
+            build: () => RestaurantCubit(firestoreRepository),
+            seed: () => validState,
+            act: (cubit) => cubit.addRestaurant(),
+            expect: () => <RestaurantState>[
+              validState.copyWith(formStatus: FormzStatus.submissionSuccess)
+            ],
+          );
+        },
+      );
+
+      group(
+        "check form fields changed functions",
+        () {
+          const name = RestaurantName.dirty(value: 'name');
+          const price = RestaurantPrice.dirty(value: 1);
+          const description = RestaurantDescription.dirty(value: 'description');
+          const tags = RestaurantTags.dirty(value: []);
+          const groups = GroupsList.dirty(
+              value: [Group(id: 'id', name: 'name', members: [])]);
+
+          RestaurantState initialState = const RestaurantState();
 
           RestaurantState nameState = initialState.copyWith(
               name: name, formStatus: FormzStatus.invalid);
