@@ -14,7 +14,10 @@ class Restaurant extends Equatable {
     required this.description,
     this.tags,
     this.docID,
-  });
+  }) : assert(
+          price >= 1 && price <= 4,
+          'price must be between 1 and 4 inclusive.',
+        );
 
   /// Function that creates a [Restaurant] object from a firestore document.
   factory Restaurant.fromFirestore(
