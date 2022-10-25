@@ -1,15 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:you_choose/src/app/bloc_observer.dart';
-import 'package:you_choose/src/app/view/app.dart';
-import 'package:you_choose/src/repositories/repositories.dart';
-import 'package:you_choose/src/util/logger/logger.dart';
-
+import 'package:flutter/widgets.dart';
+// import 'package:flutter_firebase_login/app/app.dart';
 import 'firebase_options.dart';
 
 Future<void> _setupEmulators() async {
@@ -53,7 +46,7 @@ Future<void> main() async {
     await _setupEmulators();
   }
 
-  final authenticationRepository = FirebaseAuthRepository();
+  final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
 
   runApp(MyApp(authenticationRepository: authenticationRepository));

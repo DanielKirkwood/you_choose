@@ -4,7 +4,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cache/cache.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meta/meta.dart';
 
 /// {@template sign_up_with_email_and_password_failure}
@@ -160,12 +159,6 @@ class AuthenticationRepository {
 
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
-
-  /// Whether or not the current environment is web
-  /// Should only be overriden for testing purposes. Otherwise,
-  /// defaults to [kIsWeb]
-  @visibleForTesting
-  bool isWeb = kIsWeb;
 
   /// User cache key.
   /// Should only be used for testing purposes.
