@@ -9,26 +9,14 @@ environment:
 dependencies:
   authentication_repository:
     path: packages/authentication_repository
+  cupertino_icons: ^1.0.5
+  equatable: ^2.0.3
+  flow_builder: ^0.0.9
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  cloud_firestore: ^3.5.0
-  flutter_speed_dial: ^6.0.0
-  equatable: ^2.0.5
   flutter_bloc: ^8.1.1
-  logger: ^1.1.0
-  bloc: ^8.1.0
-  multi_select_flutter: ^4.1.2
-  image_picker: ^0.8.5+3
-  path_provider: ^2.0.11
-  hydrated_bloc: ^8.1.0
-  json_annotation: ^4.7.0
-  path: ^1.8.1
-  firebase_storage: ^10.3.10
-  cached_firestorage: ^0.1.4
-  meta: ^1.8.0
-  formz: ^0.4.1
-  flow_builder: ^0.0.9
+  formz: ^0.4.0
+  meta: ^1.7.0
 
 dev_dependencies:
   bloc_test: ^9.0.0

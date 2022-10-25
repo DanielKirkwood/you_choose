@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cache/cache.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:meta/meta.dart';
 
 /// {@template sign_up_with_email_and_password_failure}
@@ -17,7 +16,7 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
 
   /// Create an authentication message
   /// from a firebase authentication exception code.
-  /// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/createUserWithEmailAndPassword.html
+  /// https://pub.dev/documentation/latest/FirebaseAuth/createUserWithEmailAndPassword.html
   factory SignUpWithEmailAndPasswordFailure.fromCode(String code) {
     switch (code) {
       case 'invalid-email':
@@ -51,7 +50,7 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
 
 /// {@template log_in_with_email_and_password_failure}
 /// Thrown during the login process if a failure occurs.
-/// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/signInWithEmailAndPassword.html
+/// https://pub.dev/documentation/latest/FirebaseAuth/signInWithEmailAndPassword.html
 /// {@endtemplate}
 class LogInWithEmailAndPasswordFailure implements Exception {
   /// {@macro log_in_with_email_and_password_failure}
@@ -90,7 +89,7 @@ class LogInWithEmailAndPasswordFailure implements Exception {
 
 /// {@template log_in_with_google_failure}
 /// Thrown during the sign in with google process if a failure occurs.
-/// https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuth/signInWithCredential.html
+/// https://pub.dev/documentation/latest/FirebaseAuth/signInWithCredential.html
 /// {@endtemplate}
 class LogInWithGoogleFailure implements Exception {
   /// {@macro log_in_with_google_failure}
@@ -170,10 +169,20 @@ class AuthenticationRepository {
   ///
   /// Emits [User.empty] if the user is not authenticated.
   Stream<User> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
-      _cache.write(key: userCacheKey, value: user);
-      return user;
+    return _firebaseAuth
+        .authStateChanges()
+        .asyncExpand<User>((firebaseUser) async* {
+      if (firebaseUser == null) {
+        const user = User.empty;
+        _cache.write(key: userCacheKey, value: user);
+        yield user;
+      } else {
+        final userRepository = UserRepository();
+        final user =
+            await userRepository.getUserByEmail(email: firebaseUser.email!);
+        _cache.write(key: userCacheKey, value: user);
+        yield user;
+      }
     });
   }
 
@@ -192,7 +201,7 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
       throw const SignUpWithEmailAndPasswordFailure();
@@ -211,7 +220,7 @@ class AuthenticationRepository {
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
     } catch (_) {
       throw const LogInWithEmailAndPasswordFailure();
@@ -230,11 +239,5 @@ class AuthenticationRepository {
     } catch (_) {
       throw LogOutFailure();
     }
-  }
-}
-
-extension on firebase_auth.User {
-  User get toUser {
-    return User(id: uid, email: email, name: displayName, photo: photoURL);
   }
 }

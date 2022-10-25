@@ -1,9 +1,12 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:flutter_firebase_login/app/app.dart';
-import 'firebase_options.dart';
+import 'package:you_choose/firebase_options.dart';
+import 'package:you_choose/src/app/app.dart';
+import 'package:you_choose/src/app/bloc_observer.dart';
+import 'package:you_choose/src/util/logger/logger.dart';
 
 Future<void> _setupEmulators() async {
   const firestorePort = 8080;
@@ -30,8 +33,8 @@ Future<void> _setupEmulators() async {
 }
 
 Future<void> main() async {
-  var logger = getLogger('main');
-  const bool isProduction = bool.fromEnvironment('dart.vm.product');
+  final logger = getLogger('main');
+  const isProduction = bool.fromEnvironment('dart.vm.product');
 
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = AppBlocObserver();
