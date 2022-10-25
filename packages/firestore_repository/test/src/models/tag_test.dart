@@ -22,7 +22,7 @@ void main() {
         const updatedName = 'new-mock-name';
 
         expect(
-          group,
+          tag,
           equals(
             Tag(name: name),
           ),
