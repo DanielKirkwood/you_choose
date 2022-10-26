@@ -6,7 +6,12 @@ import 'package:firebase_core_platform_interface/firebase_core_platform_interfac
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:models/models.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+
+class MockRestaurant extends Mock implements Restaurant {}
+
+class MockGroup extends Mock implements Group {}
 
 class MockFirebaseCore extends Mock
     with MockPlatformInterfaceMixin
@@ -19,9 +24,6 @@ class MockCollectionReference extends Mock
 
 class MockDocumentReference extends Mock
     implements DocumentReference<Map<String, dynamic>> {}
-
-class MockRestaurantDocumentReference extends Mock
-    implements DocumentReference {}
 
 class MockQuerySnapshot extends Mock implements QuerySnapshot {}
 
@@ -63,27 +65,41 @@ void main() {
 
     group('addRestaurant', () {
       setUp(() {
+        when(() => firestore.collection('groups'))
+            .thenReturn(MockCollectionReference());
+
+        when(() => firestore.collection('groups').doc(any()))
+            .thenReturn(MockDocumentReference());
+
         when(
           () => firestore
               .collection('groups')
-              .doc(_mockGroupDocumentID)
+              .doc(any())
               .collection('restaurants'),
         ).thenReturn(MockCollectionReference());
 
         when(
           () => firestore
               .collection('groups')
-              .doc(_mockGroupDocumentID)
+              .doc(any())
               .collection('restaurants')
-              .add(any()),
-        ).thenAnswer((_) => Future.value(MockRestaurantDocumentReference()));
-      });
+              .doc(),
+        ).thenReturn(MockDocumentReference());
 
+        when(
+          () => firestore
+              .collection('groups')
+              .doc(any())
+              .collection('restaurants')
+              .doc()
+              .set(any()),
+        ).thenAnswer((_) => Future.value());
+      });
       test('does not throw when restaurant added', () async {
         await expectLater(
           restaurantRepository.addRestaurant(
-            restaurant: _mockRestaurant,
-            groups: [_mockGroup],
+            restaurant: MockRestaurant(),
+            groups: [MockGroup()],
           ),
           completes,
         );

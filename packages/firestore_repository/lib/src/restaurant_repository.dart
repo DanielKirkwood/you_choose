@@ -55,19 +55,17 @@ class RestaurantRepository {
     required List<Group> groups,
   }) async {
     for (final group in groups) {
-      final restaurantsCollection = _firestore
-          .collection('groups')
-          .doc(group.docID)
-          .collection('restaurants');
+      final groupDocRef = _firestore.collection('groups').doc(group.docID);
 
-      await restaurantsCollection.add(restaurant.toJson()).then((doc) {
-        if (restaurant.tags != null) {
-          final tagsCollection = doc.collection('tags');
-          for (final tag in restaurant.tags!) {
-            tagsCollection.add(tag.toJson());
-          }
+      final restaurantDocRef = groupDocRef.collection('restaurants').doc();
+      await restaurantDocRef.set(restaurant.toJson());
+
+      if (restaurant.tags != null) {
+        final tagsCollection = restaurantDocRef.collection('tags');
+        for (final tag in restaurant.tags!) {
+          await tagsCollection.add(tag.toJson());
         }
-      });
+      }
     }
   }
 }
