@@ -4,6 +4,7 @@ import 'package:cache/cache.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:meta/meta.dart';
+import 'package:models/models.dart';
 
 /// {@template sign_up_with_email_and_password_failure}
 /// Thrown if during the sign up process if a failure occurs.

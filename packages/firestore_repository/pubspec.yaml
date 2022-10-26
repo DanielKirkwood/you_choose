@@ -16,6 +16,8 @@ dependencies:
     sdk: flutter
   image_picker: ^0.8.6
   meta: ^1.8.0
+  models:
+    path: ../models
 
 dev_dependencies:
   cloud_firestore_platform_interface: ^5.8.2

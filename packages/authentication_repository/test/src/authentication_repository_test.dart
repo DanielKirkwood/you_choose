@@ -8,6 +8,7 @@ import 'package:firebase_core_platform_interface/firebase_core_platform_interfac
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:models/models.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 const _mockFirebaseUsername = 'mock-username';

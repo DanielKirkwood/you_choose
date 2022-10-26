@@ -366,6 +366,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  models:
+    dependency: "direct main"
+    description:
+      path: "../models"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   node_preamble:
     dependency: transitive
     description:
