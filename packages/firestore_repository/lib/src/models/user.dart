@@ -1,29 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-/// {@template user}
-/// User model
+/// {@template UserModel}
+/// UserModel model
 ///
-/// [User.empty()] represents an unauthenticated user.
+/// [UserModel.empty()] represents an unauthenticated UserModel.
 /// {@endtemplate}
-class User extends Equatable {
-  /// {@macro user}
-  const User({
+class UserModel extends Equatable {
+  /// {@macro UserModel}
+  const UserModel({
     required this.username,
     required this.email,
     required this.isVerified,
     required this.friends,
   });
 
-  /// Method for creating [User] from firestore document.
-  factory User.fromFirestore(
+  /// Method for creating [UserModel] from firestore document.
+  factory UserModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> doc,
     // ignore: avoid_unused_constructor_parameters
     SnapshotOptions? options,
   ) {
     final data = doc.data();
 
-    return User(
+    return UserModel(
       username: doc.id,
       email: data?['email'] as String,
       isVerified: data?['isVerified'] as bool,
@@ -31,29 +31,29 @@ class User extends Equatable {
     );
   }
 
-  /// the current user's username.
+  /// the current UserModel's username.
   final String username;
 
-  /// the current user's email address.
+  /// the current UserModel's email address.
   final String email;
 
-  /// true if user's email address is verified, false otherwise.
+  /// true if UserModel's email address is verified, false otherwise.
   final bool isVerified;
 
-  /// the users friends list
+  /// the UserModels friends list
   final Map<String, dynamic> friends;
 
-  /// Empty user which represents an unauthenticated user.
+  /// Empty UserModel which represents an unauthenticated UserModel.
   static const empty =
-      User(username: '', email: '', isVerified: false, friends: {});
+      UserModel(username: '', email: '', isVerified: false, friends: {});
 
-  /// Convenience getter to determine whether the current user is empty.
-  bool get isEmpty => this == User.empty;
+  /// Convenience getter to determine whether the current UserModel is empty.
+  bool get isEmpty => this == UserModel.empty;
 
-  /// Convenience getter to determine whether the current user is not empty.
-  bool get isNotEmpty => this != User.empty;
+  /// Convenience getter to determine whether the current UserModel is not empty.
+  bool get isNotEmpty => this != UserModel.empty;
 
-  /// Method for adding [User] to firestore.
+  /// Method for adding [UserModel] to firestore.
   Map<String, dynamic> toFirestore() {
     return {
       'username': username,
@@ -64,13 +64,13 @@ class User extends Equatable {
   }
 
   /// Convenience copyWith method to update fields
-  User copyWith({
+  UserModel copyWith({
     String? username,
     String? email,
     bool? isVerified,
     Map<String, dynamic>? friends,
   }) {
-    return User(
+    return UserModel(
       username: username ?? this.username,
       email: email ?? this.email,
       isVerified: isVerified ?? this.isVerified,

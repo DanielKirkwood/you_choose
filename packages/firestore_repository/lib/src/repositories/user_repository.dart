@@ -13,26 +13,26 @@ class UserRepository {
   final FirebaseFirestore _firestore;
 
   /// returns a users firestore data by given username
-  Future<User> getUserByUsername({required String username}) async {
+  Future<UserModel> getUserByUsername({required String username}) async {
     final snapshot = await _firestore
         .collection('users')
         .doc(username)
         .withConverter(
-          fromFirestore: User.fromFirestore,
-          toFirestore: (User user, options) => user.toFirestore(),
+          fromFirestore: UserModel.fromFirestore,
+          toFirestore: (UserModel user, options) => user.toFirestore(),
         )
         .get();
 
-    return snapshot.data() ?? User.empty;
+    return snapshot.data() ?? UserModel.empty;
   }
 
   /// returns a users firestore data by given email
-  Future<User> getUserByEmail({required String email}) async {
+  Future<UserModel> getUserByEmail({required String email}) async {
     final snapshot = await _firestore
         .collection('users')
         .withConverter(
-          fromFirestore: User.fromFirestore,
-          toFirestore: (User user, options) => user.toFirestore(),
+          fromFirestore: UserModel.fromFirestore,
+          toFirestore: (UserModel user, options) => user.toFirestore(),
         )
         .where('email', isEqualTo: email)
         .get();
@@ -41,13 +41,13 @@ class UserRepository {
   }
 
   /// adds a users data to firestore
-  Future<void> addUser({required User user}) async {
+  Future<void> addUser({required UserModel user}) async {
     await _firestore
         .collection('users')
         .doc(user.username)
         .withConverter(
-          fromFirestore: User.fromFirestore,
-          toFirestore: (User user, option) => user.toFirestore(),
+          fromFirestore: UserModel.fromFirestore,
+          toFirestore: (UserModel user, option) => user.toFirestore(),
         )
         .set(user);
   }

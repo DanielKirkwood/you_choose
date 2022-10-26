@@ -153,33 +153,35 @@ class AuthenticationRepository {
   AuthenticationRepository({
     CacheClient? cache,
     firebase_auth.FirebaseAuth? firebaseAuth,
+    UserRepository? userRepository,
   })  : _cache = cache ?? CacheClient(),
-        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
+        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+        _userRepository = userRepository ?? UserRepository();
 
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
+  final UserRepository _userRepository;
 
   /// User cache key.
   /// Should only be used for testing purposes.
   @visibleForTesting
   static const userCacheKey = '__user_cache_key__';
 
-  /// Stream of [User] which will emit the current user when
+  /// Stream of [UserModel] which will emit the current user when
   /// the authentication state changes.
   ///
-  /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get user {
+  /// Emits [UserModel.empty] if the user is not authenticated.
+  Stream<UserModel> get user {
     return _firebaseAuth
         .authStateChanges()
-        .asyncExpand<User>((firebaseUser) async* {
+        .asyncExpand<UserModel>((firebaseUser) async* {
       if (firebaseUser == null) {
-        const user = User.empty;
+        const user = UserModel.empty;
         _cache.write(key: userCacheKey, value: user);
         yield user;
       } else {
-        final userRepository = UserRepository();
         final user =
-            await userRepository.getUserByEmail(email: firebaseUser.email!);
+            await _userRepository.getUserByEmail(email: firebaseUser.email!);
         _cache.write(key: userCacheKey, value: user);
         yield user;
       }
@@ -187,9 +189,9 @@ class AuthenticationRepository {
   }
 
   /// Returns the current cached user.
-  /// Defaults to [User.empty] if there is no cached user.
-  User get currentUser {
-    return _cache.read<User>(key: userCacheKey) ?? User.empty;
+  /// Defaults to [UserModel.empty] if there is no cached user.
+  UserModel get currentUser {
+    return _cache.read<UserModel>(key: userCacheKey) ?? UserModel.empty;
   }
 
   /// Creates a new user with the provided [email] and [password].
@@ -228,7 +230,7 @@ class AuthenticationRepository {
   }
 
   /// Signs out the current user which will emit
-  /// [User.empty] from the [user] Stream.
+  /// [UserModel.empty] from the [user] Stream.
   ///
   /// Throws a [LogOutFailure] if an exception occurs.
   Future<void> logOut() async {

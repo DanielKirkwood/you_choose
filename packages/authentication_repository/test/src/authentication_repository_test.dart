@@ -1,47 +1,53 @@
 // ignore_for_file: must_be_immutable
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cache/cache.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-const _mockFirebaseUserUid = 'mock-uid';
+const _mockFirebaseUsername = 'mock-username';
 const _mockFirebaseUserEmail = 'mock-email';
 
 class MockCacheClient extends Mock implements CacheClient {}
 
-class MockFirebaseAuth extends Mock implements firebase_auth.FirebaseAuth {}
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 class MockFirebaseCore extends Mock
     with MockPlatformInterfaceMixin
     implements FirebasePlatform {}
 
-class MockFirebaseUser extends Mock implements firebase_auth.User {}
+class MockFirebaseUser extends Mock implements User {}
 
-class MockUserCredential extends Mock implements firebase_auth.UserCredential {}
+class MockUserCredential extends Mock implements UserCredential {}
 
-class FakeAuthCredential extends Fake implements firebase_auth.AuthCredential {}
+class FakeAuthCredential extends Fake implements AuthCredential {}
 
 class FakeAuthProvider extends Fake implements AuthProvider {}
+
+class MockUserRepository extends Mock implements UserRepository {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const email = 'test@gmail.com';
   const password = 't0ps3cret42';
-  const user = User(
-    id: _mockFirebaseUserUid,
+  const user = UserModel(
+    username: _mockFirebaseUsername,
     email: _mockFirebaseUserEmail,
+    isVerified: false,
+    friends: {},
   );
 
   group('AuthenticationRepository', () {
     late CacheClient cache;
-    late firebase_auth.FirebaseAuth firebaseAuth;
+    late FirebaseAuth firebaseAuth;
     late AuthenticationRepository authenticationRepository;
+    late UserRepository userRepository;
 
     setUpAll(() {
       registerFallbackValue(FakeAuthCredential());
@@ -71,9 +77,11 @@ void main() {
 
       cache = MockCacheClient();
       firebaseAuth = MockFirebaseAuth();
+      userRepository = MockUserRepository();
       authenticationRepository = AuthenticationRepository(
         cache: cache,
         firebaseAuth: firebaseAuth,
+        userRepository: userRepository,
       );
     });
 
@@ -198,21 +206,32 @@ void main() {
             .thenAnswer((_) => Stream.value(null));
         await expectLater(
           authenticationRepository.user,
-          emitsInOrder(const <User>[User.empty]),
+          emitsInOrder(const <UserModel>[UserModel.empty]),
         );
       });
 
       test('emits User when firebase user is not null', () async {
         final firebaseUser = MockFirebaseUser();
-        when(() => firebaseUser.uid).thenReturn(_mockFirebaseUserUid);
-        when(() => firebaseUser.email).thenReturn(_mockFirebaseUserEmail);
-        when(() => firebaseUser.photoURL).thenReturn(null);
+        const user = UserModel(
+          username: _mockFirebaseUsername,
+          email: _mockFirebaseUserEmail,
+          isVerified: false,
+          friends: {},
+        );
+
         when(() => firebaseAuth.authStateChanges())
             .thenAnswer((_) => Stream.value(firebaseUser));
+
+        when(() => userRepository.getUserByEmail(email: _mockFirebaseUserEmail))
+            .thenAnswer((_) => Future.value(user));
+
+        when(() => firebaseUser.email).thenReturn(_mockFirebaseUserEmail);
+
         await expectLater(
           authenticationRepository.user,
-          emitsInOrder(const <User>[user]),
+          emitsInOrder(const <UserModel>[user]),
         );
+
         verify(
           () => cache.write(
             key: AuthenticationRepository.userCacheKey,
@@ -229,13 +248,15 @@ void main() {
         ).thenReturn(null);
         expect(
           authenticationRepository.currentUser,
-          equals(User.empty),
+          equals(UserModel.empty),
         );
       });
 
       test('returns User when cached user is not null', () async {
         when(
-          () => cache.read<User>(key: AuthenticationRepository.userCacheKey),
+          () => cache.read<UserModel>(
+            key: AuthenticationRepository.userCacheKey,
+          ),
         ).thenReturn(user);
         expect(authenticationRepository.currentUser, equals(user));
       });
