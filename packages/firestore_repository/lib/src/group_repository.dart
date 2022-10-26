@@ -41,6 +41,24 @@ class GroupRepository {
     return addedGroup;
   }
 
+  /// Gets all [Tag]s from a given group collection.
+  Future<List<Tag>> getGroupTags({required String groupID}) async {
+    final tags = <Tag>[];
+
+    final tagsRef =
+        _firestore.collection('groups').doc(groupID).collection('tags');
+
+    final tagsSnapshot = await tagsRef.get();
+
+    for (var i = 0; i < tagsSnapshot.size; i++) {
+      final docRef = tagsSnapshot.docs[i];
+      final tag = Tag.fromJson(docRef.id, docRef.data());
+      tags.add(tag);
+    }
+
+    return tags;
+  }
+
   /// Adds a [Tag] to a group given a Tag object and group id.
   Future<Tag> addGroupTag({required Tag tag, required String groupID}) async {
     final tagDocRef =
