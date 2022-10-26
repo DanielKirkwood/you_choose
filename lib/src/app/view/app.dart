@@ -4,10 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app/app.dart';
 import 'package:you_choose/src/repositories/authentication/authentication_repository.dart';
 
-class MyApp extends StatelessWidget {
-  // const MyApp({Key? key}) : super(key: key);
+class App extends StatelessWidget {
 
-  const MyApp({
+  const App({
     super.key,
     required AuthenticationRepository authenticationRepository,
   }) : _authenticationRepository = authenticationRepository;
