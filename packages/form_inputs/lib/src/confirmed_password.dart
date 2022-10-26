@@ -12,7 +12,7 @@ enum ConfirmedPasswordValidationError {
 class ConfirmedPassword
     extends FormzInput<String, ConfirmedPasswordValidationError> {
   /// {@macro confirmed_password}
-  const ConfirmedPassword.pure({required this.actualPassword}) : super.pure('');
+  const ConfirmedPassword.pure({this.actualPassword = ''}) : super.pure('');
 
   /// {@macro confirmed_password}
   const ConfirmedPassword.dirty({

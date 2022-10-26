@@ -1,39 +1,14 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:utilities/utilities.dart';
 import 'package:you_choose/firebase_options.dart';
 import 'package:you_choose/src/app/app.dart';
 import 'package:you_choose/src/app/bloc_observer.dart';
-import 'package:you_choose/src/util/logger/logger.dart';
-
-Future<void> _setupEmulators() async {
-  const firestorePort = 8080;
-  const authPort = 9099;
-  const storagePort = 9199;
-
-  final emulatorHost =
-      (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
-          ? '10.0.2.2'
-          : 'localhost';
-
-  // [Firestore | localhost:8080]
-  FirebaseFirestore.instance.settings = const Settings(
-    host: 'localhost:$firestorePort',
-    sslEnabled: false,
-    persistenceEnabled: false,
-  );
-
-  // [Authentication | localhost:9099]
-  await FirebaseAuth.instance.useAuthEmulator(emulatorHost, authPort);
-
-  // [Storage | localhost:9199]
-  await FirebaseStorage.instance.useStorageEmulator(emulatorHost, storagePort);
-}
 
 Future<void> main() async {
-  final logger = getLogger('main');
+  final logger = Utilities.getLogger('main');
   const isProduction = bool.fromEnvironment('dart.vm.product');
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,7 +21,7 @@ Future<void> main() async {
   if (!isProduction) {
     logger.d('Connecting to firebase emulators');
 
-    await _setupEmulators();
+    await Utilities.setupEmulators();
   }
 
   final authenticationRepository = AuthenticationRepository();

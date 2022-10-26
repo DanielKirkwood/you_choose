@@ -12,13 +12,21 @@ dependencies:
   cupertino_icons: ^1.0.5
   equatable: ^2.0.3
   firebase_core: ^2.1.0
+  firestore_repository:
+    path: packages/firestore_repository
   flow_builder: ^0.0.9
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1
-  formz: ^0.4.0
-  logger: ^1.1.0
+  form_inputs:
+    path: packages/form_inputs
+  image_picker: ^0.8.6
   meta: ^1.7.0
+  models:
+    path: packages/models
+  multi_select_flutter: ^4.1.2
+  utilities:
+    path: packages/utilities
 
 dev_dependencies:
   bloc_test: ^9.0.0

@@ -1,10 +1,9 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app/app.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/friends/cubit/friends_cubit.dart';
 import 'package:you_choose/src/profile/profile.dart';
-import 'package:you_choose/src/repositories/database/firestore_repository.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -14,11 +13,12 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildAppBar(context: context, hasBackButton: false),
-        body: BlocProvider(
-          create: (context) => FriendsCubit(FirestoreRepository()),
-          child: const ProfileView(),
-        ));
+      appBar: buildAppBar(context: context, hasBackButton: false),
+      body: BlocProvider(
+        create: (context) => FriendsCubit(FriendRepository()),
+        child: const ProfileView(),
+      ),
+    );
   }
 }
 
@@ -27,18 +27,19 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       physics: const BouncingScrollPhysics(),
       children: [
         AvatarProfile(
-          uid: user.uid,
-          useDefault: user.useDefaultProfileImage,
+          username: user.username,
           onClicked: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const EditProfilePage()),
+              MaterialPageRoute(
+                builder: (BuildContext context) => const EditProfilePage(),
+              ),
             );
           },
         ),
@@ -50,12 +51,12 @@ class ProfileView extends StatelessWidget {
         const SizedBox(height: 24),
         Center(
           child: TextButton(
-              onPressed: () =>
-                  context.read<AppBloc>().add(AppLogoutRequested()),
-              child: const Text(
-                'Sign Out',
-                style: TextStyle(color: Colors.red),
-              )),
+            onPressed: () => context.read<AppBloc>().add(AppLogoutRequested()),
+            child: const Text(
+              'Sign Out',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
         ),
         const SizedBox(height: 24),
         BuildFriends(
@@ -98,8 +99,8 @@ class BuildFriends extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
-    final t = BlocProvider.of<FriendsCubit>(context, listen: false);
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final friendsCubit = BlocProvider.of<FriendsCubit>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,45 +112,49 @@ class BuildFriends extends StatelessWidget {
         const SizedBox(height: 16),
         ...friends.entries.map((friend) {
           return ListTile(
-              onTap: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (_) {
-                      return BlocProvider.value(
-                        value: t,
-                        child: Wrap(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Text(
-                                friend.value['username'],
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
-                              ),
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (_) {
+                  return BlocProvider.value(
+                    value: friendsCubit,
+                    child: Wrap(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            '${friend.value['username']}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 24),
-                              child: ListTile(
-                                onTap: () => context
-                                    .read<FriendsCubit>()
-                                    .removeFriend(
-                                        userID: user.uid, friendID: friend.key),
-                                leading: const Icon(
-                                  Icons.remove,
-                                  color: Colors.red,
-                                ),
-                                title: const Text('Remove friend'),
-                              ),
-                            )
-                          ],
+                          ),
                         ),
-                      );
-                    });
-              },
-              leading: const CircleAvatar(backgroundColor: Colors.black),
-              title: Text(friend.value['username']),
-              trailing: const Icon(Icons.arrow_forward_ios));
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 24),
+                          child: ListTile(
+                            onTap: () =>
+                                context.read<FriendsCubit>().removeFriend(
+                                      username: user.username,
+                                      friendUsername: friend.key,
+                                    ),
+                            leading: const Icon(
+                              Icons.remove,
+                              color: Colors.red,
+                            ),
+                            title: const Text('Remove friend'),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            leading: const CircleAvatar(backgroundColor: Colors.black),
+            title: Text('${friend.value['username']}'),
+            trailing: const Icon(Icons.arrow_forward_ios),
+          );
         }).toList()
       ],
     );

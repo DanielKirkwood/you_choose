@@ -1,9 +1,10 @@
+// ignore_for_file: strict_raw_type
+
 import 'package:bloc/bloc.dart';
-import 'package:logger/logger.dart';
-import 'package:you_choose/src/util/logger/logger.dart';
+import 'package:utilities/utilities.dart';
 
 class AppBlocObserver extends BlocObserver {
-  Logger logger = getLogger('BlocObserver');
+  final logger = Utilities.getLogger('BlocObserver');
 
   @override
   void onEvent(Bloc bloc, Object? event) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:you_choose/src/app/app.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
@@ -11,7 +10,7 @@ class AddGroupForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return BlocListener<GroupCubit, GroupState>(
       listener: (context, state) {
         if (state.formStatus.isSubmissionFailure) {
@@ -46,9 +45,12 @@ class AddGroupForm extends StatelessWidget {
                         style: TextStyle(
                           color: Constants.kBlackColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                        )),
-                  ])),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(padding: EdgeInsets.only(bottom: size.height * 0.02)),
               const _NameField(),
               SizedBox(height: size.height * 0.01),
@@ -68,7 +70,7 @@ class _NameField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<GroupCubit, GroupState>(
       buildWhen: (previous, current) => previous.name != current.name,
@@ -83,9 +85,12 @@ class _NameField extends StatelessWidget {
                 errorText: state.name.invalid ? 'invalid name' : null,
                 hintText: 'Name',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -97,7 +102,7 @@ class _MembersField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<GroupCubit, GroupState>(
       buildWhen: (previous, current) => previous.members != current.members,
@@ -113,9 +118,12 @@ class _MembersField extends StatelessWidget {
                 errorText: state.members.invalid ? 'invalid members' : null,
                 hintText: 'Members',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -127,8 +135,8 @@ class _AddGroupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
-    Size size = MediaQuery.of(context).size;
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<GroupCubit, GroupState>(
       buildWhen: (previous, current) =>
@@ -142,13 +150,19 @@ class _AddGroupButton extends StatelessWidget {
                   key: const Key('groupForm_continue_raisedButton'),
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                       side: MaterialStateProperty.all<BorderSide>(
-                          BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                   onPressed: state.formStatus.isValidated
-                      ? () => context.read<GroupCubit>().addGroup(user.uid)
+                      ? () => context
+                          .read<GroupCubit>()
+                          .addGroup(username: user.username)
                       : null,
                   child: const Text(Constants.textAddGroupBtn),
                 ),

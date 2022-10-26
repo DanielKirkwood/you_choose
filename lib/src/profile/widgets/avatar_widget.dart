@@ -1,19 +1,17 @@
-import 'package:cached_firestorage/lib.dart';
 import 'package:flutter/material.dart';
 
 class AvatarProfile extends StatelessWidget {
-  final String uid;
-  final VoidCallback onClicked;
-  final bool isEdit;
-  final bool useDefault;
 
   const AvatarProfile({
-    Key? key,
-    required this.uid,
+    super.key,
+    required this.username,
     required this.onClicked,
     this.isEdit = false,
-    this.useDefault = false,
-  }) : super(key: key);
+  });
+
+  final String username;
+  final VoidCallback onClicked;
+  final bool isEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +34,7 @@ class AvatarProfile extends StatelessWidget {
   Widget buildImage() {
     return InkWell(
       onTap: onClicked,
-      child: RemotePicture(
-          imagePath: useDefault
-              ? "user/profile/default_profile.jpg"
-              : "user/profile/$uid.jpg",
-          mapKey: uid,
-          useAvatarView: true,
-          avatarViewRadius: 60,
-          fit: BoxFit.cover),
+      // child: NetworkImage(url: '', scale: 0.8),
     );
   }
 

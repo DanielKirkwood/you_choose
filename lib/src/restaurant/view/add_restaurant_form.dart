@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:models/models.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:you_choose/src/app/app.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
 import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
@@ -16,7 +16,7 @@ class AddRestaurantForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocListener<RestaurantCubit, RestaurantState>(
       listener: (context, state) {
@@ -52,9 +52,12 @@ class AddRestaurantForm extends StatelessWidget {
                         style: TextStyle(
                           color: Constants.kBlackColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                        )),
-                  ])),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(padding: EdgeInsets.only(bottom: size.height * 0.02)),
               const _NameField(),
               SizedBox(height: size.height * 0.03),
@@ -76,11 +79,11 @@ class AddRestaurantForm extends StatelessWidget {
 }
 
 class _NameField extends StatelessWidget {
-  const _NameField({super.key});
+  const _NameField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       buildWhen: (previous, current) => previous.name != current.name,
@@ -96,9 +99,12 @@ class _NameField extends StatelessWidget {
                 errorText: state.name.invalid ? 'invalid name' : null,
                 hintText: 'Name',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -106,11 +112,11 @@ class _NameField extends StatelessWidget {
 }
 
 class _PriceField extends StatelessWidget {
-  const _PriceField({super.key});
+  const _PriceField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       buildWhen: (previous, current) => previous.price != current.price,
@@ -129,7 +135,8 @@ class _PriceField extends StatelessWidget {
               );
             }).toList(),
             decoration: Constants.formInputDecoration(
-                helperText: null, labelText: 'Price', errorText: null),
+              labelText: 'Price',
+            ),
           ),
         );
       },
@@ -138,11 +145,11 @@ class _PriceField extends StatelessWidget {
 }
 
 class _DescriptionField extends StatelessWidget {
-  const _DescriptionField({super.key});
+  const _DescriptionField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       buildWhen: (previous, current) =>
@@ -161,9 +168,12 @@ class _DescriptionField extends StatelessWidget {
                     state.description.invalid ? 'invalid description' : null,
                 hintText: 'Description',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -171,14 +181,13 @@ class _DescriptionField extends StatelessWidget {
 }
 
 class _TagsField extends StatelessWidget {
-  const _TagsField({super.key, required this.groupID});
+  const _TagsField({required this.groupID});
 
   final String groupID;
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       buildWhen: (previous, current) => previous.tags != current.tags,
@@ -188,7 +197,7 @@ class _TagsField extends StatelessWidget {
           child: BlocBuilder<TagCubit, TagState>(
             builder: (context, state) {
               if (state.status == TagStatus.initial) {
-                context.read<TagCubit>().loadTags(groupID);
+                context.read<TagCubit>().loadTags(groupID: groupID);
                 return const Center(child: CircularProgressIndicator());
               }
               if (state.status == TagStatus.loading) {
@@ -214,7 +223,8 @@ class _TagsField extends StatelessWidget {
                     title: const Text('Tags'),
                     searchable: true,
                     buttonText: const Text('Tags'),
-                    decoration: Constants.formMultiSelect);
+                  decoration: Constants.formMultiSelect,
+                );
               }
               return const Center(child: Text('An unknown error has occurred'));
             },
@@ -226,12 +236,12 @@ class _TagsField extends StatelessWidget {
 }
 
 class _GroupsField extends StatelessWidget {
-  const _GroupsField({super.key});
+  const _GroupsField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+    final size = MediaQuery.of(context).size;
+    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       buildWhen: (previous, current) => previous.groups != current.groups,
@@ -241,7 +251,7 @@ class _GroupsField extends StatelessWidget {
           child: BlocBuilder<GroupCubit, GroupState>(
             builder: (context, state) {
               if (state.status == GroupStatus.initial) {
-                context.read<GroupCubit>().loadGroups(user.uid);
+                context.read<GroupCubit>().loadGroups(username: user.username);
                 return const Center(child: CircularProgressIndicator());
               }
               if (state.status == GroupStatus.loading) {
@@ -267,7 +277,8 @@ class _GroupsField extends StatelessWidget {
                     title: const Text('Groups'),
                     searchable: true,
                     buttonText: const Text('Groups'),
-                    decoration: Constants.formMultiSelect);
+                  decoration: Constants.formMultiSelect,
+                );
               }
               return const Center(child: Text('An unknown error has occurred'));
             },
@@ -279,11 +290,11 @@ class _GroupsField extends StatelessWidget {
 }
 
 class _AddRestaurantButton extends StatelessWidget {
-  const _AddRestaurantButton({super.key});
+  const _AddRestaurantButton();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<RestaurantCubit, RestaurantState>(
       buildWhen: (previous, current) =>
@@ -297,11 +308,15 @@ class _AddRestaurantButton extends StatelessWidget {
                   key: const Key('groupForm_continue_raisedButton'),
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                       side: MaterialStateProperty.all<BorderSide>(
-                          BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                   onPressed: state.formStatus.isValidated
                       ? () => context.read<RestaurantCubit>().addRestaurant()
                       : null,
