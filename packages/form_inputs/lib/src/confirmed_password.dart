@@ -12,17 +12,22 @@ enum ConfirmedPasswordValidationError {
 class ConfirmedPassword
     extends FormzInput<String, ConfirmedPasswordValidationError> {
   /// {@macro confirmed_password}
-  const ConfirmedPassword.pure({this.password = ''}) : super.pure('');
+  const ConfirmedPassword.pure({required this.actualPassword}) : super.pure('');
 
   /// {@macro confirmed_password}
-  const ConfirmedPassword.dirty({required this.password, String value = ''})
+  const ConfirmedPassword.dirty({
+    required this.actualPassword,
+    String value = '',
+  })
       : super.dirty(value);
 
   /// The original password.
-  final String password;
+  final String actualPassword;
 
   @override
   ConfirmedPasswordValidationError? validator(String? value) {
-    return password == value ? null : ConfirmedPasswordValidationError.invalid;
+    return actualPassword == value
+        ? null
+        : ConfirmedPasswordValidationError.invalid;
   }
 }

@@ -14,7 +14,7 @@ class GroupName extends FormzInput<String, GroupNameValidationError> {
   const GroupName.pure() : super.pure('');
 
   /// {@macro groupName}
-  const GroupName.dirty([super.value = '']) : super.dirty();
+  const GroupName.dirty({String value = ''}) : super.dirty(value);
 
   static final RegExp _groupNameRegExp = RegExp(
     r'^[^-\s][a-zA-Z0-9_\s-]{4,30}$',

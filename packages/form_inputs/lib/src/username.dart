@@ -1,10 +1,19 @@
 import 'package:formz/formz.dart';
 
-enum UsernameValidationError { invalid }
+/// Validation errors for the [Username] [FormzInput].
+enum UsernameValidationError {
+  /// Generic invalid error.
+  invalid
+}
 
+/// {@template username}
+/// Form input for an username input.
+/// {@endtemplate}
 class Username extends FormzInput<String, UsernameValidationError> {
+  /// {@macro username}
   const Username.pure() : super.pure('');
 
+  /// {@macro username}
   const Username.dirty({required String value}) : super.dirty(value);
 
   static final RegExp _usernameRegExp = RegExp(

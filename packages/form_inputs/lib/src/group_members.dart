@@ -14,7 +14,7 @@ class GroupMembers extends FormzInput<String, GroupMembersValidationError> {
   const GroupMembers.pure() : super.pure('');
 
   /// {@macro groupMembers}
-  const GroupMembers.dirty([super.value = '']) : super.dirty();
+  const GroupMembers.dirty({String value = ''}) : super.dirty(value);
 
   @override
   GroupMembersValidationError? validator(String value) {
