@@ -1,18 +1,18 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
-import 'package:you_choose/src/repositories/repositories.dart';
-import 'package:you_choose/src/util/form_inputs/form_inputs.dart';
 
 part 'sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
   SignUpCubit(this._authenticationRepository) : super(const SignUpState());
 
-  final FirebaseAuthRepository _authenticationRepository;
+  final AuthenticationRepository _authenticationRepository;
 
   void emailChanged(String value) {
-    final email = Email.dirty(value);
+    final email = Email.dirty(value: value);
     emit(
       state.copyWith(
         email: email,
@@ -26,9 +26,9 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
 
   void passwordChanged(String value) {
-    final password = Password.dirty(value);
+    final password = Password.dirty(value: value);
     final confirmedPassword = ConfirmedPassword.dirty(
-      password: password.value,
+      actualPassword: password.value,
       value: state.confirmedPassword.value,
     );
     emit(
@@ -46,7 +46,7 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   void confirmedPasswordChanged(String value) {
     final confirmedPassword = ConfirmedPassword.dirty(
-      password: state.password.value,
+      actualPassword: state.password.value,
       value: value,
     );
     emit(

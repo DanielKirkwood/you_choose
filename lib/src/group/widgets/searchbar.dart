@@ -5,7 +5,7 @@ Widget searchBar() {
     padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
     child: TextField(
       decoration: InputDecoration(
-        hintText: "Search...",
+        hintText: 'Search...',
         hintStyle: TextStyle(color: Colors.grey.shade600),
         prefixIcon: Icon(
           Icons.search,
@@ -17,7 +17,8 @@ Widget searchBar() {
         contentPadding: const EdgeInsets.all(8),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.grey.shade100)),
+          borderSide: BorderSide(color: Colors.grey.shade100),
+        ),
       ),
     ),
   );

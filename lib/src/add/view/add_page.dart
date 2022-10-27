@@ -20,7 +20,7 @@ class AddPage extends StatelessWidget {
           children: [
             const Heading(title: 'Something New?'),
             const SizedBox(
-              height: 20.0,
+              height: 20,
             ),
             ButtonLink(
               title: 'Add Group',
@@ -29,8 +29,10 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const AddGroupPage()));
+                  MaterialPageRoute<AddGroupPage>(
+                    builder: (context) => const AddGroupPage(),
+                  ),
+                );
               },
             ),
             ButtonLink(
@@ -42,10 +44,12 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
+                  MaterialPageRoute<AddRestaurantPage>(
                         builder: (context) => const AddRestaurantPage(
                               groupID: '1',
-                            )));
+                    ),
+                  ),
+                );
               },
             ),
             ButtonLink(
@@ -55,8 +59,10 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const AddTagPage()));
+                  MaterialPageRoute<AddTagPage>(
+                    builder: (context) => const AddTagPage(),
+                  ),
+                );
               },
             ),
             ButtonLink(
@@ -66,8 +72,10 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const AddFriendPage()));
+                  MaterialPageRoute<AddFriendPage>(
+                    builder: (context) => const AddFriendPage(),
+                  ),
+                );
               },
             ),
           ],
@@ -99,7 +107,8 @@ class Heading extends StatelessWidget {
                 style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
-                    color: Color.fromARGB(225, 14, 20, 69)),
+                  color: Color.fromARGB(225, 14, 20, 69),
+                ),
               ),
             ],
           ),

@@ -1,9 +1,9 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/friends/cubit/friends_cubit.dart';
 import 'package:you_choose/src/friends/friends.dart';
 import 'package:you_choose/src/profile/widgets/widgets.dart';
-import 'package:you_choose/src/repositories/repositories.dart';
 
 class AddFriendPage extends StatelessWidget {
   const AddFriendPage({super.key});
@@ -15,7 +15,7 @@ class AddFriendPage extends StatelessWidget {
     return Scaffold(
       appBar: buildAppBar(context: context, hasBackButton: true),
       body: BlocProvider(
-        create: (context) => FriendsCubit(FirestoreRepository()),
+        create: (context) => FriendsCubit(FriendRepository()),
         child: const AddFriendForm(),
       ),
     );

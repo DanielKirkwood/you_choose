@@ -1,10 +1,10 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/group/view/view.dart';
-import 'package:you_choose/src/repositories/database/firestore_repository.dart';
+import 'package:you_choose/src/profile/profile.dart';
 
-import '../../profile/widgets/widgets.dart';
 
 class AddGroupPage extends StatelessWidget {
   const AddGroupPage({super.key});
@@ -16,7 +16,7 @@ class AddGroupPage extends StatelessWidget {
     return Scaffold(
       appBar: buildAppBar(context: context, hasBackButton: true),
       body: BlocProvider(
-        create: (context) => GroupCubit(FirestoreRepository()),
+        create: (context) => GroupCubit(GroupRepository()),
         child: const AddGroupForm(),
       ),
     );

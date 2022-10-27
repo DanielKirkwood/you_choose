@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/data/data.dart';
+import 'package:models/models.dart';
 import 'package:you_choose/src/restaurant/restaurant.dart';
 
 class GroupTile extends StatelessWidget {
   const GroupTile(
-      {super.key, required this.group, required this.numRestaurants});
+      {
+    super.key,
+    required this.group,
+    required this.numRestaurants,
+  });
 
   final Group group;
   final int numRestaurants;
@@ -13,9 +17,14 @@ class GroupTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return RestaurantPage(groupID: group.id);
-        }));
+        Navigator.push(
+          context,
+          MaterialPageRoute<RestaurantPage>(
+            builder: (context) {
+              return RestaurantPage(groupID: group.docID!);
+            },
+          ),
+        );
       },
       child: Container(
         padding:
@@ -33,7 +42,7 @@ class GroupTile extends StatelessWidget {
                     width: 16,
                   ),
                   Expanded(
-                    child: Container(
+                    child: ColoredBox(
                       color: Colors.transparent,
                       child: Text(
                         group.name,

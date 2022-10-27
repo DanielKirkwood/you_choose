@@ -11,7 +11,7 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocListener<LoginCubit, LoginState>(
         listener: (context, state) {
@@ -36,9 +36,12 @@ class LoginForm extends StatelessWidget {
                       style: TextStyle(
                         color: Constants.kBlackColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 30.0,
-                      )),
-                ])),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             SizedBox(height: size.height * 0.01),
             const Text(
               Constants.textSmallSignIn,
@@ -51,17 +54,20 @@ class LoginForm extends StatelessWidget {
             SizedBox(height: size.height * 0.01),
             _LoginButton(),
             const _SignInNavigate(),
-          ]),
-        )));
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
 class _EmailField extends StatelessWidget {
-  const _EmailField({Key? key}) : super(key: key);
+  const _EmailField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
@@ -77,9 +83,12 @@ class _EmailField extends StatelessWidget {
                 errorText: state.email.invalid ? 'invalid email' : null,
                 hintText: 'Email',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -87,11 +96,11 @@ class _EmailField extends StatelessWidget {
 }
 
 class _PasswordField extends StatelessWidget {
-  const _PasswordField({Key? key}) : super(key: key);
+  const _PasswordField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
@@ -107,9 +116,12 @@ class _PasswordField extends StatelessWidget {
                 errorText: state.password.invalid ? 'invalid password' : null,
                 hintText: 'Password',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -119,7 +131,7 @@ class _PasswordField extends StatelessWidget {
 class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
@@ -132,11 +144,15 @@ class _LoginButton extends StatelessWidget {
                   key: const Key('loginForm_continue_raisedButton'),
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                       side: MaterialStateProperty.all<BorderSide>(
-                          BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                   onPressed: state.status.isValidated
                       ? () => context.read<LoginCubit>().logInWithCredentials()
                       : null,
@@ -149,7 +165,7 @@ class _LoginButton extends StatelessWidget {
 }
 
 class _SignInNavigate extends StatelessWidget {
-  const _SignInNavigate({Key? key}) : super(key: key);
+  const _SignInNavigate();
 
   @override
   Widget build(BuildContext context) {
@@ -160,22 +176,27 @@ class _SignInNavigate extends StatelessWidget {
               text: Constants.textAcc,
               style: TextStyle(
                 color: Constants.kDarkGreyColor,
-              )),
+            ),
+          ),
           TextSpan(
               recognizer: TapGestureRecognizer()
                 ..onTap = () => {
                       Navigator.of(context).pop(),
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpPage()),
+                      MaterialPageRoute<SignUpPage>(
+                        builder: (context) => const SignUpPage(),
+                      ),
                       )
                     },
               text: Constants.textSignUp,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Constants.kDarkBlueColor,
-              )),
-        ]));
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

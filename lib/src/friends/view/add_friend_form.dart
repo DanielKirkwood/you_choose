@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:you_choose/src/app/app.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/friends/cubit/friends_cubit.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
@@ -11,7 +10,7 @@ class AddFriendForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return BlocListener<FriendsCubit, FriendsState>(
       listener: (context, state) {
         if (state.formStatus.isSubmissionFailure) {
@@ -46,9 +45,12 @@ class AddFriendForm extends StatelessWidget {
                         style: TextStyle(
                           color: Constants.kBlackColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                        )),
-                  ])),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(padding: EdgeInsets.only(bottom: size.height * 0.02)),
               const _UsernameField(),
               SizedBox(height: size.height * 0.01),
@@ -62,11 +64,11 @@ class AddFriendForm extends StatelessWidget {
 }
 
 class _UsernameField extends StatelessWidget {
-  const _UsernameField({super.key});
+  const _UsernameField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<FriendsCubit, FriendsState>(
       buildWhen: (previous, current) => previous.username != current.username,
@@ -82,9 +84,12 @@ class _UsernameField extends StatelessWidget {
                 errorText: state.username.invalid ? 'invalid username' : null,
                 hintText: 'Username',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -92,12 +97,12 @@ class _UsernameField extends StatelessWidget {
 }
 
 class _AddFriendButton extends StatelessWidget {
-  const _AddFriendButton({super.key});
+  const _AddFriendButton();
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
-    Size size = MediaQuery.of(context).size;
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<FriendsCubit, FriendsState>(
       buildWhen: (previous, current) =>
@@ -111,15 +116,19 @@ class _AddFriendButton extends StatelessWidget {
                   key: const Key('friendForm_continue_raisedButton'),
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                       side: MaterialStateProperty.all<BorderSide>(
-                          BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                   onPressed: state.formStatus.isValidated
                       ? () => context
                           .read<FriendsCubit>()
-                          .sendFriendRequest(userID: user.uid)
+                          .sendFriendRequest(username: user.username)
                       : null,
                   child: const Text(Constants.textAddFriendBtn),
                 ),

@@ -1,11 +1,10 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app/app.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/group/view/add_group_page.dart';
 import 'package:you_choose/src/group/widgets/widgets.dart';
-import 'package:you_choose/src/repositories/repositories.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 import 'package:you_choose/src/widgets/top_header.dart';
 
@@ -16,9 +15,10 @@ class GroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocProvider(
-      create: (_) => GroupCubit(FirestoreRepository()),
+      create: (_) => GroupCubit(GroupRepository()),
       child: const GroupView(),
-    ));
+      ),
+    );
   }
 }
 
@@ -27,7 +27,7 @@ class GroupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -35,9 +35,14 @@ class GroupView extends StatelessWidget {
         TopHeader(
           title: 'Groups',
           onPress: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(
+                context,
+                MaterialPageRoute<AddGroupPage>(
+                  builder: (context) {
               return const AddGroupPage();
-            }));
+                  },
+                ),
+              );
           },
         ),
         searchBar(),
@@ -59,7 +64,7 @@ class GroupView extends StatelessWidget {
               previous.groups != current.groups,
           builder: (context, state) {
             if (state.status == GroupStatus.initial) {
-              context.read<GroupCubit>().loadGroups(user.uid);
+              context.read<GroupCubit>().loadGroups(username: user.username);
               return const Center(child: CircularProgressIndicator());
             }
             if (state.status == GroupStatus.loading) {
@@ -92,7 +97,8 @@ class GroupView extends StatelessWidget {
             return const Center(child: Text('An unknown error has occurred'));
           },
         ),
-      ]),
+        ],
+      ),
     );
   }
 }

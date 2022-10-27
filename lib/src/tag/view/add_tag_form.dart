@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:models/models.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:you_choose/src/app/app.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
@@ -13,7 +13,7 @@ class AddTagForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocListener<TagCubit, TagState>(
       listener: (context, state) {
@@ -49,9 +49,12 @@ class AddTagForm extends StatelessWidget {
                         style: TextStyle(
                           color: Constants.kBlackColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 30.0,
-                        )),
-                  ])),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Padding(padding: EdgeInsets.only(bottom: size.height * 0.02)),
               const _NameField(),
               SizedBox(height: size.height * 0.03),
@@ -67,11 +70,11 @@ class AddTagForm extends StatelessWidget {
 }
 
 class _NameField extends StatelessWidget {
-  const _NameField({super.key});
+  const _NameField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<TagCubit, TagState>(
       buildWhen: (previous, current) => previous.name != current.name,
@@ -86,9 +89,12 @@ class _NameField extends StatelessWidget {
                 errorText: state.name.invalid ? 'invalid name' : null,
                 hintText: 'Name',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -96,12 +102,12 @@ class _NameField extends StatelessWidget {
 }
 
 class _GroupsField extends StatelessWidget {
-  const _GroupsField({super.key});
+  const _GroupsField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    UserModel user = context.select((AppBloc bloc) => bloc.state.user);
+    final size = MediaQuery.of(context).size;
+    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return BlocBuilder<TagCubit, TagState>(
       buildWhen: (previous, current) => previous.groups != current.groups,
@@ -111,7 +117,7 @@ class _GroupsField extends StatelessWidget {
           child: BlocBuilder<GroupCubit, GroupState>(
             builder: (context, state) {
               if (state.status == GroupStatus.initial) {
-                context.read<GroupCubit>().loadGroups(user.uid);
+                context.read<GroupCubit>().loadGroups(username: user.username);
                 return const Center(child: CircularProgressIndicator());
               }
               if (state.status == GroupStatus.loading) {
@@ -137,7 +143,8 @@ class _GroupsField extends StatelessWidget {
                     title: const Text('Groups'),
                     searchable: true,
                     buttonText: const Text('Groups'),
-                    decoration: Constants.formMultiSelect);
+                  decoration: Constants.formMultiSelect,
+                );
               }
               return const Center(child: Text('An unknown error has occurred'));
             },
@@ -149,11 +156,11 @@ class _GroupsField extends StatelessWidget {
 }
 
 class _AddTagButton extends StatelessWidget {
-  const _AddTagButton({super.key});
+  const _AddTagButton();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<TagCubit, TagState>(
       buildWhen: (previous, current) =>
@@ -167,15 +174,21 @@ class _AddTagButton extends StatelessWidget {
                   key: const Key('tagForm_continue_raisedButton'),
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                       side: MaterialStateProperty.all<BorderSide>(
-                          BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                   onPressed: state.formStatus.isValidated
                       ? () {
-                          for (var group in state.groups.value) {
-                            context.read<TagCubit>().addTag(group.id);
+                          for (final group in state.groups.value) {
+                            context
+                                .read<TagCubit>()
+                                .addTag(groupID: group.docID!);
                           }
                         }
                       : null,

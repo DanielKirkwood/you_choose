@@ -1,7 +1,7 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/login/login.dart';
-import 'package:you_choose/src/repositories/repositories.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -12,8 +12,9 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocProvider(
-      create: (_) => LoginCubit(context.read<FirebaseAuthRepository>()),
+      create: (_) => LoginCubit(context.read<AuthenticationRepository>()),
       child: const LoginForm(),
-    ));
+      ),
+    );
   }
 }

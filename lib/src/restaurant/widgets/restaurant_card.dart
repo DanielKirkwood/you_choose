@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/data/data.dart';
+import 'package:models/models.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class RestaurantCard extends StatelessWidget {
-  final String name;
-  final int price;
-  final String description;
-  final List<Tag> tags;
-
   const RestaurantCard(
       {super.key,
       required this.name,
       required this.price,
       required this.description,
-      required this.tags});
+    required this.tags,
+  });
+
+  final String name;
+  final int price;
+  final String description;
+  final List<Tag> tags;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,8 @@ class RestaurantCard extends StatelessWidget {
                 style: const TextStyle(
                     color: Color(0xFF332d2b),
                     fontWeight: FontWeight.w700,
-                    fontSize: 20),
+                fontSize: 20,
+              ),
               ),
               const SizedBox(height: 2),
               Wrap(
@@ -46,7 +48,8 @@ class RestaurantCard extends StatelessWidget {
                           Icons.currency_pound,
                           color: Constants.kDarkBlueColor,
                           size: 15,
-                        )),
+                ),
+              ),
               ),
               const SizedBox(height: 10),
               Text(
@@ -58,16 +61,18 @@ class RestaurantCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Wrap(
-                  spacing: 8.0,
-                  runSpacing: 4.0,
+              spacing: 8,
+              runSpacing: 4,
                   children: List.generate(tags.length, (index) {
                     return Text(
                       tags[index].name,
                       style: const TextStyle(color: Constants.kDarkBlueColor),
                     );
-                  }))
+              }),
+            )
             ],
           ),
-        ));
+      ),
+    );
   }
 }

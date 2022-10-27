@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class TopHeader extends StatelessWidget {
-  final String title;
-  final String label;
-  final void Function() onPress;
-
   const TopHeader(
       {super.key,
       required this.title,
       required this.onPress,
-      this.label = 'Add New'});
+    this.label = 'Add New',
+  });
+
+  final String title;
+  final String label;
+  final void Function() onPress;
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,9 @@ class TopHeader extends StatelessWidget {
                       label,
                       style:
                           const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

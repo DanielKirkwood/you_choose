@@ -1,8 +1,8 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/group/cubit/group_cubit.dart';
 import 'package:you_choose/src/profile/profile.dart';
-import 'package:you_choose/src/repositories/database/firestore_repository.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
 import 'package:you_choose/src/restaurant/view/view.dart';
 import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
@@ -23,14 +23,14 @@ class AddRestaurantPage extends StatelessWidget {
         providers: [
           BlocProvider<RestaurantCubit>(
             create: (BuildContext context) =>
-                RestaurantCubit(FirestoreRepository()),
+                RestaurantCubit(RestaurantRepository()),
           ),
           BlocProvider<GroupCubit>(
-            create: (BuildContext context) => GroupCubit(FirestoreRepository()),
+            create: (BuildContext context) => GroupCubit(GroupRepository()),
           ),
           BlocProvider<TagCubit>(
             create: (BuildContext context) =>
-                TagCubit(FirestoreRepository()),
+                TagCubit(GroupRepository()),
           ),
         ],
         child: AddRestaurantForm(groupID: groupID),

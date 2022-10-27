@@ -5,13 +5,13 @@ import 'package:you_choose/src/sign_up/sign_up.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({super.key});
 
   static Page<void> page() => const MaterialPage<void>(child: WelcomePage());
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Constants.kPrimaryColor,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -28,21 +28,28 @@ class WelcomePage extends StatelessWidget {
                           style: TextStyle(
                             color: Constants.kBlackColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 30.0,
-                          )),
+                        fontSize: 30,
+                      ),
+                    ),
                       TextSpan(
                           text: Constants.textIntro2,
                           style: TextStyle(
                               color: Constants.kDarkBlueColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 30.0)),
+                        fontSize: 30,
+                      ),
+                    ),
                       TextSpan(
                           text: Constants.textIntroDesc,
                           style: TextStyle(
                               color: Constants.kDarkGreyColor,
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0)),
-                    ])),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
                 SizedBox(height: size.height * 0.05),
                 const Text(
                   Constants.textSmallSignUp,
@@ -54,17 +61,22 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
+                      MaterialPageRoute<LoginPage>(
+                        builder: (context) => const LoginPage(),
+                      ),
                       );
                     },
                     style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(
-                            Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                         side: MaterialStateProperty.all<BorderSide>(
-                            BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                     child: const Text(Constants.textStart),
                   ),
                 ),
@@ -74,15 +86,19 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpPage()),
+                      MaterialPageRoute<SignUpPage>(
+                        builder: (context) => const SignUpPage(),
+                      ),
                       );
                     },
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            Constants.kGreyColor),
+                      Constants.kGreyColor,
+                    ),
                         side: MaterialStateProperty.all<BorderSide>(
-                            BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                     child: const Text(
                       Constants.textSignUpBtn,
                       style: TextStyle(color: Constants.kBlackColor),
@@ -92,6 +108,7 @@ class WelcomePage extends StatelessWidget {
               ],
             ),
           ),
-        ));
+      ),
+    );
   }
 }

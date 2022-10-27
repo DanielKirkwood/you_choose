@@ -4,9 +4,11 @@ part of 'restaurant_cubit.dart';
 ///
 /// [initial] - is the base state.
 ///
-/// [loading] - intermediate state used while [RestaurantCubit] interacts with backend.
+/// [loading] - intermediate state used while [RestaurantCubit] interacts
+/// with backend.
 ///
-/// [success] - action carried out successfully and state has been updated with changes.
+/// [success] - action carried out successfully and state has been updated
+/// with changes.
 ///
 /// [failure] - action has failed.
 enum RestaurantStatus { initial, loading, success, failure }
@@ -14,7 +16,8 @@ enum RestaurantStatus { initial, loading, success, failure }
 /// {@template restaurantState}
 /// A single state used to hold state about groups.
 ///
-/// Contains the [status] of the state and the list of [Restaurant]s for frontend.
+/// Contains the [status] of the state and the list of [Restaurant]s
+/// for frontend.
 /// {@endtemplate}
 class RestaurantState extends Equatable {
   /// {@macro restaurantState}
@@ -27,7 +30,8 @@ class RestaurantState extends Equatable {
       this.tags = const RestaurantTags.pure(),
       this.groups = const GroupsList.pure(),
       this.formStatus = FormzStatus.pure,
-      this.errorMessage});
+    this.errorMessage,
+  });
 
   /// the list of restaurants.
   final List<Restaurant> restaurants;
@@ -58,7 +62,8 @@ class RestaurantState extends Equatable {
       RestaurantTags? tags,
       GroupsList? groups,
       FormzStatus? formStatus,
-      String? errorMessage}) {
+    String? errorMessage,
+  }) {
     return RestaurantState(
         restaurants: restaurants ?? this.restaurants,
         status: status ?? this.status,
@@ -68,7 +73,8 @@ class RestaurantState extends Equatable {
         tags: tags ?? this.tags,
         groups: groups ?? this.groups,
         formStatus: formStatus ?? this.formStatus,
-        errorMessage: errorMessage ?? this.errorMessage);
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
 
   @override

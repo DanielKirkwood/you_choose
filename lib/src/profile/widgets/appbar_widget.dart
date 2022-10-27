@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 AppBar buildAppBar(
-    {required BuildContext context, required bool hasBackButton}) {
+    {
+  required BuildContext context,
+  required bool hasBackButton,
+}) {
   return AppBar(
     leading: hasBackButton
         ? const BackButton(
@@ -17,7 +20,8 @@ AppBar buildAppBar(
           icon: const Icon(
             CupertinoIcons.moon_stars,
             color: Colors.black,
-          ))
+        ),
+      )
     ],
   );
 }

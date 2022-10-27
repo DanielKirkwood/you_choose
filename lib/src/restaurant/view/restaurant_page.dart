@@ -1,8 +1,7 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:you_choose/src/data/data.dart';
 import 'package:you_choose/src/group/widgets/widgets.dart';
-import 'package:you_choose/src/repositories/database/firestore_repository.dart';
 import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
 import 'package:you_choose/src/restaurant/restaurant.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
@@ -17,7 +16,7 @@ class RestaurantPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (_) => RestaurantCubit(FirestoreRepository()),
+        create: (_) => RestaurantCubit(RestaurantRepository()),
         child: RestaurantView(groupID: groupID),
       ),
     );
@@ -39,9 +38,14 @@ class RestaurantView extends StatelessWidget {
           TopHeader(
             title: 'Restaurants',
             onPress: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(
+                context,
+                MaterialPageRoute<AddRestaurantPage>(
+                  builder: (context) {
                 return AddRestaurantPage(groupID: groupID);
-              }));
+                  },
+                ),
+              );
             },
           ),
           searchBar(),
@@ -55,7 +59,8 @@ class RestaurantView extends StatelessWidget {
                     ..showSnackBar(
                       const SnackBar(
                         content: Text(
-                            'There was an error fetching restaurant data.'),
+                        'There was an error fetching restaurant data.',
+                      ),
                       ),
                     );
                 }
@@ -88,19 +93,21 @@ class RestaurantView extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 16),
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
-                      Restaurant r = state.restaurants[index];
+                      final r = state.restaurants[index];
                       return RestaurantCard(
                         name: r.name,
                         price: r.price,
                         description: r.description,
-                        tags: r.tags!,
+                        tags: r.tags ?? [],
                       );
                     },
                   );
                 }
                 return const Center(
-                    child: Text('An unknown error has occurred'));
-              })
+                child: Text('An unknown error has occurred'),
+              );
+            },
+          )
         ],
       ),
     );

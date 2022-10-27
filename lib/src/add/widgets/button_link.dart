@@ -25,7 +25,8 @@ class ButtonLink extends StatelessWidget {
           height: 90,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color.fromARGB(255, 238, 246, 255)),
+            color: const Color.fromARGB(255, 238, 246, 255),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Row(
@@ -40,7 +41,8 @@ class ButtonLink extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: Color.fromARGB(225, 14, 20, 69)),
+                        color: Color.fromARGB(225, 14, 20, 69),
+                      ),
                     ),
                     const SizedBox(
                       height: 10,
