@@ -1,18 +1,18 @@
 {
-  "name": "user/profile/default_profile.jpg",
+  "name": "user/user-profile-default_profile.jpg",
   "bucket": "restaurant-picker-flutter.appspot.com",
   "metageneration": 1,
-  "generation": 1664908821905,
+  "generation": 1666828561997,
   "contentType": "image/jpeg",
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "downloadTokens": [
-    "ac15d806-066f-4d7f-b3d9-65f3735ac741"
+    "911cbf5a-e022-4a35-adfa-d29654d07b88"
   ],
-  "etag": "We+wDvqoIa2lgc1PN0Y3sEjELVE",
+  "etag": "qjkkiZiJ4GWYFtMgUTWG2Hut/r4",
   "customMetadata": {},
-  "timeCreated": "2022-10-04T18:40:21.905Z",
-  "updated": "2022-10-04T18:40:21.905Z",
+  "timeCreated": "2022-10-26T23:56:01.997Z",
+  "updated": "2022-10-26T23:56:01.997Z",
   "size": 216750,
   "md5Hash": "hPY3G4VwdWvHPePvvy7pMQ==",
   "crc32c": "3318480010"
