@@ -15,11 +15,14 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    final firebaseApp =
+        context.select((AppBloc bloc) => bloc.state.firebaseApp);
 
     return Scaffold(
       appBar: buildAppBar(context: context, hasBackButton: true),
       body: BlocProvider(
-        create: (BuildContext context) => ProfileCubit(StorageRepository())
+        create: (BuildContext context) =>
+            ProfileCubit(StorageRepository(firebaseApp: firebaseApp))
           ..getProfileUrl(username: user.username),
         child: const EditProfileView(),
       ),

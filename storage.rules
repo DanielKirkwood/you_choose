@@ -1,8 +1,8 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /user/{userID} {
-      allow read, write: if true;
+    match /users/{userID} {
+      allow read, write: if request.auth != null;
 
       // Only allow uploads of any image that's less than 5MB
       allow write: if request.resource.size < 5 * 1024 * 1023

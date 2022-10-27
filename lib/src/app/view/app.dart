@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +10,12 @@ class App extends StatelessWidget {
   const App({
     super.key,
     required AuthenticationRepository authenticationRepository,
-  }) : _authenticationRepository = authenticationRepository;
+    required FirebaseApp firebaseApp,
+  })  : _authenticationRepository = authenticationRepository,
+        _firebaseApp = firebaseApp;
 
   final AuthenticationRepository _authenticationRepository;
+  final FirebaseApp _firebaseApp;
 
   // This widget is the root of your application.
   @override
@@ -21,6 +25,7 @@ class App extends StatelessWidget {
       child: BlocProvider(
         create: (context) => AppBloc(
           authenticationRepository: _authenticationRepository,
+          firebaseApp: _firebaseApp,
         ),
         child: const AppView(),
       ),
