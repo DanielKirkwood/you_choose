@@ -7,7 +7,7 @@ import 'package:models/models.dart';
 /// A single group.
 ///
 /// Contains a [name], list of [members], list of [restaurants], list of [tags]
-/// and [id]
+/// and [docID]
 ///
 /// [Group]s are immutable and can be copied using [copyWith].
 /// respectively.

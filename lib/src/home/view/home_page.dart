@@ -6,7 +6,7 @@ import 'package:you_choose/src/home/home.dart';
 import 'package:you_choose/src/profile/profile.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   static Page<void> page() => const MaterialPage<void>(child: HomePage());
 

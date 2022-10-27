@@ -34,8 +34,8 @@ class StorageRepository {
     return Future.value(uploadTask);
   }
 
-  /// Get the given users image downloadURL, if it doesn't exist the default image
-  /// is given instead.
+  /// Get the given users image downloadURL, if it doesn't exist
+  /// the default image is given instead.
   Future<String> getProfileImage({required String username}) async {
     try {
       final storageRef = _storage.ref().child('users/$username.jpg');

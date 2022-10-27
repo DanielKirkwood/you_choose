@@ -9,7 +9,8 @@ class TagState extends Equatable {
       this.name = const TagName.pure(),
       this.groups = const GroupsList.pure(),
       this.formStatus = FormzStatus.pure,
-      this.errorMessage});
+    this.errorMessage,
+  });
 
   final List<Tag> tags;
 
@@ -37,7 +38,8 @@ class TagState extends Equatable {
         name: name ?? this.name,
         groups: groups ?? this.groups,
         formStatus: formStatus ?? this.formStatus,
-        errorMessage: errorMessage ?? this.errorMessage);
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
 
   @override

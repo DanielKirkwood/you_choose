@@ -58,7 +58,8 @@ class UserModel extends Equatable {
   /// Convenience getter to determine whether the current UserModel is empty.
   bool get isEmpty => this == UserModel.empty;
 
-  /// Convenience getter to determine whether the current UserModel is not empty.
+  /// Convenience getter to determine whether the current UserModel
+  /// is not empty.
   bool get isNotEmpty => this != UserModel.empty;
 
   /// Convenience copyWith method to update fields

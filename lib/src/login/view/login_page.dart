@@ -14,6 +14,7 @@ class LoginPage extends StatelessWidget {
         body: BlocProvider(
       create: (_) => LoginCubit(context.read<AuthenticationRepository>()),
       child: const LoginForm(),
-    ));
+      ),
+    );
   }
 }

@@ -9,7 +9,8 @@ class FriendsState extends Equatable {
       this.status = FriendStatus.initial,
       this.username = const Username.pure(),
       this.formStatus = FormzStatus.pure,
-      this.errorMessage});
+    this.errorMessage,
+  });
 
   final List<String> friends;
 
@@ -37,7 +38,8 @@ class FriendsState extends Equatable {
         status: status ?? this.status,
         username: username ?? this.username,
         formStatus: formStatus ?? this.formStatus,
-        errorMessage: errorMessage ?? this.errorMessage);
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
 
   @override

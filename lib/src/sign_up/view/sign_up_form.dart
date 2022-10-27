@@ -9,7 +9,7 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
@@ -34,8 +34,9 @@ class SignUpForm extends StatelessWidget {
                   style: TextStyle(
                     color: Constants.kBlackColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30.0,
-                  )),
+                  fontSize: 30,
+                ),
+              ),
               Padding(padding: EdgeInsets.only(bottom: size.height * 0.02)),
               const _EmailField(),
               const SizedBox(height: 8),
@@ -53,11 +54,11 @@ class SignUpForm extends StatelessWidget {
 }
 
 class _EmailField extends StatelessWidget {
-  const _EmailField({Key? key}) : super(key: key);
+  const _EmailField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
@@ -73,9 +74,12 @@ class _EmailField extends StatelessWidget {
                 errorText: state.email.invalid ? 'invalid email' : null,
                 hintText: 'Email',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -83,11 +87,12 @@ class _EmailField extends StatelessWidget {
 }
 
 class _PasswordField extends StatelessWidget {
-  const _PasswordField({Key? key}) : super(key: key);
+  const _PasswordField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
+
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
@@ -103,9 +108,12 @@ class _PasswordField extends StatelessWidget {
                 errorText: state.password.invalid ? 'invalid password' : null,
                 hintText: 'Password',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -113,11 +121,11 @@ class _PasswordField extends StatelessWidget {
 }
 
 class _ConfirmPasswordField extends StatelessWidget {
-  const _ConfirmPasswordField({Key? key}) : super(key: key);
+  const _ConfirmPasswordField();
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) =>
           previous.password != current.password ||
@@ -138,9 +146,12 @@ class _ConfirmPasswordField extends StatelessWidget {
                     : null,
                 hintText: 'Confirm Password',
                 contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
+                vertical: 15,
+                horizontal: 10,
+              ),
                 border: Constants.formInputBorder,
-              )),
+            ),
+          ),
         );
       },
     );
@@ -150,7 +161,7 @@ class _ConfirmPasswordField extends StatelessWidget {
 class _SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<SignUpCubit, SignUpState>(
       buildWhen: (previous, current) => previous.status != current.status,
@@ -163,11 +174,15 @@ class _SignUpButton extends StatelessWidget {
                   key: const Key('loginForm_continue_raisedButton'),
                   style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kPrimaryColor),
+                      Constants.kPrimaryColor,
+                    ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Constants.kBlackColor),
+                      Constants.kBlackColor,
+                    ),
                       side: MaterialStateProperty.all<BorderSide>(
-                          BorderSide.none)),
+                      BorderSide.none,
+                    ),
+                  ),
                   onPressed: state.status.isValidated
                       ? () => context.read<SignUpCubit>().signUpFormSubmitted()
                       : null,

@@ -4,9 +4,11 @@ part of 'group_cubit.dart';
 ///
 /// [initial] - is the base state.
 ///
-/// [loading] - intermediate state used while [GroupCubit] interacts with backend.
+/// [loading] - intermediate state used while [GroupCubit] interacts
+/// with backend.
 ///
-/// [success] - action carried out successfully and state has been updated with changes.
+/// [success] - action carried out successfully and state has been updated
+/// with changes.
 ///
 /// [failure] - action has failed.
 enum GroupStatus { initial, loading, success, failure }
@@ -24,7 +26,8 @@ class GroupState extends Equatable {
       this.name = const GroupName.pure(),
       this.members = const GroupMembers.pure(),
       this.formStatus = FormzStatus.pure,
-      this.errorMessage});
+    this.errorMessage,
+  });
 
   /// the list of groups.
   final List<Group> groups;
@@ -60,7 +63,8 @@ class GroupState extends Equatable {
         name: name ?? this.name,
         members: members ?? this.members,
         formStatus: formStatus ?? this.formStatus,
-        errorMessage: errorMessage ?? this.errorMessage);
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
   }
 
   @override

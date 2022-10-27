@@ -40,7 +40,9 @@ class RestaurantView extends StatelessWidget {
             onPress: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return AddRestaurantPage(groupID: groupID);
-              }));
+                  },
+                ),
+              );
             },
           ),
           searchBar(),
@@ -54,7 +56,8 @@ class RestaurantView extends StatelessWidget {
                     ..showSnackBar(
                       const SnackBar(
                         content: Text(
-                            'There was an error fetching restaurant data.'),
+                        'There was an error fetching restaurant data.',
+                      ),
                       ),
                     );
                 }
@@ -98,8 +101,10 @@ class RestaurantView extends StatelessWidget {
                   );
                 }
                 return const Center(
-                    child: Text('An unknown error has occurred'));
-              })
+                child: Text('An unknown error has occurred'),
+              );
+            },
+          )
         ],
       ),
     );

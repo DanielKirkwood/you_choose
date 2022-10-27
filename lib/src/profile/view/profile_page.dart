@@ -121,7 +121,7 @@ class BuildFriends extends StatelessWidget {
                     child: Wrap(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(12),
                           child: Text(
                             '${friend.value['username']}',
                             style: const TextStyle(
@@ -131,7 +131,7 @@ class BuildFriends extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 24),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
                           child: ListTile(
                             onTap: () =>
                                 context.read<FriendsCubit>().removeFriend(

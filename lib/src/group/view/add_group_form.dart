@@ -66,7 +66,7 @@ class AddGroupForm extends StatelessWidget {
 }
 
 class _NameField extends StatelessWidget {
-  const _NameField({super.key});
+  const _NameField();
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class _NameField extends StatelessWidget {
 }
 
 class _MembersField extends StatelessWidget {
-  const _MembersField({super.key});
+  const _MembersField();
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +131,7 @@ class _MembersField extends StatelessWidget {
 }
 
 class _AddGroupButton extends StatelessWidget {
-  const _AddGroupButton({super.key});
+  const _AddGroupButton();
 
   @override
   Widget build(BuildContext context) {

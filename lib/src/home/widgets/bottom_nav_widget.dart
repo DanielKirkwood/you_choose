@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
 class BottomNavigation extends StatelessWidget {
+  const BottomNavigation({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
   final int currentIndex;
   final void Function(int newValue) onTap;
-
-  const BottomNavigation(
-      {super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
-      onTap: ((int value) {
-        onTap(value);
-      }),
+      onTap: onTap,
       selectedItemColor: Constants.kDarkBlueColor,
       unselectedItemColor: Constants.kBlackColor,
       selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),

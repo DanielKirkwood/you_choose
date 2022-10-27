@@ -53,7 +53,8 @@ class GroupCubit extends Cubit<GroupState> {
     emit(state.copyWith(
       name: name,
       formStatus: Formz.validate([name, state.members]),
-    ));
+      ),
+    );
   }
 
   void membersChanged(String value) {
@@ -61,6 +62,7 @@ class GroupCubit extends Cubit<GroupState> {
     emit(state.copyWith(
       members: members,
       formStatus: Formz.validate([state.name, members]),
-    ));
+      ),
+    );
   }
 }

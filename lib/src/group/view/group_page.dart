@@ -17,7 +17,8 @@ class GroupPage extends StatelessWidget {
         body: BlocProvider(
       create: (_) => GroupCubit(GroupRepository()),
       child: const GroupView(),
-    ));
+      ),
+    );
   }
 }
 
@@ -36,7 +37,9 @@ class GroupView extends StatelessWidget {
           onPress: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return const AddGroupPage();
-            }));
+                  },
+                ),
+              );
           },
         ),
         searchBar(),
@@ -91,7 +94,8 @@ class GroupView extends StatelessWidget {
             return const Center(child: Text('An unknown error has occurred'));
           },
         ),
-      ]),
+        ],
+      ),
     );
   }
 }

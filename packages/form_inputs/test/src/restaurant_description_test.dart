@@ -42,7 +42,9 @@ void main() {
         });
         test('has status of invalid', () {
           expect(
-              restaurantDescription.status, equals(FormzInputStatus.invalid));
+            restaurantDescription.status,
+            equals(FormzInputStatus.invalid),
+          );
         });
 
         test('error is set to RestaurantDescriptionValidationError.invalid',

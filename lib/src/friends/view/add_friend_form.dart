@@ -64,7 +64,7 @@ class AddFriendForm extends StatelessWidget {
 }
 
 class _UsernameField extends StatelessWidget {
-  const _UsernameField({super.key});
+  const _UsernameField();
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class _UsernameField extends StatelessWidget {
 }
 
 class _AddFriendButton extends StatelessWidget {
-  const _AddFriendButton({super.key});
+  const _AddFriendButton();
 
   @override
   Widget build(BuildContext context) {

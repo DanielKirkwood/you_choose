@@ -38,7 +38,7 @@ class Utilities {
         .useStorageEmulator(emulatorHost, storagePort);
   }
 
-  /// provides a basic logger
+  /// provides a basic [Logger]
   static Logger getLogger(String? className) {
     return Logger(printer: SimpleLogPrinter(className: className));
   }
