@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class AvatarProfile extends StatelessWidget {
-
   const AvatarProfile({
     super.key,
     required this.username,
+    required this.url,
     required this.onClicked,
     this.isEdit = false,
   });
@@ -12,6 +13,7 @@ class AvatarProfile extends StatelessWidget {
   final String username;
   final VoidCallback onClicked;
   final bool isEdit;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,19 @@ class AvatarProfile extends StatelessWidget {
   Widget buildImage() {
     return InkWell(
       onTap: onClicked,
-      // child: NetworkImage(url: '', scale: 0.8),
+      child: CachedNetworkImage(
+        imageUrl: url,
+        imageBuilder: (context, imageProvider) => Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          ),
+        ),
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
     );
   }
 

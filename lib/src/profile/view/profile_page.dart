@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:you_choose/src/app/app.dart';
 import 'package:you_choose/src/friends/cubit/friends_cubit.dart';
+import 'package:you_choose/src/profile/cubit/profile_cubit.dart';
 import 'package:you_choose/src/profile/profile.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -12,10 +13,21 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
     return Scaffold(
       appBar: buildAppBar(context: context, hasBackButton: false),
-      body: BlocProvider(
-        create: (context) => FriendsCubit(FriendRepository()),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<ProfileCubit>(
+            create: (BuildContext context) => ProfileCubit(StorageRepository())
+              ..getProfileUrl(
+                username: user.username,
+              ),
+          ),
+          BlocProvider<FriendsCubit>(
+            create: (BuildContext context) => FriendsCubit(FriendRepository()),
+          ),
+        ],
         child: const ProfileView(),
       ),
     );
@@ -33,18 +45,11 @@ class ProfileView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 32),
       physics: const BouncingScrollPhysics(),
       children: [
-        AvatarProfile(
+        _BuildAvatarImage(
           username: user.username,
-          onClicked: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => const EditProfilePage(),
-              ),
-            );
-          },
         ),
         const SizedBox(height: 24),
-        BuildName(
+        _BuildName(
           username: user.username,
           email: user.email,
         ),
@@ -59,7 +64,7 @@ class ProfileView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        BuildFriends(
+        _BuildFriends(
           friends: user.friends,
         )
       ],
@@ -67,8 +72,36 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-class BuildName extends StatelessWidget {
-  const BuildName({super.key, required this.username, required this.email});
+class _BuildAvatarImage extends StatelessWidget {
+  const _BuildAvatarImage({required this.username});
+
+  final String username;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        if (state.imageURL != null) {
+          AvatarProfile(
+            username: username,
+            url: state.imageURL!,
+            onClicked: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const EditProfilePage(),
+                ),
+              );
+            },
+          );
+        }
+        return Container();
+      },
+    );
+  }
+}
+
+class _BuildName extends StatelessWidget {
+  const _BuildName({required this.username, required this.email});
 
   final String username;
 
@@ -92,8 +125,8 @@ class BuildName extends StatelessWidget {
   }
 }
 
-class BuildFriends extends StatelessWidget {
-  const BuildFriends({super.key, required this.friends});
+class _BuildFriends extends StatelessWidget {
+  const _BuildFriends({required this.friends});
 
   final Map<String, dynamic> friends;
 
@@ -123,7 +156,7 @@ class BuildFriends extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(12),
                           child: Text(
-                            '${friend.value['username']}',
+                            friend.key,
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -152,7 +185,7 @@ class BuildFriends extends StatelessWidget {
               );
             },
             leading: const CircleAvatar(backgroundColor: Colors.black),
-            title: Text('${friend.value['username']}'),
+            title: Text(friend.key),
             trailing: const Icon(Icons.arrow_forward_ios),
           );
         }).toList()
