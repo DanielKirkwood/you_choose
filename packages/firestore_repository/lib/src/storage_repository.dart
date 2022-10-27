@@ -41,7 +41,8 @@ class StorageRepository {
       final storageRef = _storage.ref().child('users/$username.jpg');
       return storageRef.getDownloadURL();
     } catch (_) {
-      final storageRef = _storage.ref().child('users/defaultUserProfile.jpg');
+      final storageRef =
+          _storage.ref().child('users/user-profile-default_profile.jpg');
       return storageRef.getDownloadURL();
     }
   }
