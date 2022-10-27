@@ -35,7 +35,10 @@ class GroupView extends StatelessWidget {
         TopHeader(
           title: 'Groups',
           onPress: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(
+                context,
+                MaterialPageRoute<AddGroupPage>(
+                  builder: (context) {
               return const AddGroupPage();
                   },
                 ),

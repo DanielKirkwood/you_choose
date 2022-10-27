@@ -184,7 +184,7 @@ class _SignInNavigate extends StatelessWidget {
                       Navigator.of(context).pop(),
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                      MaterialPageRoute<SignUpPage>(
                         builder: (context) => const SignUpPage(),
                       ),
                       )

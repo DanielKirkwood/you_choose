@@ -90,7 +90,7 @@ class _BuildAvatarImage extends StatelessWidget {
             url: state.imageURL!,
             onClicked: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
+                MaterialPageRoute<EditProfilePage>(
                   builder: (BuildContext context) => const EditProfilePage(),
                 ),
               );
@@ -149,7 +149,7 @@ class _BuildFriends extends StatelessWidget {
         ...friends.entries.map((friend) {
           return ListTile(
             onTap: () {
-              showModalBottomSheet(
+              showModalBottomSheet<void>(
                 context: context,
                 builder: (_) {
                   return BlocProvider.value(

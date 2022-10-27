@@ -29,7 +29,7 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
+                  MaterialPageRoute<AddGroupPage>(
                     builder: (context) => const AddGroupPage(),
                   ),
                 );
@@ -44,7 +44,7 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
+                  MaterialPageRoute<AddRestaurantPage>(
                         builder: (context) => const AddRestaurantPage(
                               groupID: '1',
                     ),
@@ -59,7 +59,7 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
+                  MaterialPageRoute<AddTagPage>(
                     builder: (context) => const AddTagPage(),
                   ),
                 );
@@ -72,7 +72,7 @@ class AddPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(
+                  MaterialPageRoute<AddFriendPage>(
                     builder: (context) => const AddFriendPage(),
                   ),
                 );

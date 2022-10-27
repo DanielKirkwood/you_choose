@@ -38,7 +38,10 @@ class RestaurantView extends StatelessWidget {
           TopHeader(
             title: 'Restaurants',
             onPress: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.push(
+                context,
+                MaterialPageRoute<AddRestaurantPage>(
+                  builder: (context) {
                 return AddRestaurantPage(groupID: groupID);
                   },
                 ),
