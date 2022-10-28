@@ -1,7 +1,7 @@
 /// Shared models that can be used by numerous packages.
 library models;
 
-export 'src/group.dart';
-export 'src/restaurant.dart';
-export 'src/tag.dart';
-export 'src/user.dart';
+export 'src/models/group.dart';
+export 'src/models/restaurant.dart';
+export 'src/models/tag.dart';
+export 'src/models/user.dart';
