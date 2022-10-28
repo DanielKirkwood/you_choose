@@ -3,6 +3,7 @@ library models;
 
 export 'src/filter_models/group_filter.dart';
 export 'src/filter_models/price_filter.dart';
+export 'src/filter_models/restaurant_filter.dart';
 export 'src/models/group.dart';
 export 'src/models/price.dart';
 export 'src/models/restaurant.dart';
