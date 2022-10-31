@@ -22,9 +22,10 @@ class RestaurantRepository {
         .collection('restaurants')
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => Restaurant.fromJson(doc.id, doc.data()))
-          .toList();
+      return snapshot.docs.map((doc) {
+        final restaurant = Restaurant.fromJson(doc.id, doc.data());
+        return restaurant;
+      }).toList();
     });
   }
 
@@ -40,24 +41,7 @@ class RestaurantRepository {
 
     for (var i = 0; i < restaurantQuery.size; i++) {
       final docRef = restaurantQuery.docs[i];
-      var restaurant = Restaurant.fromJson(docRef.id, docRef.data());
-
-      final tags = <Tag>[];
-
-      final tagsCollection = groupDocument
-          .collection('restaurants')
-          .doc(restaurant.docID)
-          .collection('tags');
-
-      final tagQuery = await tagsCollection.get();
-
-      for (var i = 0; i < tagQuery.size; i++) {
-        final docRef = tagQuery.docs[i];
-        final tag = Tag.fromJson(docRef.id, docRef.data());
-        tags.add(tag);
-      }
-
-      restaurant = restaurant.copyWith(tags: tags);
+      final restaurant = Restaurant.fromJson(docRef.id, docRef.data());
       restaurants.add(restaurant);
     }
 
@@ -76,12 +60,6 @@ class RestaurantRepository {
       final restaurantDocRef = groupDocRef.collection('restaurants').doc();
       await restaurantDocRef.set(restaurant.toJson());
 
-      if (restaurant.tags != null) {
-        final tagsCollection = restaurantDocRef.collection('tags');
-        for (final tag in restaurant.tags!) {
-          await tagsCollection.add(tag.toJson());
-        }
-      }
     }
   }
 }

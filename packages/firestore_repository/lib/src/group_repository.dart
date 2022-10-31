@@ -41,32 +41,24 @@ class GroupRepository {
     return addedGroup;
   }
 
-  /// Gets all [Tag]s from a given group collection.
-  Future<List<Tag>> getGroupTags({required String groupID}) async {
-    final tags = <Tag>[];
+  /// Gets all tags from a given group collection.
+  Future<List<String>?> getGroupTags({required String groupID}) async {
+    final tags = <String>[];
 
-    final tagsRef =
-        _firestore.collection('groups').doc(groupID).collection('tags');
+    final docRef = await _firestore.collection('groups').doc(groupID).get();
 
-    final tagsSnapshot = await tagsRef.get();
+    final group = Group.fromJson(docRef.id, docRef.data());
 
-    for (var i = 0; i < tagsSnapshot.size; i++) {
-      final docRef = tagsSnapshot.docs[i];
-      final tag = Tag.fromJson(docRef.id, docRef.data());
-      tags.add(tag);
-    }
-
-    return tags;
+    return group.tags;
   }
 
   /// Adds a [Tag] to a group given a Tag object and group id.
-  Future<Tag> addGroupTag({required Tag tag, required String groupID}) async {
-    final tagDocRef =
-        _firestore.collection('groups').doc(groupID).collection('tags').doc();
+  Future<void> addGroupTag(
+      {required String tag, required String groupID}) async {
+    final docRef = _firestore.collection('groups').doc(groupID);
 
-    final updatedTag = tag.copyWith(id: tagDocRef.id);
-    await tagDocRef.set(updatedTag.toJson());
-
-    return updatedTag;
+    await docRef.update({
+      'tags': FieldValue.arrayUnion([tag]),
+    });
   }
 }

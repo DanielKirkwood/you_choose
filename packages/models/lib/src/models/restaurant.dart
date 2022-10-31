@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:models/models.dart';
 
 /// {@template restaurant}
 /// Restaurant model
@@ -29,6 +28,8 @@ class Restaurant extends Equatable {
       name: data?['name'] as String,
       price: data?['price'] as int,
       description: data?['description'] as String,
+      tags:
+          data?['tags'] is Iterable ? List.from(data?['tags'] as Iterable) : [],
       docID: id,
     );
   }
@@ -40,6 +41,7 @@ class Restaurant extends Equatable {
       'name': name,
       'price': price,
       'description': description,
+      'tags': tags,
     };
   }
 
@@ -60,11 +62,11 @@ class Restaurant extends Equatable {
   /// A short description of the restaurant.
   final String description;
 
-  /// A list of user created [Tag]s that categorise the restaurant.
+  /// A list of user created tags that categorise the restaurant.
   ///
   /// Example: McDonald's could have 'cheap', 'fast food' and 'casual' as
   /// it's tags.
-  final List<Tag>? tags;
+  final List<String>? tags;
 
   /// The document ID of the restaurant in firestore.
   final String? docID;
@@ -75,7 +77,7 @@ class Restaurant extends Equatable {
     String? name,
     int? price,
     String? description,
-    List<Tag>? tags,
+    List<String>? tags,
     String? docID,
   }) {
     return Restaurant(

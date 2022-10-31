@@ -32,7 +32,7 @@ class RestaurantState extends Equatable {
     this.formStatus = FormzStatus.pure,
     this.errorMessage,
     this.priceFilters = const <int>[],
-    this.tagFilters = const <Tag>[],
+    this.tagFilters = const <String>[],
     this.filteredRestaurants,
   });
 
@@ -40,7 +40,7 @@ class RestaurantState extends Equatable {
   final List<Restaurant> restaurants;
 
   final List<int> priceFilters;
-  final List<Tag> tagFilters;
+  final List<String> tagFilters;
   final List<Restaurant>? filteredRestaurants;
 
 
@@ -72,7 +72,7 @@ class RestaurantState extends Equatable {
     FormzStatus? formStatus,
     String? errorMessage,
     List<int>? priceFilters,
-    List<Tag>? tagFilters,
+    List<String>? tagFilters,
     List<Restaurant>? filteredRestaurants,
   }) {
     return RestaurantState(

@@ -29,18 +29,17 @@ class TagCubit extends Cubit<TagState> {
 
     emit(state.copyWith(formStatus: FormzStatus.submissionInProgress));
     try {
-      final newTag = Tag(name: state.name.value);
 
-      final addedTag =
-          await _groupRepository.addGroupTag(groupID: groupID, tag: newTag);
+      await _groupRepository.addGroupTag(
+        groupID: groupID,
+        tag: state.name.value,
+      );
 
-      if (addedTag.id != null) {
         emit(state.copyWith(
-            formStatus: FormzStatus.submissionSuccess,
-            tags: [addedTag, ...state.tags],
+          formStatus: FormzStatus.submissionSuccess,
           ),
         );
-      }
+
     } catch (_) {
       emit(state.copyWith(formStatus: FormzStatus.submissionFailure));
     }

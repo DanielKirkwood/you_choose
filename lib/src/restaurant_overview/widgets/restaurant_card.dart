@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:models/models.dart';
 
 class RestaurantCard extends StatelessWidget {
   const RestaurantCard(
@@ -13,7 +12,7 @@ class RestaurantCard extends StatelessWidget {
   final String name;
   final int price;
   final String description;
-  final List<Tag> tags;
+  final List<String> tags;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +59,7 @@ class RestaurantCard extends StatelessWidget {
               runSpacing: 4,
                   children: List.generate(tags.length, (index) {
                     return Text(
-                  tags[index].name,
+                  tags[index],
                   style: Theme.of(context).textTheme.headline6,
                     );
               }),

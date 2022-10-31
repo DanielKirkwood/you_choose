@@ -147,7 +147,7 @@ class BuildTagFilter extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      state.tags[index].name,
+                      state.tags[index],
                       style: Theme.of(context).textTheme.headline5,
                     ),
                     SizedBox(

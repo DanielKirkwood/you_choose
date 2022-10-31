@@ -32,13 +32,19 @@ class Group extends Equatable {
       members: data?['members'] is Iterable
           ? List.from(data?['members'] as Iterable)
           : [],
+      tags:
+          data?['tags'] is Iterable ? List.from(data?['tags'] as Iterable) : [],
       docID: id,
     );
   }
 
   /// Method for adding [Group] to firestore.
   Map<String, dynamic> toJson() {
-    return {'name': name, 'members': members};
+    return {
+      'name': name,
+      'members': members,
+      'tags': tags,
+    };
   }
 
   /// The name of the group.
@@ -50,8 +56,8 @@ class Group extends Equatable {
   /// List of [Restaurant]s within the group.
   final List<Restaurant>? restaurants;
 
-  /// List of [Tag]s created for the group.
-  final List<Tag>? tags;
+  /// List of tags created for the group.
+  final List<String>? tags;
 
   /// The unique identifier of the group.
   final String? docID;
@@ -75,7 +81,7 @@ class Group extends Equatable {
     String? name,
     List<String>? members,
     List<Restaurant>? restaurants,
-    List<Tag>? tags,
+    List<String>? tags,
     String? docID,
   }) {
     return Group(

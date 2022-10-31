@@ -214,9 +214,9 @@ class _TagsField extends StatelessWidget {
                     child: Text(Constants.textNoData),
                   );
                 }
-                return MultiSelectDialogField<Tag>(
+                return MultiSelectDialogField<String>(
                     items: state.tags
-                        .map((e) => MultiSelectItem<Tag>(e, e.name))
+                      .map((e) => MultiSelectItem<String>(e, e))
                         .toList(),
                     onConfirm: (tags) =>
                         context.read<RestaurantCubit>().tagsChanged(tags),

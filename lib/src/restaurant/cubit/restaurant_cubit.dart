@@ -34,7 +34,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     );
   }
 
-  void tagFilterChanged(List<Tag> value) {
+  void tagFilterChanged(List<String> value) {
     emit(
       state.copyWith(
         tagFilters: value,
@@ -134,7 +134,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     );
   }
 
-  void tagsChanged(List<Tag> value) {
+  void tagsChanged(List<String> value) {
     final tags = RestaurantTags.dirty(value: value);
     emit(
       state.copyWith(

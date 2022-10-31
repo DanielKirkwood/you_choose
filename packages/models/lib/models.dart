@@ -7,5 +7,4 @@ export 'src/filter_models/restaurant_filter.dart';
 export 'src/models/group.dart';
 export 'src/models/price.dart';
 export 'src/models/restaurant.dart';
-export 'src/models/tag.dart';
 export 'src/models/user.dart';
