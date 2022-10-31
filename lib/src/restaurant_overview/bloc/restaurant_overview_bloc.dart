@@ -14,7 +14,8 @@ class RestaurantsOverviewBloc
   })  : _restaurantRepository = restaurantRepository,
         super(const RestaurantsOverviewState()) {
     on<RestaurantOverviewSubscriptionRequested>(_onSubscriptionRequested);
-    on<RestaurantOverviewFilterChanged>(_onFilterChanged);
+    on<RestaurantOverviewTagsFilterToggle>(_onTagsFilterChanged);
+    on<RestaurantOverviewPricesFilterToggle>(_onPriceFilterChanged);
   }
 
   final RestaurantRepository _restaurantRepository;
@@ -37,10 +38,35 @@ class RestaurantsOverviewBloc
     );
   }
 
-  void _onFilterChanged(
-    RestaurantOverviewFilterChanged event,
+  void _onTagsFilterChanged(
+    RestaurantOverviewTagsFilterToggle event,
     Emitter<RestaurantsOverviewState> emit,
   ) {
-    emit(state.copyWith(filter: () => event.filter));
+    if (state.filterTags.contains(event.tag)) {
+      emit(
+        state.copyWith(filterTags: () => state.filterTags..remove(event.tag)),
+      );
+    } else {
+      emit(state.copyWith(filterTags: () => [...state.filterTags, event.tag]));
+    }
+  }
+
+  void _onPriceFilterChanged(
+    RestaurantOverviewPricesFilterToggle event,
+    Emitter<RestaurantsOverviewState> emit,
+  ) {
+    if (state.filterPrices.contains(event.price)) {
+      emit(
+        state.copyWith(
+          filterPrices: () => state.filterPrices..remove(event.price),
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          filterPrices: () => [...state.filterPrices, event.price],
+        ),
+      );
+    }
   }
 }

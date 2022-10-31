@@ -79,7 +79,7 @@ class RestaurantsOverviewView extends StatelessWidget {
                 },
               ),
               const SearchBar(),
-              for (final restaurant in state.filteredRestaurant)
+              for (final restaurant in state.filteredRestaurants)
                 RestaurantCard(
                   name: restaurant.name,
                   price: restaurant.price,

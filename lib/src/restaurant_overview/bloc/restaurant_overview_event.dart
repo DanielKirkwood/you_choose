@@ -16,11 +16,20 @@ class RestaurantOverviewSubscriptionRequested extends RestaurantOverviewEvent {
   List<Object> get props => [groupID];
 }
 
-class RestaurantOverviewFilterChanged extends RestaurantOverviewEvent {
-  const RestaurantOverviewFilterChanged(this.filter);
+class RestaurantOverviewTagsFilterToggle extends RestaurantOverviewEvent {
+  const RestaurantOverviewTagsFilterToggle(this.tag);
 
-  final RestaurantViewFilter filter;
+  final String tag;
 
   @override
-  List<Object> get props => [filter];
+  List<Object> get props => [tag];
+}
+
+class RestaurantOverviewPricesFilterToggle extends RestaurantOverviewEvent {
+  const RestaurantOverviewPricesFilterToggle(this.price);
+
+  final int price;
+
+  @override
+  List<Object> get props => [price];
 }
