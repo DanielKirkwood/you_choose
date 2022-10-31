@@ -21,20 +21,28 @@ enum RestaurantStatus { initial, loading, success, failure }
 /// {@endtemplate}
 class RestaurantState extends Equatable {
   /// {@macro restaurantState}
-  const RestaurantState(
-      {this.restaurants = const <Restaurant>[],
-      this.status = RestaurantStatus.initial,
-      this.name = const RestaurantName.pure(),
-      this.price = const RestaurantPrice.pure(),
-      this.description = const RestaurantDescription.pure(),
-      this.tags = const RestaurantTags.pure(),
-      this.groups = const GroupsList.pure(),
-      this.formStatus = FormzStatus.pure,
+  const RestaurantState({
+    this.restaurants = const <Restaurant>[],
+    this.status = RestaurantStatus.initial,
+    this.name = const RestaurantName.pure(),
+    this.price = const RestaurantPrice.pure(),
+    this.description = const RestaurantDescription.pure(),
+    this.tags = const RestaurantTags.pure(),
+    this.groups = const GroupsList.pure(),
+    this.formStatus = FormzStatus.pure,
     this.errorMessage,
+    this.priceFilters = const <int>[],
+    this.tagFilters = const <Tag>[],
+    this.filteredRestaurants,
   });
 
   /// the list of restaurants.
   final List<Restaurant> restaurants;
+
+  final List<int> priceFilters;
+  final List<Tag> tagFilters;
+  final List<Restaurant>? filteredRestaurants;
+
 
   /// the status of the cubit.
   final RestaurantStatus status;
@@ -53,16 +61,19 @@ class RestaurantState extends Equatable {
 
   final String? errorMessage;
 
-  RestaurantState copyWith(
-      {List<Restaurant>? restaurants,
-      RestaurantStatus? status,
-      RestaurantName? name,
-      RestaurantPrice? price,
-      RestaurantDescription? description,
-      RestaurantTags? tags,
-      GroupsList? groups,
-      FormzStatus? formStatus,
+  RestaurantState copyWith({
+    List<Restaurant>? restaurants,
+    RestaurantStatus? status,
+    RestaurantName? name,
+    RestaurantPrice? price,
+    RestaurantDescription? description,
+    RestaurantTags? tags,
+    GroupsList? groups,
+    FormzStatus? formStatus,
     String? errorMessage,
+    List<int>? priceFilters,
+    List<Tag>? tagFilters,
+    List<Restaurant>? filteredRestaurants,
   }) {
     return RestaurantState(
         restaurants: restaurants ?? this.restaurants,
@@ -74,6 +85,9 @@ class RestaurantState extends Equatable {
         groups: groups ?? this.groups,
         formStatus: formStatus ?? this.formStatus,
       errorMessage: errorMessage ?? this.errorMessage,
+      priceFilters: priceFilters ?? this.priceFilters,
+      tagFilters: tagFilters ?? this.tagFilters,
+      filteredRestaurants: filteredRestaurants ?? this.filteredRestaurants,
     );
   }
 

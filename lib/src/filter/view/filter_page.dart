@@ -1,8 +1,8 @@
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:models/models.dart';
 import 'package:you_choose/src/profile/profile.dart';
+import 'package:you_choose/src/restaurant/cubit/restaurant_cubit.dart';
 import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
@@ -14,16 +14,25 @@ class FilterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context: context, hasBackButton: true),
-      body: BlocProvider(
-        create: (context) => TagCubit(GroupRepository()),
+      appBar:
+          buildAppBar(context: context, hasBackButton: true, title: 'Filter'),
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<TagCubit>(
+            create: (context) => TagCubit(GroupRepository()),
+          ),
+          BlocProvider<RestaurantCubit>(
+            create: (context) => RestaurantCubit(RestaurantRepository()),
+          ),
+        ],
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text('Price', style: Theme.of(context).textTheme.headline4),
-              BuildPriceFilters(prices: Price.prices),
+              const BuildPriceFilters(prices: [1, 2, 3, 4]),
               Text('Tag', style: Theme.of(context).textTheme.headline4),
               BuildTagFilter(
                 groupID: groupID,
@@ -39,37 +48,56 @@ class FilterPage extends StatelessWidget {
 class BuildPriceFilters extends StatelessWidget {
   const BuildPriceFilters({super.key, required this.prices});
 
-  final List<Price> prices;
+  final List<int> prices;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: prices
-          .map(
-            (price) => InkWell(
-              onTap: () {},
-              child: Container(
-                margin: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 10,
+    return BlocBuilder<RestaurantCubit, RestaurantState>(
+      builder: (context, state) {
+        return Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 20,
+          children: prices
+              .map(
+                (price) => InkWell(
+                  onTap: () {
+                    if (state.priceFilters.contains(price)) {
+                      final newList =
+                          state.priceFilters.where((x) => x != price).toList();
+                      context
+                          .read<RestaurantCubit>()
+                          .priceFilterChanged(newList);
+                    } else {
+                      context
+                          .read<RestaurantCubit>()
+                          .priceFilterChanged([...state.priceFilters, price]);
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: state.priceFilters.contains(price)
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      '£' * price,
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  price.toString(),
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-            ),
-          )
-          .toList(),
+              )
+              .toList(),
+        );
+      },
     );
   }
 }

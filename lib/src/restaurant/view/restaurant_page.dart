@@ -48,7 +48,7 @@ class RestaurantView extends StatelessWidget {
               );
             },
           ),
-          searchBar(),
+          const SearchBar(),
           BlocConsumer<RestaurantCubit, RestaurantState>(
               listenWhen: (previous, current) =>
                   previous.status != current.status,

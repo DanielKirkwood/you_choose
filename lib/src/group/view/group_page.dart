@@ -45,7 +45,7 @@ class GroupView extends StatelessWidget {
               );
           },
         ),
-        searchBar(),
+
         BlocConsumer<GroupCubit, GroupState>(
           listenWhen: (previous, current) => previous.status != current.status,
           listener: (context, state) {

@@ -46,7 +46,7 @@ class GroupTile extends StatelessWidget {
                       color: Colors.transparent,
                       child: Text(
                         group.name,
-                        style: const TextStyle(fontSize: 16),
+                        style: Theme.of(context).textTheme.headline4,
                       ),
                     ),
                   ),
@@ -56,7 +56,7 @@ class GroupTile extends StatelessWidget {
             Text(
               (numRestaurants).toString(),
               style:
-                  const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                  Theme.of(context).textTheme.headline6,
             ),
           ],
         ),

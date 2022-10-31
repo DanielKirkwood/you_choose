@@ -12,6 +12,22 @@ class RestaurantRepository {
 
   final FirebaseFirestore _firestore;
 
+  /// Gets restaurants as a stream
+  Stream<List<Restaurant>> getRestaurantsStream({
+    required String groupID,
+  }) {
+    return _firestore
+        .collection('groups')
+        .doc(groupID)
+        .collection('restaurants')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Restaurant.fromJson(doc.id, doc.data()))
+          .toList();
+    });
+  }
+
   /// Retrieves all the restaurants from a group collection given a groupID.
   Future<List<Restaurant>> getRestaurantData({required String groupID}) async {
     final restaurants = <Restaurant>[];

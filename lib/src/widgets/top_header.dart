@@ -24,7 +24,7 @@ class TopHeader extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headline1,
             ),
             Container(
               padding:
@@ -38,9 +38,9 @@ class TopHeader extends StatelessWidget {
                 onTap: onPress,
                 child: Row(
                   children: <Widget>[
-                    const Icon(
+                    Icon(
                       Icons.add,
-                      color: Constants.kDarkBlueColor,
+                      color: Theme.of(context).primaryColor,
                       size: 20,
                     ),
                     const SizedBox(

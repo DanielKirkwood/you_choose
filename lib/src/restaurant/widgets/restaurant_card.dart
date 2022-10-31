@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
-import 'package:you_choose/src/util/constants/constants.dart';
 
 class RestaurantCard extends StatelessWidget {
   const RestaurantCard(
@@ -34,19 +33,15 @@ class RestaurantCard extends StatelessWidget {
                 name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    color: Color(0xFF332d2b),
-                    fontWeight: FontWeight.w700,
-                fontSize: 20,
-              ),
+                style: Theme.of(context).textTheme.headline3
               ),
               const SizedBox(height: 2),
               Wrap(
                 children: List.generate(
                     price,
-                    (index) => const Icon(
+                (index) => Icon(
                           Icons.currency_pound,
-                          color: Constants.kDarkBlueColor,
+                  color: Theme.of(context).primaryColor,
                           size: 15,
                 ),
               ),
@@ -65,8 +60,8 @@ class RestaurantCard extends StatelessWidget {
               runSpacing: 4,
                   children: List.generate(tags.length, (index) {
                     return Text(
-                      tags[index].name,
-                      style: const TextStyle(color: Constants.kDarkBlueColor),
+                  tags[index].name,
+                  style: Theme.of(context).textTheme.headline6,
                     );
               }),
             )
