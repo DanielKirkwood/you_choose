@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/filter/filter.dart';
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
+  const SearchBar({super.key, required this.openDrawer});
+
+  final void Function() openDrawer;
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +46,7 @@ class SearchBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
             child: IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<FilterPage>(
-                    builder: (context) {
-                      return const FilterPage(groupID: 'jPkjdqhUCuzaQxN2MZZS');
-                    },
-                  ),
-                );
-              },
+              onPressed: openDrawer,
               icon: Icon(
                 Icons.menu,
                 color: Theme.of(context).primaryColor,

@@ -25,14 +25,36 @@ class RestaurantsOverviewPage extends StatelessWidget {
   }
 }
 
-class RestaurantsOverviewView extends StatelessWidget {
+class RestaurantsOverviewView extends StatefulWidget {
   const RestaurantsOverviewView({super.key, required this.groupID});
 
   final String groupID;
 
   @override
+  State<RestaurantsOverviewView> createState() =>
+      _RestaurantsOverviewViewState();
+}
+
+class _RestaurantsOverviewViewState extends State<RestaurantsOverviewView> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState!.openEndDrawer();
+  }
+
+  void _closeDrawer() {
+    Navigator.of(context).pop();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: FilterDrawer(
+        groupID: widget.groupID,
+        closeDrawer: _closeDrawer,
+      ),
+      endDrawerEnableOpenDragGesture: false,
       backgroundColor: Theme.of(context).backgroundColor,
       body: BlocConsumer<RestaurantsOverviewBloc, RestaurantsOverviewState>(
         listenWhen: (previous, current) => previous.status != current.status,
@@ -72,13 +94,15 @@ class RestaurantsOverviewView extends StatelessWidget {
                     context,
                     MaterialPageRoute<AddRestaurantPage>(
                       builder: (context) {
-                        return AddRestaurantPage(groupID: groupID);
+                        return AddRestaurantPage(groupID: widget.groupID);
                       },
                     ),
                   );
                 },
               ),
-              const SearchBar(),
+              SearchBar(
+                openDrawer: _openDrawer,
+              ),
               for (final restaurant in state.filteredRestaurants)
                 RestaurantCard(
                   name: restaurant.name,

@@ -1,46 +1,55 @@
 import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:you_choose/src/profile/profile.dart';
 import 'package:you_choose/src/restaurant_overview/restaurants_overview.dart';
 import 'package:you_choose/src/tag/cubit/tag_cubit.dart';
 import 'package:you_choose/src/util/constants/constants.dart';
 
-class FilterPage extends StatelessWidget {
-  const FilterPage({super.key, required this.groupID});
+class FilterDrawer extends StatelessWidget {
+  const FilterDrawer(
+      {super.key, required this.groupID, required this.closeDrawer});
 
   final String groupID;
+  final void Function() closeDrawer;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:
-          buildAppBar(context: context, hasBackButton: true, title: 'Filter'),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider<TagCubit>(
-            create: (context) => TagCubit(GroupRepository()),
-          ),
-          BlocProvider<RestaurantsOverviewBloc>(
-            create: (context) => RestaurantsOverviewBloc(
-              restaurantRepository: RestaurantRepository(),
-            ),
-          ),
-        ],
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('Price', style: Theme.of(context).textTheme.headline4),
-              const BuildPriceFilters(prices: [1, 2, 3, 4]),
-              Text('Tag', style: Theme.of(context).textTheme.headline4),
-              BuildTagFilter(
-                groupID: groupID,
+    return Drawer(
+      child: BlocProvider<TagCubit>(
+        create: (context) => TagCubit(GroupRepository()),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            SizedBox(
+              height: 120,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                ),
+                child: Text(
+                  'Filter',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .merge(const TextStyle(color: Colors.white)),
+                ),
               ),
-            ],
-          ),
+            ),
+            Column(
+              children: [
+                Text('Price', style: Theme.of(context).textTheme.headline4),
+                const BuildPriceFilters(prices: [1, 2, 3, 4]),
+                Text('Tag', style: Theme.of(context).textTheme.headline4),
+                BuildTagFilter(
+                  groupID: groupID,
+                ),
+                ElevatedButton(
+                  onPressed: closeDrawer,
+                  child: const Text('Close'),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
@@ -60,7 +69,7 @@ class BuildPriceFilters extends StatelessWidget {
       builder: (context, state) {
         return Wrap(
           alignment: WrapAlignment.spaceBetween,
-          spacing: 20,
+          spacing: 10,
           children: prices
               .map(
                 (price) => InkWell(
@@ -133,7 +142,6 @@ class BuildTagFilter extends StatelessWidget {
               final tagName = state.tags[index];
               return Container(
                 width: double.infinity,
-                margin: const EdgeInsets.only(top: 10),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 decoration: BoxDecoration(
@@ -155,6 +163,7 @@ class BuildTagFilter extends StatelessWidget {
                         SizedBox(
                           height: 25,
                           child: Checkbox(
+                            activeColor: Theme.of(context).primaryColor,
                             value: state.filterTags.contains(tagName),
                             onChanged: (bool? newValue) {
                               context.read<RestaurantsOverviewBloc>().add(

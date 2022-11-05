@@ -43,11 +43,14 @@ class RestaurantsOverviewBloc
     Emitter<RestaurantsOverviewState> emit,
   ) {
     if (state.filterTags.contains(event.tag)) {
+      final newList = List<String>.from(state.filterPrices)..remove(event.tag);
       emit(
-        state.copyWith(filterTags: () => state.filterTags..remove(event.tag)),
+        state.copyWith(filterTags: () => newList),
       );
     } else {
-      emit(state.copyWith(filterTags: () => [...state.filterTags, event.tag]));
+      final newList = List<String>.from(state.filterPrices)..add(event.tag);
+
+      emit(state.copyWith(filterTags: () => newList));
     }
   }
 
@@ -56,15 +59,17 @@ class RestaurantsOverviewBloc
     Emitter<RestaurantsOverviewState> emit,
   ) {
     if (state.filterPrices.contains(event.price)) {
+      final newList = List<int>.from(state.filterPrices)..remove(event.price);
       emit(
         state.copyWith(
-          filterPrices: () => state.filterPrices..remove(event.price),
+          filterPrices: () => newList,
         ),
       );
     } else {
+      final newList = List<int>.from(state.filterPrices)..add(event.price);
       emit(
         state.copyWith(
-          filterPrices: () => [...state.filterPrices, event.price],
+          filterPrices: () => newList,
         ),
       );
     }
