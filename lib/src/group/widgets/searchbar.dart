@@ -1,7 +1,28 @@
+import 'package:firestore_repository/firestore_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:you_choose/src/restaurant_overview/restaurants_overview.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key, required this.openDrawer});
+
+  final void Function() openDrawer;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => RestaurantsOverviewBloc(
+        restaurantRepository: RestaurantRepository(),
+      ),
+      child: SearchBarField(
+        openDrawer: openDrawer,
+      ),
+    );
+  }
+}
+
+class SearchBarField extends StatelessWidget {
+  const SearchBarField({super.key, required this.openDrawer});
 
   final void Function() openDrawer;
 
@@ -12,27 +33,36 @@ class SearchBar extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Where do you want to eat?',
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Theme.of(context).primaryColor,
-                ),
-                contentPadding:
-                    const EdgeInsets.only(left: 20, bottom: 5, top: 5),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onChanged: (value) {},
+            child:
+                BlocBuilder<RestaurantsOverviewBloc, RestaurantsOverviewState>(
+              builder: (context, state) {
+                return TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Where do you want to eat?',
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    contentPadding:
+                        const EdgeInsets.only(left: 20, bottom: 5, top: 5),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    context.read<RestaurantsOverviewBloc>().add(
+                          RestaurantOverviewSearchTermChanged(value),
+                        );
+                  },
+                );
+              },
             ),
           ),
           const SizedBox(

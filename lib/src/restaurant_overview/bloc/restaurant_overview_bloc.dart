@@ -14,6 +14,7 @@ class RestaurantsOverviewBloc
   })  : _restaurantRepository = restaurantRepository,
         super(const RestaurantsOverviewState()) {
     on<RestaurantOverviewSubscriptionRequested>(_onSubscriptionRequested);
+    on<RestaurantOverviewSearchTermChanged>(_onSearchTermChanged);
     on<RestaurantOverviewTagsFilterToggle>(_onTagsFilterChanged);
     on<RestaurantOverviewPricesFilterToggle>(_onPriceFilterChanged);
   }
@@ -34,6 +35,17 @@ class RestaurantsOverviewBloc
       ),
       onError: (_, __) => state.copyWith(
         status: () => RestaurantOverviewStatus.failure,
+      ),
+    );
+  }
+
+  void _onSearchTermChanged(
+    RestaurantOverviewSearchTermChanged event,
+    Emitter<RestaurantsOverviewState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        searchTerm: () => event.searchTerm,
       ),
     );
   }

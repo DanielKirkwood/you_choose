@@ -2,7 +2,16 @@ import 'package:models/models.dart';
 
 class RestaurantViewFilter {
   static bool apply(
-      Restaurant restaurant, List<String> tags, List<int> prices) {
+    Restaurant restaurant,
+    String searchTerm,
+    List<String> tags,
+    List<int> prices,
+  ) {
+    // search term not found in restaurant name
+    if (!restaurant.name.toLowerCase().contains(searchTerm.toLowerCase())) {
+      return false;
+    }
+
     // if restaurant has no tags and user wants specific tag
     // then this restaurant does not satisfy need
     if (restaurant.tags == null && tags.isNotEmpty) return false;
@@ -29,9 +38,15 @@ class RestaurantViewFilter {
 
   static Iterable<Restaurant> applyAll(
     Iterable<Restaurant> restaurants,
+    String searchTerm,
     List<String> tags,
     List<int> prices,
   ) {
-    return restaurants.where((restaurant) => apply(restaurant, tags, prices));
+    return restaurants.where((restaurant) => apply(
+          restaurant,
+          searchTerm,
+          tags,
+          prices,
+        ));
   }
 }
