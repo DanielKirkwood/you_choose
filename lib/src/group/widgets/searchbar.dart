@@ -11,7 +11,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RestaurantsOverviewBloc(
+      create: (context) => RestaurantsOverviewBloc(
         restaurantRepository: RestaurantRepository(),
       ),
       child: SearchBarField(
@@ -35,6 +35,8 @@ class SearchBarField extends StatelessWidget {
           Expanded(
             child:
                 BlocBuilder<RestaurantsOverviewBloc, RestaurantsOverviewState>(
+              buildWhen: (previous, current) =>
+                  previous.searchTerm != current.searchTerm,
               builder: (context, state) {
                 return TextField(
                   decoration: InputDecoration(
@@ -57,6 +59,7 @@ class SearchBarField extends StatelessWidget {
                     ),
                   ),
                   onChanged: (value) {
+
                     context.read<RestaurantsOverviewBloc>().add(
                           RestaurantOverviewSearchTermChanged(value),
                         );

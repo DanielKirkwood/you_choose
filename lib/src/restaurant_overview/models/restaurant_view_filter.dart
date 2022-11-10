@@ -8,7 +8,8 @@ class RestaurantViewFilter {
     List<int> prices,
   ) {
     // search term not found in restaurant name
-    if (!restaurant.name.toLowerCase().contains(searchTerm.toLowerCase())) {
+    if (searchTerm != '' &&
+        !restaurant.name.toLowerCase().contains(searchTerm.toLowerCase())) {
       return false;
     }
 
@@ -47,6 +48,7 @@ class RestaurantViewFilter {
           searchTerm,
           tags,
           prices,
-        ));
+      ),
+    );
   }
 }

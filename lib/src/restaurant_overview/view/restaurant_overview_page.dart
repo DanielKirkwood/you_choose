@@ -69,6 +69,8 @@ class _RestaurantsOverviewViewState extends State<RestaurantsOverviewView> {
               );
           }
         },
+        buildWhen: (previous, current) =>
+            previous.filteredRestaurants != current.filteredRestaurants,
         builder: (context, state) {
           if (state.restaurants.isEmpty) {
             if (state.status == RestaurantOverviewStatus.loading) {
