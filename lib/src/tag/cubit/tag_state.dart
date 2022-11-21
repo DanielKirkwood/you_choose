@@ -4,7 +4,8 @@ enum TagStatus { initial, loading, success, failure }
 
 class TagState extends Equatable {
   const TagState(
-      {this.tags = const <Tag>[],
+      {
+    this.tags = const <String>[],
       this.status = TagStatus.initial,
       this.name = const TagName.pure(),
       this.groups = const GroupsList.pure(),
@@ -12,7 +13,7 @@ class TagState extends Equatable {
     this.errorMessage,
   });
 
-  final List<Tag> tags;
+  final List<String> tags;
 
   final TagStatus status;
 
@@ -25,7 +26,7 @@ class TagState extends Equatable {
   final String? errorMessage;
 
   TagState copyWith({
-    List<Tag>? tags,
+    List<String>? tags,
     TagStatus? status,
     TagName? name,
     GroupsList? groups,

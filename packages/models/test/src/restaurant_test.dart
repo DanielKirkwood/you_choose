@@ -8,7 +8,7 @@ void main() {
     const name = 'mock-name';
     const price = 1;
     const description = 'mock-description';
-    const tags = <Tag>[];
+    const tags = <String>[];
     const docID = 'mock-docID';
 
     test('uses value equality', () {

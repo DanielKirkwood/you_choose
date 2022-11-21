@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/util/constants/constants.dart';
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({
@@ -16,10 +15,10 @@ class BottomNavigation extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: Constants.kDarkBlueColor,
-      unselectedItemColor: Constants.kBlackColor,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-      unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+      selectedItemColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Colors.black,
+      selectedLabelStyle: Theme.of(context).textTheme.headline6,
+      unselectedLabelStyle: Theme.of(context).textTheme.headline6,
       type: BottomNavigationBarType.fixed,
       items: const [
         BottomNavigationBarItem(

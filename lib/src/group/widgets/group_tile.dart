@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:models/models.dart';
-import 'package:you_choose/src/restaurant/restaurant.dart';
+import 'package:you_choose/src/restaurant_overview/restaurants_overview.dart';
 
 class GroupTile extends StatelessWidget {
   const GroupTile(
@@ -19,9 +19,9 @@ class GroupTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute<RestaurantPage>(
+          MaterialPageRoute<RestaurantsOverviewPage>(
             builder: (context) {
-              return RestaurantPage(groupID: group.docID!);
+              return RestaurantsOverviewPage(groupID: group.docID!);
             },
           ),
         );
@@ -46,7 +46,7 @@ class GroupTile extends StatelessWidget {
                       color: Colors.transparent,
                       child: Text(
                         group.name,
-                        style: const TextStyle(fontSize: 16),
+                        style: Theme.of(context).textTheme.headline4,
                       ),
                     ),
                   ),
@@ -56,7 +56,7 @@ class GroupTile extends StatelessWidget {
             Text(
               (numRestaurants).toString(),
               style:
-                  const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                  Theme.of(context).textTheme.headline6,
             ),
           ],
         ),

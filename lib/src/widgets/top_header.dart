@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:you_choose/src/util/constants/constants.dart';
 
 class TopHeader extends StatelessWidget {
   const TopHeader(
@@ -24,7 +23,7 @@ class TopHeader extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headline1,
             ),
             Container(
               padding:
@@ -32,7 +31,7 @@ class TopHeader extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: Constants.kGreyColor,
+                color: Theme.of(context).primaryColor,
               ),
               child: InkWell(
                 onTap: onPress,
@@ -40,7 +39,7 @@ class TopHeader extends StatelessWidget {
                   children: <Widget>[
                     const Icon(
                       Icons.add,
-                      color: Constants.kDarkBlueColor,
+                      color: Colors.white,
                       size: 20,
                     ),
                     const SizedBox(
@@ -52,6 +51,7 @@ class TopHeader extends StatelessWidget {
                           const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ],

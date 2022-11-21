@@ -18,9 +18,53 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     final restaurants =
         await _restaurantRepository.getRestaurantData(groupID: groupID);
 
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: RestaurantStatus.success,
         restaurants: restaurants,
+      ),
+    );
+  }
+
+  void priceFilterChanged(List<int> value) {
+    emit(
+      state.copyWith(
+        priceFilters: value,
+      ),
+    );
+  }
+
+  void tagFilterChanged(List<String> value) {
+    emit(
+      state.copyWith(
+        tagFilters: value,
+      ),
+    );
+  }
+
+  void filterRestaurants() {
+    emit(state.copyWith(status: RestaurantStatus.loading));
+
+    final priceFilteredRestaurants = state.restaurants
+        .where((restaurant) => state.priceFilters.contains(restaurant.price));
+
+    final tagSet = state.tagFilters.toSet();
+
+    final tagFilteredRestaurants = priceFilteredRestaurants.where((restaurant) {
+      if (restaurant.tags == null) return false;
+      if (restaurant.tags!.isEmpty) return false;
+
+      final restaurantSet = restaurant.tags!.toSet();
+      final intersect = restaurantSet.intersection(tagSet);
+      if (intersect.isEmpty) return false;
+
+      return true;
+    });
+
+    emit(
+      state.copyWith(
+        filteredRestaurants: tagFilteredRestaurants.toList(),
+        status: RestaurantStatus.success,
       ),
     );
   }
@@ -32,9 +76,9 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
     try {
       final restaurant = Restaurant(
-          name: state.name.value,
-          price: state.price.value,
-          description: state.description.value,
+        name: state.name.value,
+        price: state.price.value,
+        description: state.description.value,
         tags: state.tags.value,
       );
 
@@ -43,7 +87,8 @@ class RestaurantCubit extends Cubit<RestaurantState> {
         groups: state.groups.value,
       );
 
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           formStatus: FormzStatus.submissionSuccess,
           restaurants: [restaurant, ...state.restaurants],
         ),
@@ -55,9 +100,10 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
   void nameChanged(String value) {
     final name = RestaurantName.dirty(value: value);
-    emit(state.copyWith(
-      name: name,
-      formStatus: Formz.validate(
+    emit(
+      state.copyWith(
+        name: name,
+        formStatus: Formz.validate(
           [name, state.price, state.description, state.tags, state.groups],
         ),
       ),
@@ -66,9 +112,10 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
   void priceChanged(int value) {
     final price = RestaurantPrice.dirty(value: value);
-    emit(state.copyWith(
-      price: price,
-      formStatus: Formz.validate(
+    emit(
+      state.copyWith(
+        price: price,
+        formStatus: Formz.validate(
           [state.name, price, state.description, state.tags, state.groups],
         ),
       ),
@@ -77,20 +124,22 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
   void descriptionChanged(String value) {
     final description = RestaurantDescription.dirty(value: value);
-    emit(state.copyWith(
-      description: description,
-      formStatus: Formz.validate(
+    emit(
+      state.copyWith(
+        description: description,
+        formStatus: Formz.validate(
           [state.name, state.price, description, state.tags, state.groups],
         ),
       ),
     );
   }
 
-  void tagsChanged(List<Tag> value) {
+  void tagsChanged(List<String> value) {
     final tags = RestaurantTags.dirty(value: value);
-    emit(state.copyWith(
-      tags: tags,
-      formStatus: Formz.validate(
+    emit(
+      state.copyWith(
+        tags: tags,
+        formStatus: Formz.validate(
           [state.name, state.price, state.description, tags, state.groups],
         ),
       ),
@@ -99,9 +148,10 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
   void groupsChanged(List<Group> value) {
     final groups = GroupsList.dirty(value: value);
-    emit(state.copyWith(
-      groups: groups,
-      formStatus: Formz.validate(
+    emit(
+      state.copyWith(
+        groups: groups,
+        formStatus: Formz.validate(
           [state.name, state.price, state.description, state.tags, groups],
         ),
       ),

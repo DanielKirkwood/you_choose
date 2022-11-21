@@ -1,14 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:models/models.dart';
 import 'package:test/test.dart';
 
-class MockTag extends Mock implements Tag {}
-
-final _tag = MockTag();
-final _mockTagList = <Tag>[_tag];
+const _tag = 'mock-tag';
+final _mockTagList = <String>[_tag];
 
 void main() {
   group(
@@ -26,7 +22,7 @@ void main() {
         });
 
         test('has default value of empty tag list ', () {
-          expect(restaurantTags.value, equals(<Tag>[]));
+          expect(restaurantTags.value, equals(<String>[]));
           expect(restaurantTags.value.isEmpty, equals(true));
         });
 
